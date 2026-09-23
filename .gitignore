@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode user state and local build output
+DerivedData/
+build/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+xcuserdata/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/
+
+# Test and coverage output
+*.xcresult
+*.profdata
