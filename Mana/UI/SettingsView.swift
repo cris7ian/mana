@@ -173,9 +173,13 @@ struct SettingsView: View {
 }
 
 @MainActor
-final class SettingsWindowController {
+final class SettingsWindowController: NSObject, NSWindowDelegate {
     static let shared = SettingsWindowController()
     private var window: NSWindow?
+
+    private override init() {
+        super.init()
+    }
 
     func show(coordinator: UsageRefreshCoordinator, settings: UsageSettings, transport: any HTTPTransport) {
         let content = SettingsView(transport: transport)
@@ -193,10 +197,29 @@ final class SettingsWindowController {
             newWindow.title = "Mana Settings"
             newWindow.contentViewController = NSHostingController(rootView: content)
             newWindow.isReleasedWhenClosed = false
+            newWindow.collectionBehavior = [.moveToActiveSpace]
+            newWindow.delegate = self
             self.window = newWindow
         }
-        NSApp.activate(ignoringOtherApps: true)
-        self.window?.center()
-        self.window?.makeKeyAndOrderFront(nil)
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .milliseconds(120))
+            guard let self, let window = self.window else { return }
+            NSApp.setActivationPolicy(.regular)
+            NSApp.activate(ignoringOtherApps: true)
+            if let screen = NSScreen.main ?? NSScreen.screens.first {
+                let visibleFrame = screen.visibleFrame
+                window.setFrameOrigin(NSPoint(
+                    x: visibleFrame.midX - window.frame.width / 2,
+                    y: visibleFrame.midY - window.frame.height / 2
+                ))
+            }
+            window.orderFrontRegardless()
+            window.makeKeyAndOrderFront(nil)
+        }
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        guard notification.object as? NSWindow === window else { return }
+        Task { @MainActor in NSApp.setActivationPolicy(.accessory) }
     }
 }

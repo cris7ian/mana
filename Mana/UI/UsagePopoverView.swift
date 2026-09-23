@@ -3,6 +3,7 @@ import SwiftUI
 
 struct UsagePopoverView: View {
     @EnvironmentObject private var coordinator: UsageRefreshCoordinator
+    @Environment(\.dismiss) private var dismiss
     let openSettings: () -> Void
 
     private var lastUpdated: Date? {
@@ -44,7 +45,10 @@ struct UsagePopoverView: View {
 
             Divider().padding(.top, 12).padding(.bottom, 8)
             HStack(spacing: 14) {
-                Button(action: openSettings) {
+                Button {
+                    dismiss()
+                    openSettings()
+                } label: {
                     Label("Settings", systemImage: "gearshape")
                 }
                 .buttonStyle(.plain)

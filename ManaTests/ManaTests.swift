@@ -166,13 +166,19 @@ final class ManaTests: XCTestCase {
     }
 
     @MainActor
-    func testSettingsWindowControllerPresentsVisibleWindow() {
+    func testSettingsWindowControllerPresentsCenteredForegroundWindow() async throws {
         let settings = UsageSettings(defaults: UserDefaults(suiteName: UUID().uuidString)!)
         let coordinator = UsageRefreshCoordinator(providers: [], settings: settings)
         SettingsWindowController.shared.show(coordinator: coordinator, settings: settings, transport: URLSessionTransport())
-        let window = NSApp.windows.first { $0.title == "Mana Settings" }
-        XCTAssertTrue(window?.isVisible == true)
-        window?.close()
+        try await Task.sleep(for: .milliseconds(300))
+        let window = try XCTUnwrap(NSApp.windows.first { $0.title == "Mana Settings" })
+        XCTAssertTrue(window.isVisible)
+        XCTAssertTrue(window.isKeyWindow)
+        XCTAssertTrue(NSApp.isActive)
+        let screen = try XCTUnwrap(NSScreen.main ?? NSScreen.screens.first)
+        XCTAssertEqual(window.frame.midX, screen.visibleFrame.midX, accuracy: 1)
+        XCTAssertEqual(window.frame.midY, screen.visibleFrame.midY, accuracy: 1)
+        window.close()
     }
 
     @MainActor
