@@ -1,4 +1,5 @@
 import Foundation
+import Darwin
 
 struct ManaCLIOptions: Equatable {
     let provider: ProviderID?
@@ -75,6 +76,9 @@ enum ManaCLIResult {
 }
 
 enum ManaCLIOutput {
+    private static let barWidth = 20
+    private static let separator = String(repeating: "-", count: 44)
+
     private static func safeStatus(_ value: String) -> String {
         guard !value.isEmpty, value.count <= 40,
               value.unicodeScalars.allSatisfy({ CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "_- ")).contains($0) })
@@ -82,47 +86,104 @@ enum ManaCLIOutput {
         return value
     }
 
-    private static func progressBar(for percent: Double) -> String {
-        let filled = Int(min(max(percent, 0), 100) / 10)
-        return "[" + String(repeating: "#", count: filled) + String(repeating: "-", count: 10 - filled) + "]"
+    static func shouldUseColor(isTTY: Bool, environment: [String: String]) -> Bool {
+        guard isTTY, environment["TERM"] != "dumb" else { return false }
+        if let noColor = environment["NO_COLOR"], !noColor.isEmpty { return false }
+        return true
     }
 
-    private static func resetDescription(_ date: Date) -> String {
+    private static var stdoutIsTTY: Bool { isatty(STDOUT_FILENO) == 1 }
+
+    private static func heading(for provider: ProviderID) -> String {
+        switch provider {
+        case .codex: return "Personal ChatGPT Codex usage"
+        case .openCodeGo: return "OpenCode Go usage"
+        }
+    }
+
+    private static func alignedLabel(_ label: String) -> String {
+        let value = safeStatus(label)
+        return value + String(repeating: " ", count: max(0, 7 - value.count))
+    }
+
+    private static func usageBar(for percent: Double, colorEnabled: Bool) -> (bar: String, percent: Int)? {
+        guard percent.isFinite else { return nil }
+        let displayedPercent = Int(min(max(percent, 0), 100).rounded())
+        let filled = Int((Double(displayedPercent) / 100 * Double(barWidth)).rounded())
+        let bar = String(repeating: "█", count: filled) + String(repeating: "░", count: barWidth - filled)
+        let percentage = String(format: "%3d%%", displayedPercent)
+        guard colorEnabled else { return ("\(bar) \(percentage)", displayedPercent) }
+        let color = displayedPercent >= 80 ? "\u{001B}[31m" :
+            displayedPercent >= 50 ? "\u{001B}[33m" : "\u{001B}[32m"
+        return ("\(color)\(bar) \(percentage)\u{001B}[0m", displayedPercent)
+    }
+
+    private static func resetDescription(_ date: Date?, now: Date, timeZone: TimeZone) -> String {
+        guard let date else { return "unknown" }
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.dateFormat = "yyyy-MM-dd HH:mm 'UTC'"
-        return "resets \(formatter.string(from: date))"
+        formatter.timeZone = timeZone
+        formatter.dateFormat = calendar.isDate(date, inSameDayAs: now) ? "'today' HH:mm" : "MMM dd HH:mm"
+        return formatter.string(from: date)
     }
 
     static func text(_ results: [ManaCLIResult]) -> String {
+        let colorEnabled = shouldUseColor(
+            isTTY: stdoutIsTTY,
+            environment: ProcessInfo.processInfo.environment
+        )
+        return text(results, colorEnabled: colorEnabled, now: Date(), timeZone: .current)
+    }
+
+    static func text(
+        _ results: [ManaCLIResult],
+        colorEnabled: Bool,
+        now: Date,
+        timeZone: TimeZone
+    ) -> String {
         results.map { result in
+            let provider = result.provider
+            var lines = [heading(for: provider), separator]
             switch result {
-            case .failure(let provider, let error):
-                return "\(provider.displayName)\n  Error: \(error.localizedDescription)"
+            case .failure(_, let error):
+                lines.append("  error: \(error.localizedDescription)")
+                lines.append(separator)
             case .success(let snapshot):
-                var lines = [snapshot.provider.displayName]
-                if snapshot.isBlocked {
-                    lines.append("  Status: blocked — \(safeStatus(snapshot.blockedReason ?? "rate limit"))")
-                }
-                if snapshot.displayWindows.isEmpty { lines.append("  No usage windows available") }
-                for window in snapshot.displayWindows {
-                    let label = safeStatus(window.label)
-                    let reset = window.resetAt.map { " · \(resetDescription($0))" } ?? ""
+                let windows = provider == .openCodeGo ? snapshot.windows : snapshot.displayWindows
+                var hasWindow = false
+                for window in windows {
+                    let label = alignedLabel(window.label)
                     switch window.content {
                     case .percent(let percent):
-                        let usage = String(format: "%.1f%% used", locale: Locale(identifier: "en_US_POSIX"), percent)
-                        lines.append("  \(label)  \(progressBar(for: percent))  \(usage)\(reset)")
+                        if let usage = usageBar(for: percent, colorEnabled: colorEnabled) {
+                            let reset = resetDescription(window.resetAt, now: now, timeZone: timeZone)
+                            lines.append("  \(label) \(usage.bar)   resets \(reset)")
+                        } else {
+                            lines.append("  \(label) unknown")
+                        }
+                        hasWindow = true
                     case .unknownPercent:
-                        lines.append("  \(label)  Usage unavailable\(reset)")
+                        lines.append("  \(label) unknown")
+                        hasWindow = true
                     case .blocked(let reason):
-                        lines.append("  \(label)  Blocked: \(safeStatus(reason))\(reset)")
+                        lines.append("  \(label) status: \(safeStatus(reason))")
+                        hasWindow = true
                     case .missing:
-                        continue
+                        lines.append("  \(label) unknown")
+                        hasWindow = true
                     }
                 }
-                return lines.joined(separator: "\n")
+                if !hasWindow { lines.append("  no active rate-limit windows") }
+                if snapshot.isBlocked {
+                    lines.append(separator)
+                    lines.append("  requests are currently blocked by a rate limit")
+                } else {
+                    lines.append(separator)
+                }
             }
+            return lines.joined(separator: "\n")
         }.joined(separator: "\n\n") + "\n"
     }
 

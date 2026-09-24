@@ -89,37 +89,91 @@ final class ManaTests: XCTestCase {
         XCTAssertThrowsError(try ManaCLIOptions.parse(["--provider", "all", "--provider", "codex"]))
     }
 
-    func testCLIFormatsProviderSectionsUsageProgressResetAndSanitizedErrors() throws {
-        let snapshot = ProviderSnapshot(
+    func testCLIFormatsReferenceStyleTablesForBothProviders() throws {
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let utc = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let codex = ProviderSnapshot(
             provider: .codex,
-            windows: [UsageWindow(
-                id: "rolling", label: "5h", content: .percent(25), resetAt: Date(timeIntervalSince1970: 1_700_000_000),
-                resetText: "untrusted reset text"
-            )],
-            isBlocked: false, blockedReason: nil, receivedAt: Date(timeIntervalSince1970: 1_700_000_000)
+            windows: [
+                UsageWindow(id: "primary", label: "5h", content: .percent(25), resetAt: now.addingTimeInterval(3_600), resetText: "untrusted reset text"),
+                UsageWindow(id: "weekly", label: "1w", content: .percent(80), resetAt: now.addingTimeInterval(86_400), resetText: nil),
+                UsageWindow(id: "missing", label: "window 3", content: .missing, resetAt: nil, resetText: nil)
+            ],
+            isBlocked: true, blockedReason: "rate limit", receivedAt: now
         )
-        let results: [ManaCLIResult] = [
-            .success(snapshot),
-            .failure(.openCodeGo, .missingCredential(provider: .openCodeGo, field: "API key"))
-        ]
-        let text = ManaCLIOutput.text(results)
-        XCTAssertTrue(text.contains("Codex\n"))
-        XCTAssertTrue(text.contains("5h  [##--------]  25.0% used"))
-        XCTAssertTrue(text.contains("resets 2023-11-14 22:13 UTC"))
-        XCTAssertTrue(text.contains("\n\nOpenCode Go\n  Error: Add the API key in OpenCode Go settings."))
+        let openCodeGo = ProviderSnapshot(
+            provider: .openCodeGo,
+            windows: [
+                UsageWindow(id: "rolling", label: "5h", content: .percent(50), resetAt: now.addingTimeInterval(3_600), resetText: nil),
+                UsageWindow(id: "weekly", label: "week", content: .blocked("exhausted"), resetAt: nil, resetText: nil),
+                UsageWindow(id: "monthly", label: "month", content: .missing, resetAt: nil, resetText: nil)
+            ],
+            isBlocked: false, blockedReason: nil, receivedAt: now
+        )
+        let text = ManaCLIOutput.text(
+            [.success(codex), .success(openCodeGo)],
+            colorEnabled: false,
+            now: now,
+            timeZone: utc
+        )
+        let expected = """
+        Personal ChatGPT Codex usage
+        --------------------------------------------
+          5h      █████░░░░░░░░░░░░░░░  25%   resets today 23:13
+          1w      ████████████████░░░░  80%   resets Nov 15 22:13
+        --------------------------------------------
+          requests are currently blocked by a rate limit
+
+        OpenCode Go usage
+        --------------------------------------------
+          5h      ██████████░░░░░░░░░░  50%   resets today 23:13
+          week    status: exhausted
+          month   unknown
+        --------------------------------------------
+        """
+        XCTAssertEqual(text, expected + "\n")
         XCTAssertFalse(text.contains("untrusted reset text"))
 
-        let json = try ManaCLIOutput.json(results)
+        let failure = ManaCLIOutput.text(
+            [.failure(.openCodeGo, .missingCredential(provider: .openCodeGo, field: "API key"))],
+            colorEnabled: false,
+            now: now,
+            timeZone: utc
+        )
+        XCTAssertTrue(failure.contains("OpenCode Go usage\n--------------------------------------------\n  error: Add the API key in OpenCode Go settings.\n--------------------------------------------"))
+
+        let json = try ManaCLIOutput.json([
+            .success(codex),
+            .failure(.openCodeGo, .missingCredential(provider: .openCodeGo, field: "API key"))
+        ])
         XCTAssertTrue(json.contains("\"provider\" : \"codex\""))
         XCTAssertTrue(json.contains("\"provider\" : \"openCodeGo\""))
         XCTAssertFalse(json.contains("accessToken"))
-        let blocked = ProviderSnapshot(
-            provider: .openCodeGo,
-            windows: [UsageWindow(id: "rolling", label: "5h", content: .blocked("\u{1B}[31m"), resetAt: nil, resetText: nil)],
-            isBlocked: false, blockedReason: nil, receivedAt: Date()
+    }
+
+    func testCLIColorsUsageBarsOnlyForEligibleTerminals() throws {
+        XCTAssertTrue(ManaCLIOutput.shouldUseColor(isTTY: true, environment: ["TERM": "xterm-256color"]))
+        XCTAssertFalse(ManaCLIOutput.shouldUseColor(isTTY: false, environment: ["TERM": "xterm-256color"]))
+        XCTAssertFalse(ManaCLIOutput.shouldUseColor(isTTY: true, environment: ["TERM": "xterm", "NO_COLOR": "1"]))
+        XCTAssertFalse(ManaCLIOutput.shouldUseColor(isTTY: true, environment: ["TERM": "dumb"]))
+
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let utc = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let snapshot = ProviderSnapshot(
+            provider: .codex,
+            windows: [
+                UsageWindow(id: "low", label: "5h", content: .percent(49), resetAt: nil, resetText: nil),
+                UsageWindow(id: "medium", label: "1d", content: .percent(50), resetAt: nil, resetText: nil),
+                UsageWindow(id: "high", label: "1w", content: .percent(80), resetAt: nil, resetText: nil)
+            ],
+            isBlocked: false, blockedReason: nil, receivedAt: now
         )
-        XCTAssertFalse(ManaCLIOutput.text([.success(blocked)]).contains("\u{1B}"))
-        XCTAssertFalse(try ManaCLIOutput.json([.success(blocked)]).contains("\\u001B"))
+        let colored = ManaCLIOutput.text([.success(snapshot)], colorEnabled: true, now: now, timeZone: utc)
+        XCTAssertTrue(colored.contains("\u{001B}[32m██████████░░░░░░░░░░  49%\u{001B}[0m"))
+        XCTAssertTrue(colored.contains("\u{001B}[33m██████████░░░░░░░░░░  50%\u{001B}[0m"))
+        XCTAssertTrue(colored.contains("\u{001B}[31m████████████████░░░░  80%\u{001B}[0m"))
+        let plain = ManaCLIOutput.text([.success(snapshot)], colorEnabled: false, now: now, timeZone: utc)
+        XCTAssertFalse(plain.contains("\u{001B}"))
     }
 
     func testFileCredentialStoreUsesPrivatePermissionsAndSupportsReplacement() throws {

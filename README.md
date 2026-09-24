@@ -28,7 +28,7 @@ ln -s "$HOME/Library/Developer/Xcode/DerivedData/Mana-"*/Build/Products/Debug/Ma
 mana --help
 ```
 
-The lowercase `mana` command fetches current usage once without opening the menu-bar app. Human-readable output presents provider-specific usage summaries, making usage levels, reset timing, and provider status easy to scan. Provider failures are shown without hiding results from other providers. Examples:
+The lowercase `mana` command fetches current usage once without opening the menu-bar app. Human-readable output uses framed, provider-specific usage tables with progress bars, local reset times, and status details. Progress-bar colors appear only in interactive terminals; `NO_COLOR` disables them. Provider failures are shown without hiding results from other providers. Examples:
 
 ```sh
 mana                            # both providers, human-readable
