@@ -56,6 +56,6 @@ Mana makes HTTPS requests directly to the provider usage endpoints. Requests use
 
 The OpenAI OAuth flow tracks ChatGPT-plan Codex usage; OpenAI API-platform API-key spend is a separate product and is not shown.
 
-## Local build signing
+## Distribution
 
-This checkout uses an ad-hoc local signature and disables the App Sandbox. This configuration is intended for local use on this computer, not public distribution. Review the signing and sandbox settings before distributing the app.
+Code signing and App Sandbox configuration are not yet set up for distribution.
