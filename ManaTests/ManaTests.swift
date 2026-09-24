@@ -89,19 +89,27 @@ final class ManaTests: XCTestCase {
         XCTAssertThrowsError(try ManaCLIOptions.parse(["--provider", "all", "--provider", "codex"]))
     }
 
-    func testCLIFormatsWindowsAndSanitizedErrors() throws {
-        let snapshot = sampleSnapshot(.codex)
-        let text = ManaCLIOutput.text([
+    func testCLIFormatsProviderSectionsUsageProgressResetAndSanitizedErrors() throws {
+        let snapshot = ProviderSnapshot(
+            provider: .codex,
+            windows: [UsageWindow(
+                id: "rolling", label: "5h", content: .percent(25), resetAt: Date(timeIntervalSince1970: 1_700_000_000),
+                resetText: "untrusted reset text"
+            )],
+            isBlocked: false, blockedReason: nil, receivedAt: Date(timeIntervalSince1970: 1_700_000_000)
+        )
+        let results: [ManaCLIResult] = [
             .success(snapshot),
             .failure(.openCodeGo, .missingCredential(provider: .openCodeGo, field: "API key"))
-        ])
-        XCTAssertTrue(text.contains("Codex"))
-        XCTAssertTrue(text.contains("OpenCode Go"))
-        XCTAssertTrue(text.contains("Add the API key"))
-        let json = try ManaCLIOutput.json([
-            .success(snapshot),
-            .failure(.openCodeGo, .missingCredential(provider: .openCodeGo, field: "API key"))
-        ])
+        ]
+        let text = ManaCLIOutput.text(results)
+        XCTAssertTrue(text.contains("Codex\n"))
+        XCTAssertTrue(text.contains("5h  [##--------]  25.0% used"))
+        XCTAssertTrue(text.contains("resets 2023-11-14 22:13 UTC"))
+        XCTAssertTrue(text.contains("\n\nOpenCode Go\n  Error: Add the API key in OpenCode Go settings."))
+        XCTAssertFalse(text.contains("untrusted reset text"))
+
+        let json = try ManaCLIOutput.json(results)
         XCTAssertTrue(json.contains("\"provider\" : \"codex\""))
         XCTAssertTrue(json.contains("\"provider\" : \"openCodeGo\""))
         XCTAssertFalse(json.contains("accessToken"))

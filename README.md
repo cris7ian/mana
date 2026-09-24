@@ -28,7 +28,7 @@ ln -s "$HOME/Library/Developer/Xcode/DerivedData/Mana-"*/Build/Products/Debug/Ma
 mana --help
 ```
 
-The lowercase `mana` command fetches current usage once without opening the menu-bar app. Examples:
+The lowercase `mana` command fetches current usage once without opening the menu-bar app. Human-readable output presents provider-specific usage summaries, making usage levels, reset timing, and provider status easy to scan. Provider failures are shown without hiding results from other providers. Examples:
 
 ```sh
 mana                            # both providers, human-readable
@@ -40,7 +40,7 @@ mana --version
 your-key-command | mana --provider opencode-go --key-stdin --json
 ```
 
-`--json` returns a JSON array with provider names, windows, used percentages, and reset times. A provider failure produces an `error` field; other providers still return data. The command returns status 0 on success, 1 if any provider fails, or 2 for invalid arguments. By default it reads Mana's private credential files. `--key-stdin` accepts an OpenCode Go key from a pipe for one request without saving it. Do not put keys in shell arguments or history. Mana never prints credentials or raw provider responses. You can also run `Mana.app/Contents/MacOS/Mana --cli` directly. A direct app executable with no arguments starts the GUI.
+`--json` returns an array of provider records with usage windows, status, and available reset/receipt times; a provider failure produces an `error` field, while other providers still return data. The command returns status 0 on success, 1 if any provider fails, or 2 for invalid arguments. By default it reads Mana's private credential files. `--key-stdin` accepts an OpenCode Go key from a pipe for one request without saving it. Do not put keys in shell arguments or history. Mana never prints credentials or raw provider responses. You can also run `Mana.app/Contents/MacOS/Mana --cli` directly. A direct app executable with no arguments starts the GUI.
 
 ## Credentials
 

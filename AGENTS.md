@@ -13,6 +13,8 @@ xcodebuild -project Mana.xcodeproj -scheme Mana -configuration Debug \
   -destination 'platform=macOS,arch=arm64' test
 ```
 
+GitHub Actions runs the same test command on pushes and pull requests using a `macos-15` runner with Xcode 26.0.1.
+
 Use the shared `Mana` scheme. Source files are included through Xcode synchronized groups.
 
 ## Safety and privacy

@@ -82,29 +82,48 @@ enum ManaCLIOutput {
         return value
     }
 
+    private static func progressBar(for percent: Double) -> String {
+        let filled = Int(min(max(percent, 0), 100) / 10)
+        return "[" + String(repeating: "#", count: filled) + String(repeating: "-", count: 10 - filled) + "]"
+    }
+
+    private static func resetDescription(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd HH:mm 'UTC'"
+        return "resets \(formatter.string(from: date))"
+    }
+
     static func text(_ results: [ManaCLIResult]) -> String {
         results.map { result in
             switch result {
             case .failure(let provider, let error):
-                return "\(provider.displayName): \(error.localizedDescription)"
+                return "\(provider.displayName)\n  Error: \(error.localizedDescription)"
             case .success(let snapshot):
-                var lines = ["\(snapshot.provider.displayName):"]
-                if snapshot.isBlocked { lines.append("  Blocked: \(snapshot.blockedReason ?? "rate limit")") }
+                var lines = [snapshot.provider.displayName]
+                if snapshot.isBlocked {
+                    lines.append("  Status: blocked — \(safeStatus(snapshot.blockedReason ?? "rate limit"))")
+                }
                 if snapshot.displayWindows.isEmpty { lines.append("  No usage windows available") }
                 for window in snapshot.displayWindows {
-                    let value: String
+                    let label = safeStatus(window.label)
+                    let reset = window.resetAt.map { " · \(resetDescription($0))" } ?? ""
                     switch window.content {
-                    case .percent(let percent): value = String(format: "%.1f%% used", percent)
-                    case .unknownPercent: value = "usage unavailable"
-                    case .blocked(let reason): value = "blocked: \(safeStatus(reason))"
-                    case .missing: continue
+                    case .percent(let percent):
+                        let usage = String(format: "%.1f%% used", locale: Locale(identifier: "en_US_POSIX"), percent)
+                        lines.append("  \(label)  \(progressBar(for: percent))  \(usage)\(reset)")
+                    case .unknownPercent:
+                        lines.append("  \(label)  Usage unavailable\(reset)")
+                    case .blocked(let reason):
+                        lines.append("  \(label)  Blocked: \(safeStatus(reason))\(reset)")
+                    case .missing:
+                        continue
                     }
-                    let reset = window.resetAt.map { " · resets \(ISO8601DateFormatter().string(from: $0))" } ?? ""
-                    lines.append("  \(window.label): \(value)\(reset)")
                 }
                 return lines.joined(separator: "\n")
             }
-        }.joined(separator: "\n") + "\n"
+        }.joined(separator: "\n\n") + "\n"
     }
 
     static func json(_ results: [ManaCLIResult]) throws -> String {
