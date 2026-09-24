@@ -5,10 +5,16 @@ struct SettingsView: View {
     @EnvironmentObject private var coordinator: UsageRefreshCoordinator
     @EnvironmentObject private var settings: UsageSettings
     let transport: any HTTPTransport
+    let credentialLoader: ProviderCredentialLoader
+    let codexOAuth: CodexOAuthClient
 
     @State private var message: String?
     @State private var messageSucceeded = false
     @State private var testingProvider: ProviderID?
+    @State private var isSigningIn = false
+    @State private var isEditingOpenCodeKey = false
+    @State private var openCodeKeyInput = ""
+    @State private var openCodeKeyExists = false
 
     var body: some View {
         ScrollView {
@@ -26,20 +32,10 @@ struct SettingsView: View {
                 .padding(.bottom, 2)
 
                 settingsCard(title: "PROVIDERS", systemImage: "square.stack.3d.up") {
-                    VStack(spacing: 12) {
-                        providerRow(
-                            provider: .codex,
-                            detail: "Pi or OpenCode · OAuth token and account ID",
-                            symbol: "sparkles",
-                            tint: .blue
-                        ) { Task { await testCodex() } }
-                        Divider().padding(.leading, 42)
-                        providerRow(
-                            provider: .openCodeGo,
-                            detail: "OpenCode · Go API key",
-                            symbol: "bolt.circle",
-                            tint: .purple
-                        ) { Task { await testGo() } }
+                    VStack(alignment: .leading, spacing: 16) {
+                        codexCredentialsRow
+                        Divider()
+                        openCodeCredentialsRow
                     }
                 }
 
@@ -69,7 +65,7 @@ struct SettingsView: View {
                         .padding(.horizontal, 2)
                 }
 
-                Label("Credentials are read from local auth files and never copied. Usage stays in memory.", systemImage: "lock.shield")
+                Label("OpenAI sign-in and the OpenCode Go key are stored in private files. Usage stays in memory.", systemImage: "lock.shield")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -79,6 +75,7 @@ struct SettingsView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(width: 500, height: 560)
+        .onAppear { openCodeKeyExists = credentialLoader.hasOpenCodeGoAPIKey() }
     }
 
     private func settingsCard<Content: View>(
@@ -104,34 +101,174 @@ struct SettingsView: View {
         }
     }
 
-    private func providerRow(
-        provider: ProviderID,
-        detail: String,
-        symbol: String,
-        tint: Color,
-        action: @escaping () -> Void
-    ) -> some View {
+    private var codexCredentialsRow: some View {
         HStack(spacing: 10) {
-            Image(systemName: symbol)
-                .font(.system(size: 15, weight: .medium))
-                .foregroundStyle(tint)
+            Image(systemName: "sparkles")
+                .foregroundStyle(.blue)
                 .frame(width: 32, height: 32)
-                .background(tint.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
+                .background(Color.blue.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
             VStack(alignment: .leading, spacing: 3) {
-                Text(provider.displayName).font(.subheadline.weight(.medium))
-                Text(detail).font(.caption).foregroundStyle(.secondary)
+                Text("OpenAI Codex").font(.subheadline.weight(.medium))
+                Text(codexOAuth.isSignedIn ? "ChatGPT account connected" : "Sign in with your ChatGPT account")
+                    .font(.caption).foregroundStyle(.secondary)
             }
             Spacer(minLength: 8)
-            Button(action: action) {
-                if testingProvider == provider {
-                    ProgressView().controlSize(.small).frame(width: 48)
-                } else {
-                    Text("Test").frame(width: 48)
+            if codexOAuth.isSignedIn {
+                Button("Test") { Task { await testCodex() } }
+                    .buttonStyle(.bordered).controlSize(.small)
+                    .disabled(testingProvider != nil || isSigningIn)
+                Button("Sign out") { signOutCodex() }
+                    .buttonStyle(.bordered).controlSize(.small)
+                    .disabled(testingProvider != nil || isSigningIn)
+            } else {
+                Button {
+                    Task { await signInCodex() }
+                } label: {
+                    if isSigningIn { ProgressView().controlSize(.small) }
+                    else { Text("Sign in") }
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+                .disabled(isSigningIn || testingProvider != nil)
+            }
+        }
+    }
+
+    private var openCodeCredentialsRow: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                Image(systemName: "bolt.circle")
+                    .foregroundStyle(.purple)
+                    .frame(width: 32, height: 32)
+                    .background(Color.purple.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("OpenCode Go").font(.subheadline.weight(.medium))
+                    Text(openCodeKeyExists ? "API key saved in a private file" : "Paste your OpenCode Go API key")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+                Spacer(minLength: 8)
+                if openCodeKeyExists && !isEditingOpenCodeKey {
+                    Button("Test") { Task { await testGo() } }
+                        .buttonStyle(.bordered).controlSize(.small)
+                        .disabled(testingProvider != nil || isSigningIn)
                 }
             }
-            .buttonStyle(.bordered)
-            .controlSize(.small)
-            .disabled(testingProvider != nil)
+
+            if openCodeKeyExists && !isEditingOpenCodeKey {
+                HStack(spacing: 8) {
+                    Text(maskedOpenCodeKey)
+                        .font(.system(.caption, design: .monospaced))
+                        .foregroundStyle(.secondary)
+                        .textSelection(.disabled)
+                    Button {
+                        copyOpenCodeKey()
+                    } label: {
+                        Image(systemName: "doc.on.doc")
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Copy OpenCode Go API key")
+                    .help("Copy API key")
+                    Spacer()
+                    Button("Replace") { isEditingOpenCodeKey = true }
+                        .buttonStyle(.bordered).controlSize(.small)
+                    Button {
+                        removeOpenCodeKey()
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    .buttonStyle(.plain)
+                    .help("Remove API key")
+                }
+            } else {
+                HStack(spacing: 8) {
+                    SecureField("OpenCode Go API key", text: $openCodeKeyInput)
+                        .textFieldStyle(.roundedBorder)
+                    Button("Save") { saveOpenCodeKey() }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.small)
+                        .disabled(openCodeKeyInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    if openCodeKeyExists {
+                        Button("Cancel") {
+                            openCodeKeyInput = ""
+                            isEditingOpenCodeKey = false
+                        }
+                        .buttonStyle(.bordered).controlSize(.small)
+                    }
+                }
+            }
+        }
+    }
+
+    private var maskedOpenCodeKey: String {
+        guard let key = try? credentialLoader.openCodeGoAPIKey(), !key.isEmpty else { return "Key saved" }
+        return String(key.prefix(6)) + String(repeating: "•", count: 6)
+    }
+
+    private func signInCodex() async {
+        isSigningIn = true
+        defer { isSigningIn = false }
+        do {
+            try await codexOAuth.signIn()
+            message = "OpenAI sign-in succeeded."
+            messageSucceeded = true
+            await coordinator.refresh(.codex)
+        } catch {
+            let safeError = (error as? LocalizedError)?.errorDescription
+            message = safeError ?? "OpenAI sign-in failed. Check network access and try again."
+            messageSucceeded = false
+        }
+    }
+
+    private func signOutCodex() {
+        do {
+            try codexOAuth.signOut()
+            coordinator.clearSnapshot(for: .codex)
+            message = "OpenAI credentials removed from a private file."
+            messageSucceeded = true
+        } catch {
+            message = "Could not remove OpenAI credentials from a private file."
+            messageSucceeded = false
+        }
+    }
+
+    private func saveOpenCodeKey() {
+        do {
+            try credentialLoader.saveOpenCodeGoAPIKey(openCodeKeyInput)
+            openCodeKeyInput = ""
+            isEditingOpenCodeKey = false
+            openCodeKeyExists = true
+            message = "OpenCode Go API key saved in a private file."
+            messageSucceeded = true
+            Task { await coordinator.refresh(.openCodeGo) }
+        } catch {
+            message = "Could not save the OpenCode Go API key."
+            messageSucceeded = false
+        }
+    }
+
+    private func removeOpenCodeKey() {
+        do {
+            try credentialLoader.removeOpenCodeGoAPIKey()
+            openCodeKeyExists = false
+            coordinator.clearSnapshot(for: .openCodeGo)
+            message = "OpenCode Go API key removed from a private file."
+            messageSucceeded = true
+        } catch {
+            message = "Could not remove the OpenCode Go API key."
+            messageSucceeded = false
+        }
+    }
+
+    private func copyOpenCodeKey() {
+        do {
+            guard let key = try credentialLoader.openCodeGoAPIKey() else { return }
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString(key, forType: .string)
+            message = "OpenCode Go API key copied."
+            messageSucceeded = true
+        } catch {
+            message = "Could not read the OpenCode Go API key from a private file."
+            messageSucceeded = false
         }
     }
 
@@ -139,16 +276,17 @@ struct SettingsView: View {
         testingProvider = .codex
         defer { testingProvider = nil }
         do {
-            let credentials = try ProviderCredentialLoader().codexCredentials()
+            let credentials = try await codexOAuth.credentials()
             let data = try await CodexUsageClient(transport: transport).fetch(credentials: credentials)
             _ = try CodexUsageDecoder.decode(data)
             message = "Codex connection succeeded."
             messageSucceeded = true
+            await coordinator.refresh(.codex)
         } catch let error as ProviderError {
             message = error.localizedDescription
             messageSucceeded = false
         } catch {
-            message = "Codex connection failed. Check network access, then retry."
+            message = error.localizedDescription
             messageSucceeded = false
         }
     }
@@ -157,20 +295,22 @@ struct SettingsView: View {
         testingProvider = .openCodeGo
         defer { testingProvider = nil }
         do {
-            let credentials = try ProviderCredentialLoader().openCodeGoCredentials()
+            let credentials = try credentialLoader.openCodeGoCredentials()
             let data = try await OpenCodeGoUsageClient(transport: transport).fetch(credentials: credentials)
             _ = try OpenCodeGoUsageDecoder.decode(data)
             message = "OpenCode Go connection succeeded."
             messageSucceeded = true
+            await coordinator.refresh(.openCodeGo)
         } catch let error as ProviderError {
             message = error.localizedDescription
             messageSucceeded = false
         } catch {
-            message = "OpenCode Go connection failed. Check network access, then retry."
+            message = error.localizedDescription
             messageSucceeded = false
         }
     }
 }
+
 
 @MainActor
 final class SettingsWindowController: NSObject, NSWindowDelegate {
@@ -181,8 +321,14 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
         super.init()
     }
 
-    func show(coordinator: UsageRefreshCoordinator, settings: UsageSettings, transport: any HTTPTransport) {
-        let content = SettingsView(transport: transport)
+    func show(
+        coordinator: UsageRefreshCoordinator,
+        settings: UsageSettings,
+        transport: any HTTPTransport,
+        credentialLoader: ProviderCredentialLoader,
+        codexOAuth: CodexOAuthClient
+    ) {
+        let content = SettingsView(transport: transport, credentialLoader: credentialLoader, codexOAuth: codexOAuth)
             .environmentObject(coordinator)
             .environmentObject(settings)
         if let window {

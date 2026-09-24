@@ -137,15 +137,9 @@ struct UsagePopoverView: View {
             .background(color.opacity(0.1), in: Capsule())
     }
 
-    @ViewBuilder
     private func missingOrError(_ error: ProviderError) -> some View {
-        if case .missingCredential = error {
-            Text("Sign in with Pi or OpenCode. Mana reads their local auth files.")
-                .font(.caption).foregroundStyle(.secondary)
-        } else {
-            Text(error.localizedDescription)
-                .font(.caption).foregroundStyle(.secondary)
-        }
+        Text(error.localizedDescription)
+            .font(.caption).foregroundStyle(.secondary)
     }
 
     @ViewBuilder

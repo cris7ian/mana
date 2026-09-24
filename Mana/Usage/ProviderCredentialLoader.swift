@@ -1,48 +1,41 @@
 import Foundation
 
-/// Reads only the provider fields used by codexusage and gousage.
-/// Mana never writes these files or exposes their contents in UI or logs.
+/// Loads provider credentials from Mana's private local files.
 struct ProviderCredentialLoader: Sendable {
-    let homeDirectory: URL
+    static let openCodeGoAccount = "opencode-go-api-key"
+    private let store: any ProviderCredentialStoring
 
-    init(homeDirectory: URL = FileManager.default.homeDirectoryForCurrentUser) {
-        self.homeDirectory = homeDirectory
-    }
-
-    func codexCredentials() throws -> CodexCredentials {
-        let candidates: [(String, String)] = [
-            (".pi/agent/auth.json", "openai-codex"),
-            (".local/share/opencode/auth.json", "openai"),
-            (".config/opencode/auth.json", "openai")
-        ]
-        for (path, provider) in candidates {
-            let url = homeDirectory.appending(path: path)
-            guard let data = try? Data(contentsOf: url),
-                  let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                  let credentials = root[provider] as? [String: Any],
-                  let access = credentials["access"] as? String,
-                  let accountID = credentials["accountId"] as? String,
-                  !access.isEmpty, !accountID.isEmpty else { continue }
-            return CodexCredentials(accessToken: access, accountID: accountID)
-        }
-        throw ProviderError.missingCredential(provider: .codex, field: "personal ChatGPT Codex credentials in Pi or OpenCode auth files")
+    init(store: any ProviderCredentialStoring = FileCredentialStore()) {
+        self.store = store
     }
 
     func openCodeGoCredentials() throws -> OpenCodeGoCredentials {
-        let candidates = [".local/share/opencode/auth.json", ".config/opencode/auth.json"]
-        for path in candidates {
-            let url = homeDirectory.appending(path: path)
-            guard let data = try? Data(contentsOf: url),
-                  let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { continue }
-            let go = root["opencode-go"] as? [String: Any]
-            let generic = root["opencode"] as? [String: Any]
-            if let key = go?["key"] as? String, !key.isEmpty {
-                return OpenCodeGoCredentials(apiKey: key)
-            }
-            if let key = generic?["key"] as? String, !key.isEmpty {
-                return OpenCodeGoCredentials(apiKey: key)
-            }
+        guard let data = try store.read(Self.openCodeGoAccount),
+              let key = String(data: data, encoding: .utf8),
+              !key.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw ProviderError.missingCredential(provider: .openCodeGo, field: "API key")
         }
-        throw ProviderError.missingCredential(provider: .openCodeGo, field: "OpenCode Go API key in OpenCode auth files")
+        return OpenCodeGoCredentials(apiKey: key)
+    }
+
+    func saveOpenCodeGoAPIKey(_ key: String) throws {
+        let trimmed = key.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            throw ProviderError.missingCredential(provider: .openCodeGo, field: "API key")
+        }
+        try store.write(Data(trimmed.utf8), account: Self.openCodeGoAccount)
+    }
+
+    func hasOpenCodeGoAPIKey() -> Bool {
+        (try? store.read(Self.openCodeGoAccount)) != nil
+    }
+
+    func openCodeGoAPIKey() throws -> String? {
+        guard let data = try store.read(Self.openCodeGoAccount) else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+
+    func removeOpenCodeGoAPIKey() throws {
+        try store.remove(Self.openCodeGoAccount)
     }
 }

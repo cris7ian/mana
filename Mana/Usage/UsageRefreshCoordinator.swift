@@ -15,6 +15,7 @@ final class UsageRefreshCoordinator: ObservableObject {
     private var schedulerTask: Task<Void, Never>?
     private var wakeObserver: NSObjectProtocol?
     private var inFlight: Set<ProviderID> = []
+    private var stateGeneration: [ProviderID: Int] = [:]
 
     init(
         providers: [any UsageProviding],
@@ -69,10 +70,12 @@ final class UsageRefreshCoordinator: ObservableObject {
         state.requestState = .loading
         state.lastAttemptAt = now()
         states[providerID] = state
+        let generation = stateGeneration[providerID, default: 0]
         defer { inFlight.remove(providerID) }
 
         do {
             let snapshot = try await provider.fetchSnapshot()
+            guard stateGeneration[providerID, default: 0] == generation else { return }
             var updated = states[providerID] ?? ProviderUsageState(provider: providerID)
             updated.snapshot = snapshot
             updated.requestState = .loaded
@@ -89,6 +92,7 @@ final class UsageRefreshCoordinator: ObservableObject {
             } else {
                 typedError = .transport(ProviderError.transportDescription(for: error))
             }
+            guard stateGeneration[providerID, default: 0] == generation else { return }
             var updated = states[providerID] ?? ProviderUsageState(provider: providerID)
             updated.requestState = .failed(typedError)
             updated.lastError = typedError
@@ -97,6 +101,11 @@ final class UsageRefreshCoordinator: ObservableObject {
             }
             states[providerID] = updated
         }
+    }
+
+    func clearSnapshot(for providerID: ProviderID) {
+        stateGeneration[providerID, default: 0] += 1
+        states[providerID] = ProviderUsageState(provider: providerID)
     }
 
     func handleWake() async {

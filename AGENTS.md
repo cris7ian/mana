@@ -2,7 +2,7 @@
 
 ## Project
 
-Mana is a local macOS menu-bar app written in SwiftUI. It reads provider credentials from existing Pi and OpenCode auth files and calls usage endpoints directly.
+Mana is a local macOS menu-bar app with a CLI mode, written in SwiftUI. It stores provider credentials in private local files and calls usage endpoints directly.
 
 ## Build and test
 

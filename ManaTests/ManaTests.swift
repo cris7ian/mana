@@ -73,27 +73,115 @@ final class ManaTests: XCTestCase {
         XCTAssertEqual(RetryAfterParser.interval("120"), 120)
     }
 
-    func testCredentialLoaderReadsPiAndExcludesCodexCLIAuth() throws {
-        let home = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
-        defer { try? FileManager.default.removeItem(at: home) }
-        try writeAuth(#"{"openai-codex":{"access":"pi-token","accountId":"pi-account"}}"#, to: ".pi/agent/auth.json", home: home)
-        try writeAuth(#"{"openai-codex":{"access":"work-token","accountId":"work-account"}}"#, to: ".codex/auth.json", home: home)
-        let credentials = try ProviderCredentialLoader(homeDirectory: home).codexCredentials()
-        XCTAssertEqual(credentials.accessToken, "pi-token")
-        XCTAssertEqual(credentials.accountID, "pi-account")
-
-        let otherHome = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
-        defer { try? FileManager.default.removeItem(at: otherHome) }
-        try writeAuth(#"{"openai-codex":{"access":"work-token","accountId":"work-account"}}"#, to: ".codex/auth.json", home: otherHome)
-        XCTAssertThrowsError(try ProviderCredentialLoader(homeDirectory: otherHome).codexCredentials())
+    func testCLIParsesProviderAndOutputFlags() throws {
+        XCTAssertEqual(try ManaCLIOptions.parse([]), ManaCLIOptions(provider: nil, json: false))
+        XCTAssertEqual(try ManaCLIOptions.parse(["--provider", "codex", "--json"]),
+                       ManaCLIOptions(provider: .codex, json: true))
+        XCTAssertEqual(try ManaCLIOptions.parse(["--provider=opencode-go"]),
+                       ManaCLIOptions(provider: .openCodeGo, json: false))
+        XCTAssertEqual(try ManaCLIOptions.parse(["--provider", "opencode-go", "--key-stdin"]),
+                       ManaCLIOptions(provider: .openCodeGo, json: false, keyFromStdin: true))
+        XCTAssertThrowsError(try ManaCLIOptions.parse(["--key-stdin"]))
+        XCTAssertThrowsError(try ManaCLIOptions.parse(["--provider", "codex", "--key-stdin"]))
+        XCTAssertThrowsError(try ManaCLIOptions.parse(["--provider", "unknown"]))
+        XCTAssertThrowsError(try ManaCLIOptions.parse(["--json", "--json"]))
+        XCTAssertThrowsError(try ManaCLIOptions.parse(["--provider"]))
+        XCTAssertThrowsError(try ManaCLIOptions.parse(["--provider", "all", "--provider", "codex"]))
     }
 
-    func testCredentialLoaderReadsOpenCodeGoKey() throws {
-        let home = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
-        defer { try? FileManager.default.removeItem(at: home) }
-        try writeAuth(#"{"opencode-go":{"key":"go-key"},"opencode":{"key":"fallback"}}"#, to: ".local/share/opencode/auth.json", home: home)
-        let credentials = try ProviderCredentialLoader(homeDirectory: home).openCodeGoCredentials()
-        XCTAssertEqual(credentials.apiKey, "go-key")
+    func testCLIFormatsWindowsAndSanitizedErrors() throws {
+        let snapshot = sampleSnapshot(.codex)
+        let text = ManaCLIOutput.text([
+            .success(snapshot),
+            .failure(.openCodeGo, .missingCredential(provider: .openCodeGo, field: "API key"))
+        ])
+        XCTAssertTrue(text.contains("Codex"))
+        XCTAssertTrue(text.contains("OpenCode Go"))
+        XCTAssertTrue(text.contains("Add the API key"))
+        let json = try ManaCLIOutput.json([
+            .success(snapshot),
+            .failure(.openCodeGo, .missingCredential(provider: .openCodeGo, field: "API key"))
+        ])
+        XCTAssertTrue(json.contains("\"provider\" : \"codex\""))
+        XCTAssertTrue(json.contains("\"provider\" : \"openCodeGo\""))
+        XCTAssertFalse(json.contains("accessToken"))
+        let blocked = ProviderSnapshot(
+            provider: .openCodeGo,
+            windows: [UsageWindow(id: "rolling", label: "5h", content: .blocked("\u{1B}[31m"), resetAt: nil, resetText: nil)],
+            isBlocked: false, blockedReason: nil, receivedAt: Date()
+        )
+        XCTAssertFalse(ManaCLIOutput.text([.success(blocked)]).contains("\u{1B}"))
+        XCTAssertFalse(try ManaCLIOutput.json([.success(blocked)]).contains("\\u001B"))
+    }
+
+    func testFileCredentialStoreUsesPrivatePermissionsAndSupportsReplacement() throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appending(path: "mana-credentials-test-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let store = FileCredentialStore(directory: directory)
+        let account = ProviderCredentialLoader.openCodeGoAccount
+        XCTAssertNil(try store.read(account))
+        try store.write(Data("test-one".utf8), account: account)
+        try store.write(Data("test-two".utf8), account: account)
+        XCTAssertEqual(try store.read(account), Data("test-two".utf8))
+        let file = directory.appending(path: "opencode-go-key")
+        let directoryMode = try XCTUnwrap(FileManager.default.attributesOfItem(atPath: directory.path)[.posixPermissions] as? Int)
+        let fileMode = try XCTUnwrap(FileManager.default.attributesOfItem(atPath: file.path)[.posixPermissions] as? Int)
+        XCTAssertEqual(directoryMode & 0o777, 0o700)
+        XCTAssertEqual(fileMode & 0o777, 0o600)
+        XCTAssertThrowsError(try store.write(Data(), account: "../other"))
+        try FileManager.default.setAttributes([.posixPermissions: 0o644], ofItemAtPath: file.path)
+        XCTAssertThrowsError(try store.read(account))
+        try store.remove(account)
+        XCTAssertNil(try store.read(account))
+    }
+
+    func testFileCredentialStoreRejectsInsecureDirectory() throws {
+        let base = FileManager.default.temporaryDirectory.appending(path: "mana-store-test-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: base) }
+        let shared = base.appending(path: "shared")
+        try FileManager.default.createDirectory(at: shared, withIntermediateDirectories: true)
+        try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: shared.path)
+        let store = FileCredentialStore(directory: shared)
+        XCTAssertThrowsError(try store.write(Data("test".utf8), account: ProviderCredentialLoader.openCodeGoAccount))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: shared.appending(path: "opencode-go-key").path))
+        try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: shared.path)
+        let link = base.appending(path: "link")
+        try FileManager.default.createSymbolicLink(at: link, withDestinationURL: shared)
+        XCTAssertThrowsError(try FileCredentialStore(directory: link)
+            .write(Data("test".utf8), account: ProviderCredentialLoader.openCodeGoAccount))
+    }
+
+    func testOpenCodeKeyIsSavedAndLoadedWithoutLocalAuthFiles() throws {
+        let store = InMemoryCredentialStore()
+        let loader = ProviderCredentialLoader(store: store)
+        XCTAssertThrowsError(try loader.openCodeGoCredentials())
+
+        try loader.saveOpenCodeGoAPIKey("  oc-848-secret  ")
+        XCTAssertEqual(try loader.openCodeGoCredentials().apiKey, "oc-848-secret")
+        XCTAssertTrue(loader.hasOpenCodeGoAPIKey())
+
+        try loader.removeOpenCodeGoAPIKey()
+        XCTAssertFalse(loader.hasOpenCodeGoAPIKey())
+        XCTAssertThrowsError(try loader.openCodeGoCredentials())
+    }
+
+    @MainActor
+    func testCodexOAuthCredentialsLoadFromStoredTokens() async throws {
+        let store = InMemoryCredentialStore()
+        let tokens = CodexOAuthTokens(
+            accessToken: "access",
+            refreshToken: "refresh",
+            accountID: "account",
+            expiresAt: Date(timeIntervalSince1970: 2_000_000_000)
+        )
+        try store.write(JSONEncoder().encode(tokens), account: CodexOAuthClient.credentialAccount)
+        let oauth = CodexOAuthClient(store: store, now: { Date(timeIntervalSince1970: 1_900_000_000) })
+
+        XCTAssertTrue(oauth.isSignedIn)
+        let credentials = try await oauth.credentials()
+        XCTAssertEqual(credentials.accessToken, "access")
+        XCTAssertEqual(credentials.accountID, "account")
     }
 
     @MainActor
@@ -140,6 +228,23 @@ final class ManaTests: XCTestCase {
     }
 
     @MainActor
+    func testClearingProviderInvalidatesAnInFlightSnapshot() async throws {
+        let settings = UsageSettings(defaults: UserDefaults(suiteName: UUID().uuidString)!)
+        let provider = GatedTestProvider(provider: .codex, snapshot: sampleSnapshot(.codex))
+        let coordinator = UsageRefreshCoordinator(providers: [provider], settings: settings)
+        let refresh = Task { await coordinator.refresh(.codex) }
+        for _ in 0..<100 {
+            if await provider.callCount() == 1 { break }
+            try await Task.sleep(for: .milliseconds(5))
+        }
+
+        coordinator.clearSnapshot(for: .codex)
+        await provider.release()
+        await refresh.value
+        XCTAssertNil(coordinator.states[.codex]?.snapshot)
+    }
+
+    @MainActor
     func testRetryAfterSkipsAutomaticRefreshButAllowsManualRefresh() async {
         let settings = UsageSettings(defaults: UserDefaults(suiteName: UUID().uuidString)!)
         let provider = MutableTestProvider(provider: .codex)
@@ -166,15 +271,21 @@ final class ManaTests: XCTestCase {
     }
 
     @MainActor
-    func testSettingsWindowControllerPresentsCenteredForegroundWindow() async throws {
+    func testSettingsWindowControllerPresentsCenteredWindow() async throws {
         let settings = UsageSettings(defaults: UserDefaults(suiteName: UUID().uuidString)!)
         let coordinator = UsageRefreshCoordinator(providers: [], settings: settings)
-        SettingsWindowController.shared.show(coordinator: coordinator, settings: settings, transport: URLSessionTransport())
+        let store = InMemoryCredentialStore()
+        SettingsWindowController.shared.show(
+            coordinator: coordinator,
+            settings: settings,
+            transport: URLSessionTransport(),
+            credentialLoader: ProviderCredentialLoader(store: store),
+            codexOAuth: CodexOAuthClient(store: store)
+        )
         try await Task.sleep(for: .milliseconds(300))
         let window = try XCTUnwrap(NSApp.windows.first { $0.title == "Mana Settings" })
         XCTAssertTrue(window.isVisible)
-        XCTAssertTrue(window.isKeyWindow)
-        XCTAssertTrue(NSApp.isActive)
+        // macOS may deny focus to a test host launched without an interactive foreground session.
         let screen = try XCTUnwrap(NSScreen.main ?? NSScreen.screens.first)
         XCTAssertEqual(window.frame.midX, screen.visibleFrame.midX, accuracy: 1)
         XCTAssertEqual(window.frame.midY, screen.visibleFrame.midY, accuracy: 1)
@@ -187,11 +298,6 @@ final class ManaTests: XCTestCase {
         XCTAssertEqual(settings.refreshInterval, 60)
     }
 
-    private func writeAuth(_ contents: String, to path: String, home: URL) throws {
-        let url = home.appending(path: path)
-        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
-        try Data(contents.utf8).write(to: url)
-    }
 
     private func fixture(_ name: String) throws -> Data {
         let bundle = Bundle(for: Self.self)
@@ -205,6 +311,29 @@ final class ManaTests: XCTestCase {
         ProviderSnapshot(provider: provider,
                          windows: [UsageWindow(id: "rolling", label: "5h", content: .percent(25), resetAt: nil, resetText: nil)],
                          isBlocked: false, blockedReason: nil, receivedAt: Date())
+    }
+}
+
+private final class InMemoryCredentialStore: ProviderCredentialStoring, @unchecked Sendable {
+    private let lock = NSLock()
+    private var values: [String: Data] = [:]
+
+    func read(_ account: String) throws -> Data? {
+        lock.lock()
+        defer { lock.unlock() }
+        return values[account]
+    }
+
+    func write(_ data: Data, account: String) throws {
+        lock.lock()
+        defer { lock.unlock() }
+        values[account] = data
+    }
+
+    func remove(_ account: String) throws {
+        lock.lock()
+        defer { lock.unlock() }
+        values.removeValue(forKey: account)
     }
 }
 

@@ -1,25 +1,31 @@
 import SwiftUI
 
-@main
 @MainActor
 struct ManaApp: App {
     @StateObject private var settings: UsageSettings
     @StateObject private var coordinator: UsageRefreshCoordinator
     private let transport: URLSessionTransport
+    private let credentialLoader: ProviderCredentialLoader
+    private let codexOAuth: CodexOAuthClient
 
     init() {
         let settings = UsageSettings()
         let transport = URLSessionTransport()
+        let credentialStore = FileCredentialStore()
+        let credentialLoader = ProviderCredentialLoader(store: credentialStore)
+        let codexOAuth = CodexOAuthClient(store: credentialStore)
         let coordinator = UsageRefreshCoordinator(
             providers: [
-                CodexUsageProvider(transport: transport),
-                OpenCodeGoUsageProvider(transport: transport)
+                CodexUsageProvider(oauth: codexOAuth, transport: transport),
+                OpenCodeGoUsageProvider(loader: credentialLoader, transport: transport)
             ],
             settings: settings
         )
         _settings = StateObject(wrappedValue: settings)
         _coordinator = StateObject(wrappedValue: coordinator)
         self.transport = transport
+        self.credentialLoader = credentialLoader
+        self.codexOAuth = codexOAuth
         if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
             Task { @MainActor in coordinator.start() }
         }
@@ -28,7 +34,13 @@ struct ManaApp: App {
     var body: some Scene {
         MenuBarExtra {
             MenuBarView {
-                SettingsWindowController.shared.show(coordinator: coordinator, settings: settings, transport: transport)
+                SettingsWindowController.shared.show(
+                    coordinator: coordinator,
+                    settings: settings,
+                    transport: transport,
+                    credentialLoader: credentialLoader,
+                    codexOAuth: codexOAuth
+                )
             }
                 .environmentObject(coordinator)
                 .environmentObject(settings)
@@ -38,7 +50,7 @@ struct ManaApp: App {
         .menuBarExtraStyle(.window)
 
         Settings {
-            SettingsView(transport: transport)
+            SettingsView(transport: transport, credentialLoader: credentialLoader, codexOAuth: codexOAuth)
                 .environmentObject(coordinator)
                 .environmentObject(settings)
                 .frame(width: 480)
