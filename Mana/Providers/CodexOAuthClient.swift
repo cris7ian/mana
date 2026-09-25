@@ -204,13 +204,13 @@ private enum CodexOAuthError: Error, LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .browserUnavailable: return "Could not open the OpenAI sign-in page."
-        case .callbackTimedOut: return "OpenAI sign-in timed out. Try again."
-        case .invalidCallback, .invalidState: return "OpenAI sign-in could not be verified. Try again."
-        case .secureRandomFailed: return "Could not securely start OpenAI sign-in."
-        case .authorizationDenied: return "OpenAI sign-in was cancelled or denied."
-        case .missingAuthorizationCode, .invalidTokenResponse: return "OpenAI returned an invalid sign-in response."
-        case .tokenExchangeFailed: return "OpenAI sign-in failed while exchanging credentials."
+        case .browserUnavailable: return String(localized: "Could not open the OpenAI sign-in page.")
+        case .callbackTimedOut: return String(localized: "OpenAI sign-in timed out. Try again.")
+        case .invalidCallback, .invalidState: return String(localized: "OpenAI sign-in could not be verified. Try again.")
+        case .secureRandomFailed: return String(localized: "Could not securely start OpenAI sign-in.")
+        case .authorizationDenied: return String(localized: "OpenAI sign-in was cancelled or denied.")
+        case .missingAuthorizationCode, .invalidTokenResponse: return String(localized: "OpenAI returned an invalid sign-in response.")
+        case .tokenExchangeFailed: return String(localized: "OpenAI sign-in failed while exchanging credentials.")
         }
     }
 }
@@ -279,8 +279,8 @@ private final class LoopbackOAuthListener: @unchecked Sendable {
 
     private func respond(_ client: Int32, success: Bool) {
         let body = success
-            ? "<!doctype html><title>Mana</title><p>OpenAI sign-in complete. You can return to Mana.</p>"
-            : "<!doctype html><title>Mana</title><p>Sign-in failed. Return to Mana and try again.</p>"
+            ? "<!doctype html><title>Mana</title><p>\(String(localized: "OpenAI sign-in complete. You can return to Mana."))</p>"
+            : "<!doctype html><title>Mana</title><p>\(String(localized: "Sign-in failed. Return to Mana and try again."))</p>"
         let response = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nConnection: close\r\nContent-Length: \(body.utf8.count)\r\n\r\n\(body)"
         _ = response.withCString { send(client, $0, response.utf8.count, 0) }
     }

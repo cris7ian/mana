@@ -9,11 +9,16 @@ struct ManaApp: App {
     private let codexOAuth: CodexOAuthClient
 
     init() {
-        let settings = UsageSettings()
         let transport = URLSessionTransport()
         let credentialStore = FileCredentialStore()
         let credentialLoader = ProviderCredentialLoader(store: credentialStore)
         let codexOAuth = CodexOAuthClient(store: credentialStore)
+        let settings = UsageSettings(configuredProviders: Set(ProviderID.allCases.filter { provider in
+            switch provider {
+            case .codex: return codexOAuth.isSignedIn
+            case .openCodeGo: return credentialLoader.hasOpenCodeGoAPIKey()
+            }
+        }))
         let coordinator = UsageRefreshCoordinator(
             providers: [
                 CodexUsageProvider(oauth: codexOAuth, transport: transport),

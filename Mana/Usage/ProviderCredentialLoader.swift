@@ -27,7 +27,9 @@ struct ProviderCredentialLoader: Sendable {
     }
 
     func hasOpenCodeGoAPIKey() -> Bool {
-        (try? store.read(Self.openCodeGoAccount)) != nil
+        guard let data = try? store.read(Self.openCodeGoAccount),
+              let key = String(data: data, encoding: .utf8) else { return false }
+        return !key.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     func openCodeGoAPIKey() throws -> String? {

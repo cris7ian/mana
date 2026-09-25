@@ -16,29 +16,36 @@ enum ProviderError: Error, Equatable, Sendable, LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .missingCredential(let provider, let field): return "Add the \(field) in \(provider.displayName) settings."
-        case .authentication: return "Authentication failed. Update this provider's credentials in Settings."
+        case .missingCredential(let provider, let field):
+            let localizedField = field == "API key" ? String(localized: "API key") : String(localized: "OpenAI sign-in")
+            return String(format: String(localized: "Add the %@ in %@ settings."), localizedField, provider.displayName)
+        case .authentication: return String(localized: "Authentication failed. Update this provider's credentials in Settings.")
         case .rateLimited(let seconds):
-            if let seconds { return "Rate limited. Try again in \(Int(seconds.rounded(.up))) seconds." }
-            return "Rate limited. Mana will retry at the next refresh."
-        case .transport(let message): return "Network error: \(message). Check your connection and retry."
-        case .response(let code): return "The provider returned an unexpected response (HTTP \(code))."
-        case .malformedResponse: return "The provider returned data Mana could not read."
-        case .cancelled: return "The request was cancelled."
+            if let seconds {
+                return String(format: String(localized: "Rate limited. Try again in %d seconds."), Int(seconds.rounded(.up)))
+            }
+            return String(localized: "Rate limited. Mana will retry at the next refresh.")
+        case .transport(let message):
+            return String(format: String(localized: "Network error: %@. Check your connection and retry."), message)
+        case .response(let code):
+            return String(format: String(localized: "The provider returned an unexpected response (HTTP %d)."), code)
+        case .malformedResponse: return String(localized: "The provider returned data Mana could not read.")
+        case .cancelled: return String(localized: "The request was cancelled.")
         }
     }
 
     static func transportDescription(for error: Error) -> String {
         if let urlError = error as? URLError {
             switch urlError.code {
-            case .timedOut: return "request timed out"
-            case .notConnectedToInternet, .networkConnectionLost: return "network unavailable"
-            case .cannotFindHost, .cannotConnectToHost, .dnsLookupFailed: return "cannot connect to provider"
-            case .cancelled: return "request cancelled"
-            default: return "connection failed"
+            case .timedOut: return String(localized: "request timed out")
+            case .notConnectedToInternet, .networkConnectionLost: return String(localized: "network unavailable")
+            case .cannotFindHost, .cannotConnectToHost, .dnsLookupFailed:
+                return String(localized: "cannot connect to provider")
+            case .cancelled: return String(localized: "request cancelled")
+            default: return String(localized: "connection failed")
             }
         }
-        return "connection failed"
+        return String(localized: "connection failed")
     }
 }
 

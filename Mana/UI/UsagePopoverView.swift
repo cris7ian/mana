@@ -3,6 +3,7 @@ import SwiftUI
 
 struct UsagePopoverView: View {
     @EnvironmentObject private var coordinator: UsageRefreshCoordinator
+    @EnvironmentObject private var settings: UsageSettings
     @Environment(\.dismiss) private var dismiss
     let openSettings: () -> Void
 
@@ -18,40 +19,69 @@ struct UsagePopoverView: View {
                     .foregroundStyle(.tint)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Mana").font(.headline)
-                    Text(lastUpdated.map { "Updated \($0.formatted(date: .omitted, time: .shortened))" } ?? "Live usage")
+                    if let lastUpdated {
+                        HStack(spacing: 3) {
+                            Text("Updated")
+                            Text(lastUpdated, format: .dateTime.hour().minute())
+                        }
                         .font(.caption2).foregroundStyle(.secondary)
+                    } else {
+                        Text("Live usage")
+                            .font(.caption2).foregroundStyle(.secondary)
+                    }
                 }
                 Spacer()
-                Button {
-                    Task { await coordinator.refreshAll(trigger: .manual) }
-                } label: {
-                    Image(systemName: "arrow.clockwise")
-                        .font(.system(size: 13, weight: .medium))
-                        .frame(width: 28, height: 28)
-                        .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 7))
+                if !settings.visibleProviders.isEmpty {
+                    Button {
+                        Task { await coordinator.refreshAll(trigger: .manual) }
+                    } label: {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.system(size: 13, weight: .medium))
+                            .frame(width: 28, height: 28)
+                            .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 7))
+                    }
+                    .buttonStyle(.plain)
+                    .help("Refresh usage")
+                    .disabled(coordinator.states.values.contains { $0.requestState == .loading })
                 }
-                .buttonStyle(.plain)
-                .help("Refresh usage")
-                .disabled(coordinator.states.values.contains { $0.requestState == .loading })
             }
             .padding(.bottom, 14)
 
-            ForEach(Array(ProviderID.allCases.enumerated()), id: \.element.id) { index, provider in
-                providerSection(provider)
-                if index < ProviderID.allCases.count - 1 {
-                    Divider().padding(.vertical, 12)
+            if settings.visibleProviders.isEmpty {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("No providers configured")
+                        .font(.subheadline.weight(.semibold))
+                    Text("Connect a provider to see usage here.")
+                        .font(.caption).foregroundStyle(.secondary)
+                    Button {
+                        dismiss()
+                        openSettings()
+                    } label: {
+                        Label("Open Settings", systemImage: "gearshape")
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                ForEach(Array(settings.visibleProviders.enumerated()), id: \.element.id) { index, provider in
+                    providerSection(provider)
+                    if index < settings.visibleProviders.count - 1 {
+                        Divider().padding(.vertical, 12)
+                    }
                 }
             }
 
             Divider().padding(.top, 12).padding(.bottom, 8)
             HStack(spacing: 14) {
-                Button {
-                    dismiss()
-                    openSettings()
-                } label: {
-                    Label("Settings", systemImage: "gearshape")
+                if !settings.visibleProviders.isEmpty {
+                    Button {
+                        dismiss()
+                        openSettings()
+                    } label: {
+                        Label("Settings", systemImage: "gearshape")
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
                 Spacer()
                 Button("Quit") { NSApp.terminate(nil) }
                     .buttonStyle(.plain)
@@ -117,18 +147,18 @@ struct UsagePopoverView: View {
     @ViewBuilder
     private func providerStatus(_ state: ProviderUsageState) -> some View {
         if state.isStale {
-            statusPill("STALE", color: .orange)
+            statusPill("Stale", color: .orange)
         } else if state.requestState == .loading {
             ProgressView().controlSize(.mini)
         } else if state.snapshot != nil {
-            statusPill("CURRENT", color: .green)
+            statusPill("Current", color: .green)
         } else if state.lastError != nil {
-            statusPill("OFFLINE", color: .secondary)
+            statusPill("Offline", color: .secondary)
         }
     }
 
     private func statusPill(_ title: String, color: Color) -> some View {
-        Text(title)
+        Text(LocalizedStringKey(title))
             .font(.system(size: 9, weight: .bold, design: .rounded))
             .tracking(0.4)
             .foregroundStyle(color)
@@ -167,10 +197,17 @@ struct UsagePopoverView: View {
                     .tint(percent >= 80 ? .red : (percent >= 50 ? .orange : .green))
             }
             if let resetAt = window.resetAt {
-                Label("Resets \(resetAt.formatted(date: .abbreviated, time: .shortened))", systemImage: "clock")
-                    .font(.caption2).foregroundStyle(.secondary)
+                HStack(spacing: 4) {
+                    Label("Resets", systemImage: "clock")
+                    Text(resetAt, format: .dateTime.month(.abbreviated).day().hour().minute())
+                }
+                .font(.caption2).foregroundStyle(.secondary)
             } else if let resetText = window.resetText {
-                Text("Reset: \(resetText)").font(.caption2).foregroundStyle(.secondary)
+                HStack(spacing: 4) {
+                    Text("Reset:")
+                    Text(resetText)
+                }
+                .font(.caption2).foregroundStyle(.secondary)
             }
         }
     }

@@ -65,6 +65,6 @@ enum CredentialStoreError: Error, LocalizedError {
     case invalidAccount, insecurePermissions
 
     var errorDescription: String? {
-        "Could not access Mana credentials. Check the credentials directory permissions."
+        String(localized: "Could not access Mana credentials. Check the credentials directory permissions.")
     }
 }

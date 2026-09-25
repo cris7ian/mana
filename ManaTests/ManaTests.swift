@@ -218,6 +218,11 @@ final class ManaTests: XCTestCase {
         let store = InMemoryCredentialStore()
         let loader = ProviderCredentialLoader(store: store)
         XCTAssertThrowsError(try loader.openCodeGoCredentials())
+        XCTAssertFalse(loader.hasOpenCodeGoAPIKey())
+
+        try store.write(Data(" \n ".utf8), account: ProviderCredentialLoader.openCodeGoAccount)
+        XCTAssertFalse(loader.hasOpenCodeGoAPIKey())
+        XCTAssertThrowsError(try loader.openCodeGoCredentials())
 
         try loader.saveOpenCodeGoAPIKey("  oc-848-secret  ")
         XCTAssertEqual(try loader.openCodeGoCredentials().apiKey, "oc-848-secret")
@@ -356,6 +361,25 @@ final class ManaTests: XCTestCase {
     func testSettingsDefaultRefreshIntervalIsSixtySeconds() {
         let settings = UsageSettings(defaults: UserDefaults(suiteName: UUID().uuidString)!)
         XCTAssertEqual(settings.refreshInterval, 60)
+    }
+
+    @MainActor
+    func testConfiguredProvidersAreTheOnlyProvidersVisibleInMenu() {
+        let settings = UsageSettings(
+            defaults: UserDefaults(suiteName: UUID().uuidString)!,
+            configuredProviders: [.codex, .openCodeGo]
+        )
+
+        XCTAssertEqual(settings.visibleProviders, [.codex, .openCodeGo])
+
+        settings.setProviderConfigured(.codex, isConfigured: false)
+        XCTAssertEqual(settings.visibleProviders, [.openCodeGo])
+
+        settings.setProviderConfigured(.openCodeGo, isConfigured: false)
+        XCTAssertTrue(settings.visibleProviders.isEmpty)
+
+        settings.setProviderConfigured(.codex, isConfigured: true)
+        XCTAssertEqual(settings.visibleProviders, [.codex])
     }
 
 

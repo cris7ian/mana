@@ -84,7 +84,7 @@ struct SettingsView: View {
         @ViewBuilder content: () -> Content
     ) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label(title, systemImage: systemImage)
+            Label(LocalizedStringKey(title), systemImage: systemImage)
                 .font(.caption.weight(.semibold))
                 .tracking(0.55)
                 .foregroundStyle(.secondary)
@@ -109,8 +109,13 @@ struct SettingsView: View {
                 .background(Color.blue.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
             VStack(alignment: .leading, spacing: 3) {
                 Text("OpenAI Codex").font(.subheadline.weight(.medium))
-                Text(codexOAuth.isSignedIn ? "ChatGPT account connected" : "Sign in with your ChatGPT account")
-                    .font(.caption).foregroundStyle(.secondary)
+                if codexOAuth.isSignedIn {
+                    Text("ChatGPT account connected")
+                        .font(.caption).foregroundStyle(.secondary)
+                } else {
+                    Text("Sign in with your ChatGPT account")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
             }
             Spacer(minLength: 8)
             if codexOAuth.isSignedIn {
@@ -143,8 +148,13 @@ struct SettingsView: View {
                     .background(Color.purple.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
                 VStack(alignment: .leading, spacing: 3) {
                     Text("OpenCode Go").font(.subheadline.weight(.medium))
-                    Text(openCodeKeyExists ? "API key saved in a private file" : "Paste your OpenCode Go API key")
-                        .font(.caption).foregroundStyle(.secondary)
+                    if openCodeKeyExists {
+                        Text("API key saved in a private file")
+                            .font(.caption).foregroundStyle(.secondary)
+                    } else {
+                        Text("Paste your OpenCode Go API key")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
                 }
                 Spacer(minLength: 8)
                 if openCodeKeyExists && !isEditingOpenCodeKey {
@@ -209,12 +219,13 @@ struct SettingsView: View {
         defer { isSigningIn = false }
         do {
             try await codexOAuth.signIn()
-            message = "OpenAI sign-in succeeded."
+            settings.setProviderConfigured(.codex, isConfigured: true)
+            message = String(localized: "OpenAI sign-in succeeded.")
             messageSucceeded = true
             await coordinator.refresh(.codex)
         } catch {
             let safeError = (error as? LocalizedError)?.errorDescription
-            message = safeError ?? "OpenAI sign-in failed. Check network access and try again."
+            message = safeError ?? String(localized: "OpenAI sign-in failed. Check network access and try again.")
             messageSucceeded = false
         }
     }
@@ -222,11 +233,12 @@ struct SettingsView: View {
     private func signOutCodex() {
         do {
             try codexOAuth.signOut()
+            settings.setProviderConfigured(.codex, isConfigured: false)
             coordinator.clearSnapshot(for: .codex)
-            message = "OpenAI credentials removed from a private file."
+            message = String(localized: "OpenAI credentials removed from a private file.")
             messageSucceeded = true
         } catch {
-            message = "Could not remove OpenAI credentials from a private file."
+            message = String(localized: "Could not remove OpenAI credentials from a private file.")
             messageSucceeded = false
         }
     }
@@ -234,14 +246,15 @@ struct SettingsView: View {
     private func saveOpenCodeKey() {
         do {
             try credentialLoader.saveOpenCodeGoAPIKey(openCodeKeyInput)
+            settings.setProviderConfigured(.openCodeGo, isConfigured: true)
             openCodeKeyInput = ""
             isEditingOpenCodeKey = false
             openCodeKeyExists = true
-            message = "OpenCode Go API key saved in a private file."
+            message = String(localized: "OpenCode Go API key saved in a private file.")
             messageSucceeded = true
             Task { await coordinator.refresh(.openCodeGo) }
         } catch {
-            message = "Could not save the OpenCode Go API key."
+            message = String(localized: "Could not save the OpenCode Go API key.")
             messageSucceeded = false
         }
     }
@@ -249,12 +262,13 @@ struct SettingsView: View {
     private func removeOpenCodeKey() {
         do {
             try credentialLoader.removeOpenCodeGoAPIKey()
+            settings.setProviderConfigured(.openCodeGo, isConfigured: false)
             openCodeKeyExists = false
             coordinator.clearSnapshot(for: .openCodeGo)
-            message = "OpenCode Go API key removed from a private file."
+            message = String(localized: "OpenCode Go API key removed from a private file.")
             messageSucceeded = true
         } catch {
-            message = "Could not remove the OpenCode Go API key."
+            message = String(localized: "Could not remove the OpenCode Go API key.")
             messageSucceeded = false
         }
     }
@@ -264,10 +278,10 @@ struct SettingsView: View {
             guard let key = try credentialLoader.openCodeGoAPIKey() else { return }
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(key, forType: .string)
-            message = "OpenCode Go API key copied."
+            message = String(localized: "OpenCode Go API key copied.")
             messageSucceeded = true
         } catch {
-            message = "Could not read the OpenCode Go API key from a private file."
+            message = String(localized: "Could not read the OpenCode Go API key from a private file.")
             messageSucceeded = false
         }
     }
@@ -279,7 +293,7 @@ struct SettingsView: View {
             let credentials = try await codexOAuth.credentials()
             let data = try await CodexUsageClient(transport: transport).fetch(credentials: credentials)
             _ = try CodexUsageDecoder.decode(data)
-            message = "Codex connection succeeded."
+            message = String(localized: "Codex connection succeeded.")
             messageSucceeded = true
             await coordinator.refresh(.codex)
         } catch let error as ProviderError {
@@ -298,7 +312,7 @@ struct SettingsView: View {
             let credentials = try credentialLoader.openCodeGoCredentials()
             let data = try await OpenCodeGoUsageClient(transport: transport).fetch(credentials: credentials)
             _ = try OpenCodeGoUsageDecoder.decode(data)
-            message = "OpenCode Go connection succeeded."
+            message = String(localized: "OpenCode Go connection succeeded.")
             messageSucceeded = true
             await coordinator.refresh(.openCodeGo)
         } catch let error as ProviderError {
@@ -340,7 +354,7 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
                 backing: .buffered,
                 defer: false
             )
-            newWindow.title = "Mana Settings"
+            newWindow.title = String(localized: "Mana Settings")
             newWindow.contentViewController = NSHostingController(rootView: content)
             newWindow.isReleasedWhenClosed = false
             newWindow.collectionBehavior = [.moveToActiveSpace]
