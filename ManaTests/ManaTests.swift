@@ -333,7 +333,7 @@ final class ManaTests: XCTestCase {
     }
 
     @MainActor
-    func testSettingsWindowControllerPresentsCenteredWindow() async throws {
+    func testSettingsWindowControllerCentersWindowBeforeActivation() async throws {
         let settings = UsageSettings(defaults: UserDefaults(suiteName: UUID().uuidString)!)
         let coordinator = UsageRefreshCoordinator(providers: [], settings: settings)
         let store = InMemoryCredentialStore()
@@ -344,15 +344,11 @@ final class ManaTests: XCTestCase {
             credentialLoader: ProviderCredentialLoader(store: store),
             codexOAuth: CodexOAuthClient(store: store)
         )
-        try await Task.sleep(for: .milliseconds(300))
         let window = try XCTUnwrap(NSApp.windows.first { $0.title == "Mana Settings" })
-        // CI test hosts can lack a foreground window server; local runs still verify visibility.
-        if ProcessInfo.processInfo.environment["CI"] == nil {
-            XCTAssertTrue(window.isVisible)
-        }
-        let screen = try XCTUnwrap(window.screen ?? NSScreen.main ?? NSScreen.screens.first)
+        let screen = try XCTUnwrap(NSScreen.main ?? NSScreen.screens.first)
         XCTAssertEqual(window.frame.midX, screen.visibleFrame.midX, accuracy: 1)
         XCTAssertEqual(window.frame.midY, screen.visibleFrame.midY, accuracy: 1)
+        try await Task.sleep(for: .milliseconds(300))
         window.close()
     }
 

@@ -347,18 +347,19 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
             newWindow.delegate = self
             self.window = newWindow
         }
-        Task { @MainActor [weak self] in
+        guard let window else { return }
+        window.setContentSize(NSSize(width: 540, height: 600))
+        if let screen = NSScreen.main ?? NSScreen.screens.first {
+            let visibleFrame = screen.visibleFrame
+            window.setFrameOrigin(NSPoint(
+                x: visibleFrame.midX - window.frame.width / 2,
+                y: visibleFrame.midY - window.frame.height / 2
+            ))
+        }
+        Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(120))
-            guard let self, let window = self.window else { return }
             NSApp.setActivationPolicy(.regular)
             NSApp.activate(ignoringOtherApps: true)
-            if let screen = NSScreen.main ?? NSScreen.screens.first {
-                let visibleFrame = screen.visibleFrame
-                window.setFrameOrigin(NSPoint(
-                    x: visibleFrame.midX - window.frame.width / 2,
-                    y: visibleFrame.midY - window.frame.height / 2
-                ))
-            }
             window.orderFrontRegardless()
             window.makeKeyAndOrderFront(nil)
         }
