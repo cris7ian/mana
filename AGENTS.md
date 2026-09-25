@@ -1,33 +1,25 @@
-# Mana repository guidance
+# Mana agent guidance
 
-## Project
+## Verify
 
-Mana is a local macOS menu-bar app with a CLI mode, written in SwiftUI. It stores provider credentials in private local files and calls usage endpoints directly.
-
-## Build and test
-
-Run the full test suite before committing:
+Run the full suite before committing. CI uses this command on macOS 15 with Xcode 26.0.1:
 
 ```sh
 xcodebuild -project Mana.xcodeproj -scheme Mana -configuration Debug \
   -destination 'platform=macOS,arch=arm64' test
 ```
 
-GitHub Actions runs the same test command on pushes and pull requests using a `macos-15` runner with Xcode 26.0.1.
+Source files use Xcode synchronized groups; new Swift files do not need project-file entries.
 
-Use the shared `Mana` scheme. Source files are included through Xcode synchronized groups.
+## Release
 
-## Safety and privacy
+A plain Release build is ad-hoc signed. Never publish it. Use `scripts/release.sh` with `APPLE_TEAM_ID` and `NOTARY_PROFILE` to sign, notarize, staple, and verify the DMG. It requires a Developer ID Application certificate and a local `notarytool` Keychain profile. Keep signing credentials out of git.
 
+Use the `mana-release` skill for versioned installer and public-release work. Keep the workflow there; keep release-signing and credential safety constraints here.
+
+## Safety
+
+- Never read `~/.codex/auth.json` or modify provider auth files.
 - Never print, log, fixture, or commit credential values.
-- Read only the provider fields Mana needs. Never write to provider auth files.
-- Do not read `~/.codex/auth.json`.
-- Keep response bodies and usage snapshots out of persistent storage.
-- Keep error messages sanitized. Do not include HTTP response bodies.
-
-## Implementation
-
-- Preserve independent provider refresh and failure handling.
-- Keep provider request and decoding behavior covered by deterministic tests.
-- Keep UI copy explicit about provider-specific windows and credential types.
-- Avoid adding dependencies or storage layers unless the requirement needs them.
+- Keep usage snapshots and provider response bodies out of persistent storage and error messages.
+- Preserve independent provider refresh and failure handling; test request and decoding changes deterministically.
