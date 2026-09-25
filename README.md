@@ -1,6 +1,6 @@
 # Mana
 
-Mana is a local macOS menu-bar app for Codex and OpenCode Go usage. Add a ChatGPT account through OpenAI sign-in and paste an OpenCode Go API key in Settings; Mana works independently of locally installed provider CLIs.
+Mana is a local macOS menu-bar app for Codex and OpenCode Go usage. Add a ChatGPT account through OpenAI sign-in and paste an OpenCode Go API key in Settings; Mana works independently of locally installed provider CLIs and that's why I build it. I use Codex locally with my work subscription but my personal stuff is wired through my personal OpenAI account and every other provider wants to read directly from Codex auth.
 
 <img width="373" height="430" alt="image" src="https://github.com/user-attachments/assets/ecbbbf4c-b158-44d3-b399-ff73145634e9" />
 
@@ -25,7 +25,7 @@ xcodebuild -project Mana.xcodeproj -scheme Mana -configuration Debug \
   -destination 'platform=macOS,arch=arm64' test
 ```
 
-Mana runs in the menu bar when launched as an app. Select the `dial.medium` icon to open the usage popover. Use Settings to configure credentials, test providers, or change the refresh interval. The default interval is 60 seconds.
+Mana runs in the menu bar when launched as an app. Select the icon to open the usage popover. Use Settings to configure credentials, test providers, or change the refresh interval. The default interval is 60 seconds.
 
 ## Command line
 
