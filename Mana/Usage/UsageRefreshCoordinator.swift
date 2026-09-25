@@ -38,15 +38,6 @@ final class UsageRefreshCoordinator: ObservableObject {
         scheduleLoop()
     }
 
-    func stop() {
-        schedulerTask?.cancel()
-        schedulerTask = nil
-        if let wakeObserver {
-            NSWorkspace.shared.notificationCenter.removeObserver(wakeObserver)
-            self.wakeObserver = nil
-        }
-    }
-
     func reschedule() {
         guard schedulerTask != nil else { return }
         schedulerTask?.cancel()

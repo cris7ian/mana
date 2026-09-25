@@ -1,4 +1,5 @@
 import AppKit
+import Darwin
 import XCTest
 @testable import Mana
 
@@ -71,6 +72,39 @@ final class ManaTests: XCTestCase {
         let error = ProviderError.response(statusCode: 500)
         XCTAssertFalse(error.localizedDescription.contains("secret"))
         XCTAssertEqual(RetryAfterParser.interval("120"), 120)
+    }
+
+    func testRetryAfterRejectsNonFiniteAndUnrepresentableIntervals() {
+        XCTAssertNil(RetryAfterParser.interval("inf"))
+        XCTAssertNil(RetryAfterParser.interval("nan"))
+        XCTAssertNil(RetryAfterParser.interval("1e25"))
+        XCTAssertNotNil(ProviderError.rateLimited(retryAfter: .infinity).errorDescription)
+        XCTAssertNotNil(ProviderError.rateLimited(retryAfter: 1e25).errorDescription)
+    }
+
+    func testOAuthListenerIgnoresInvalidCallbackBeforeValidOne() async throws {
+        let listener = try LoopbackOAuthListener(ports: [0])
+        defer { listener.close() }
+        let waiting = Task.detached { try listener.waitForCallback(expectedState: "expected", timeout: 2) }
+        try sendCallback(to: listener.redirectURI, path: "/other?state=expected&code=bad")
+        try sendCallback(to: listener.redirectURI, path: "/auth/callback?state=wrong&code=bad")
+        try sendCallback(to: listener.redirectURI, path: "/auth/callback?state=expected&code=good")
+        let callback = try await waiting.value
+        XCTAssertEqual(callback.code, "good")
+    }
+
+    func testOAuthListenerTimesOutWhenPeerConnectsWithoutSending() async throws {
+        let listener = try LoopbackOAuthListener(ports: [0])
+        defer { listener.close() }
+        let waiting = Task.detached { try listener.waitForCallback(expectedState: "expected", timeout: 0.2) }
+        let client = try connectToListener(listener.redirectURI)
+        defer { Darwin.close(client) }
+        do {
+            _ = try await waiting.value
+            XCTFail("Expected callback timeout")
+        } catch CodexOAuthError.callbackTimedOut {
+            // The idle peer must not keep sign-in blocked.
+        }
     }
 
     func testCLIParsesProviderAndOutputFlags() throws {
@@ -382,6 +416,32 @@ final class ManaTests: XCTestCase {
         XCTAssertEqual(settings.visibleProviders, [.codex])
     }
 
+    private func connectToListener(_ url: URL) throws -> Int32 {
+        let fd = socket(AF_INET, SOCK_STREAM, 0)
+        guard fd >= 0, let port = url.port else { throw CodexOAuthError.invalidCallback }
+        var address = sockaddr_in()
+        address.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
+        address.sin_family = sa_family_t(AF_INET)
+        address.sin_port = in_port_t(port).bigEndian
+        address.sin_addr = in_addr(s_addr: inet_addr("127.0.0.1"))
+        let status = withUnsafePointer(to: &address) {
+            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+                connect(fd, $0, socklen_t(MemoryLayout<sockaddr_in>.size))
+            }
+        }
+        guard status == 0 else {
+            Darwin.close(fd)
+            throw CodexOAuthError.invalidCallback
+        }
+        return fd
+    }
+
+    private func sendCallback(to url: URL, path: String) throws {
+        let fd = try connectToListener(url)
+        defer { Darwin.close(fd) }
+        let request = "GET \(path) HTTP/1.1\r\nHost: localhost\r\n\r\n"
+        _ = request.withCString { send(fd, $0, request.utf8.count, 0) }
+    }
 
     private func fixture(_ name: String) throws -> Data {
         let bundle = Bundle(for: Self.self)

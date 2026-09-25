@@ -9,11 +9,6 @@ enum ProviderError: Error, Equatable, Sendable, LocalizedError {
     case malformedResponse
     case cancelled
 
-    var retryAfter: TimeInterval? {
-        if case .rateLimited(let interval) = self { return interval }
-        return nil
-    }
-
     var errorDescription: String? {
         switch self {
         case .missingCredential(let provider, let field):
@@ -21,7 +16,7 @@ enum ProviderError: Error, Equatable, Sendable, LocalizedError {
             return String(format: String(localized: "Add the %@ in %@ settings."), localizedField, provider.displayName)
         case .authentication: return String(localized: "Authentication failed. Update this provider's credentials in Settings.")
         case .rateLimited(let seconds):
-            if let seconds {
+            if let seconds, seconds.isFinite, seconds >= 0, seconds < Double(Int.max) {
                 return String(format: String(localized: "Rate limited. Try again in %d seconds."), Int(seconds.rounded(.up)))
             }
             return String(localized: "Rate limited. Mana will retry at the next refresh.")
@@ -52,7 +47,8 @@ enum ProviderError: Error, Equatable, Sendable, LocalizedError {
 enum RetryAfterParser {
     static func interval(_ value: String?, now: Date = Date()) -> TimeInterval? {
         guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty else { return nil }
-        if let seconds = TimeInterval(value), seconds >= 0 { return seconds }
+        if let seconds = TimeInterval(value), seconds.isFinite, seconds >= 0,
+           seconds < Double(Int.max) { return seconds }
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)

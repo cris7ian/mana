@@ -29,6 +29,7 @@ final class CodexOAuthClient {
     var isSignedIn: Bool { (try? loadTokens()) != nil }
 
     func signIn() async throws {
+        let generation = credentialGeneration
         let verifier = try Self.randomURLSafeString(byteCount: 32)
         let challenge = Self.base64URL(Data(SHA256.hash(data: Data(verifier.utf8))))
         let state = try Self.randomURLSafeString(byteCount: 32)
@@ -53,13 +54,13 @@ final class CodexOAuthClient {
         }
 
         let callback = try await Task.detached(priority: .userInitiated) {
-            try listener.waitForCallback()
+            try listener.waitForCallback(expectedState: state)
         }.value
-        guard callback.state == state else { throw CodexOAuthError.invalidState }
         if let error = callback.error, !error.isEmpty { throw CodexOAuthError.authorizationDenied }
         guard let code = callback.code, !code.isEmpty else { throw CodexOAuthError.missingAuthorizationCode }
 
         let tokens = try await exchangeCode(code, verifier: verifier, redirectURI: listener.redirectURI)
+        guard generation == credentialGeneration else { throw ProviderError.cancelled }
         try save(tokens)
     }
 
@@ -89,6 +90,7 @@ final class CodexOAuthClient {
 
     private func save(_ tokens: CodexOAuthTokens) throws {
         try store.write(JSONEncoder().encode(tokens), account: Self.credentialAccount)
+        credentialGeneration += 1
     }
 
     private func exchangeCode(_ code: String, verifier: String, redirectURI: URL) async throws -> CodexOAuthTokens {
@@ -192,21 +194,20 @@ private struct OAuthTokenResponse: Decodable {
     }
 }
 
-private struct OAuthCallback: Sendable {
+struct OAuthCallback: Sendable {
     let code: String?
-    let state: String?
     let error: String?
 }
 
-private enum CodexOAuthError: Error, LocalizedError {
-    case browserUnavailable, callbackTimedOut, invalidCallback, invalidState, secureRandomFailed
+enum CodexOAuthError: Error, LocalizedError {
+    case browserUnavailable, callbackTimedOut, invalidCallback, secureRandomFailed
     case authorizationDenied, missingAuthorizationCode, invalidTokenResponse, tokenExchangeFailed
 
     var errorDescription: String? {
         switch self {
         case .browserUnavailable: return String(localized: "Could not open the OpenAI sign-in page.")
         case .callbackTimedOut: return String(localized: "OpenAI sign-in timed out. Try again.")
-        case .invalidCallback, .invalidState: return String(localized: "OpenAI sign-in could not be verified. Try again.")
+        case .invalidCallback: return String(localized: "OpenAI sign-in could not be verified. Try again.")
         case .secureRandomFailed: return String(localized: "Could not securely start OpenAI sign-in.")
         case .authorizationDenied: return String(localized: "OpenAI sign-in was cancelled or denied.")
         case .missingAuthorizationCode, .invalidTokenResponse: return String(localized: "OpenAI returned an invalid sign-in response.")
@@ -215,13 +216,13 @@ private enum CodexOAuthError: Error, LocalizedError {
     }
 }
 
-private final class LoopbackOAuthListener: @unchecked Sendable {
+final class LoopbackOAuthListener: @unchecked Sendable {
     let redirectURI: URL
     private let descriptor: Int32
 
-    init() throws {
+    init(ports: [UInt16] = [1455, 1457]) throws {
         var selected: (Int32, UInt16)?
-        for port in [UInt16(1455), 1457] {
+        for port in ports {
             let fd = socket(AF_INET, SOCK_STREAM, 0)
             guard fd >= 0 else { continue }
             var address = sockaddr_in()
@@ -235,7 +236,16 @@ private final class LoopbackOAuthListener: @unchecked Sendable {
                 }
             }
             if bindStatus == 0, listen(fd, 1) == 0 {
-                selected = (fd, port)
+                var bound = sockaddr_in()
+                var length = socklen_t(MemoryLayout<sockaddr_in>.size)
+                let boundStatus = withUnsafeMutablePointer(to: &bound) {
+                    $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+                        getsockname(fd, $0, &length)
+                    }
+                }
+                if boundStatus == 0 { selected = (fd, UInt16(bigEndian: bound.sin_port)) }
+            }
+            if selected != nil {
                 break
             }
             Darwin.close(fd)
@@ -248,13 +258,28 @@ private final class LoopbackOAuthListener: @unchecked Sendable {
         redirectURI = url
     }
 
-    func waitForCallback() throws -> OAuthCallback {
+    func waitForCallback(expectedState: String, timeout: TimeInterval = 300) throws -> OAuthCallback {
+        let deadline = ProcessInfo.processInfo.systemUptime + timeout
+        while true {
+            try waitForData(on: descriptor, deadline: deadline)
+            let client = accept(descriptor, nil, nil)
+            guard client >= 0 else { throw CodexOAuthError.invalidCallback }
+            if let callback = try readCallback(from: client, expectedState: expectedState, deadline: deadline) {
+                return callback
+            }
+        }
+    }
 
-        var readiness = pollfd(fd: descriptor, events: Int16(POLLIN), revents: 0)
-        guard poll(&readiness, 1, 300_000) > 0 else { throw CodexOAuthError.callbackTimedOut }
-        let client = accept(descriptor, nil, nil)
-        guard client >= 0 else { throw CodexOAuthError.invalidCallback }
+    private func readCallback(from client: Int32, expectedState: String, deadline: TimeInterval) throws -> OAuthCallback? {
         defer { Darwin.close(client) }
+        var noSigPipe: Int32 = 1
+        _ = setsockopt(client, SOL_SOCKET, SO_NOSIGPIPE, &noSigPipe, socklen_t(MemoryLayout<Int32>.size))
+        // A connected peer must not be able to hold the listener past its deadline.
+        do { try waitForData(on: client, deadline: deadline) }
+        catch {
+            respond(client, success: false)
+            throw error
+        }
         var buffer = [UInt8](repeating: 0, count: 8192)
         let count = recv(client, &buffer, buffer.count - 1, 0)
         guard count > 0,
@@ -263,16 +288,26 @@ private final class LoopbackOAuthListener: @unchecked Sendable {
               let path = requestLine.split(separator: " ").dropFirst().first,
               let callbackURL = URL(string: "http://localhost\(path)"),
               callbackURL.path == "/auth/callback",
-              let items = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false)?.queryItems else {
+              let items = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false)?.queryItems,
+              items.first(where: { $0.name == "state" })?.value == expectedState else {
             respond(client, success: false)
-            throw CodexOAuthError.invalidCallback
+            return nil
         }
         respond(client, success: true)
         return OAuthCallback(
             code: items.first(where: { $0.name == "code" })?.value,
-            state: items.first(where: { $0.name == "state" })?.value,
             error: items.first(where: { $0.name == "error" })?.value
         )
+    }
+
+    private func waitForData(on fd: Int32, deadline: TimeInterval) throws {
+        let remaining = deadline - ProcessInfo.processInfo.systemUptime
+        guard remaining > 0 else { throw CodexOAuthError.callbackTimedOut }
+        var readiness = pollfd(fd: fd, events: Int16(POLLIN), revents: 0)
+        guard poll(&readiness, 1, Int32(min(remaining * 1_000, Double(Int32.max)))) > 0 else {
+            throw CodexOAuthError.callbackTimedOut
+        }
+        guard readiness.revents & Int16(POLLIN) != 0 else { throw CodexOAuthError.invalidCallback }
     }
 
     func close() { Darwin.close(descriptor) }
