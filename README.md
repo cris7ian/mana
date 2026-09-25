@@ -4,9 +4,11 @@ Mana is a local macOS menu-bar app for Codex and OpenCode Go usage. Add a ChatGP
 
 <img width="373" height="430" alt="image" src="https://github.com/user-attachments/assets/ecbbbf4c-b158-44d3-b399-ff73145634e9" />
 
-
 <img width="565" height="279" alt="image" src="https://github.com/user-attachments/assets/443f0218-2d29-4864-8e85-bf2d5bf8d87f" />
 
+## Install
+
+Download the DMG from the [latest GitHub release](https://github.com/cris7ian/mana/releases/latest). Open it and drag Mana to Applications. The download is signed with Developer ID and notarized by Apple. macOS 13 or later is required.
 
 ## Build and launch
 
@@ -62,6 +64,27 @@ Mana makes HTTPS requests directly to the provider usage endpoints. Requests use
 
 The OpenAI OAuth flow tracks ChatGPT-plan Codex usage; OpenAI API-platform API-key spend is a separate product and is not shown.
 
-## Distribution
+## Distribution outside the Mac App Store
 
-Code signing and App Sandbox configuration are not yet set up for distribution.
+Release builds enable Hardened Runtime. Local builds and CI still use ad-hoc signing; they are not distributable. Mana is not sandboxed because it uses a loopback OAuth listener and private files under Application Support. The release script creates a universal macOS app in a notarized DMG with a drag-to-Applications link. Do not distribute an ad-hoc build or an app extracted from the DMG separately.
+
+Prerequisites on the release Mac:
+
+1. Join the Apple Developer Program and confirm the team ID and intended bundle ID (`com.salsaparapizza.mana`).
+2. In Xcode → Settings → Accounts → your team → Manage Certificates, create or import a **Developer ID Application** certificate. Keep its private key in the login Keychain. `Apple Development` is not a substitute.
+3. Generate an [app-specific password](https://support.apple.com/en-us/102654) for the Apple ID used for notarization. Store notarization credentials in the Keychain. The command prompts for the password; do not put it in a command argument or this repository:
+
+   ```sh
+   xcrun notarytool store-credentials mana-notary \
+     --apple-id 'your-apple-id@example.com' --team-id YOUR_TEAM_ID
+   ```
+
+4. Run the full test suite, then build and notarize the DMG:
+
+   ```sh
+   xcodebuild -project Mana.xcodeproj -scheme Mana -configuration Debug \
+     -destination 'platform=macOS,arch=arm64' test
+   APPLE_TEAM_ID=YOUR_TEAM_ID NOTARY_PROFILE=mana-notary ./scripts/release.sh
+   ```
+
+The script checks for the correct Developer ID identity, archives the Release build, verifies the app's signature and Hardened Runtime, signs the DMG, submits it to Apple's notary service, staples the ticket, and verifies Gatekeeper acceptance. The result is `build/distribution/Mana-<version>.dmg`. Open the DMG and drag Mana to Applications. To make another release of the same version, move the existing DMG first. Never commit signing keys, app-specific passwords, or provider credentials.
