@@ -1,5 +1,7 @@
 # Mana
 
+Website: [mana.salsaparapizza.com](https://mana.salsaparapizza.com/)
+
 Mana is a local macOS menu-bar app for Codex and OpenCode Go usage. Add a ChatGPT account through OpenAI sign-in and paste an OpenCode Go API key in Settings. Mana works independently of locally installed provider CLIs. I use Codex locally with my work subscription, while personal usage connects through my personal OpenAI account. Other providers often read directly from Codex auth.
 
 <img width="373" height="430" alt="Mana menu bar" src="https://github.com/user-attachments/assets/ecbbbf4c-b158-44d3-b399-ff73145634e9" />

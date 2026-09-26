@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b111c" />
+    <meta
+      name="description"
+      content="Mana is a local macOS menu-bar app for Codex and OpenCode Go usage. Check your limits and reset times without leaving your work."
+    />
+    <link rel="canonical" href="https://mana.salsaparapizza.com/" />
+    <link rel="icon" type="image/png" href="/assets/hexagon-128.png" />
+    <link rel="apple-touch-icon" href="/assets/app-icon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/hero.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Mana — usage at a glance" />
+    <meta
+      property="og:description"
+      content="Codex and OpenCode Go usage, right in your Mac menu bar."
+    />
+    <meta property="og:url" content="https://mana.salsaparapizza.com/" />
+    <meta
+      property="og:image"
+      content="https://mana.salsaparapizza.com/assets/app-icon.png"
+    />
+    <title>Mana — usage at a glance</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="/" aria-label="Mana home"
+          ><img
+            src="/assets/hexagon-128.png"
+            width="28"
+            height="28"
+            alt=""
+          />Mana</a
+        >
+        <nav aria-label="Main navigation">
+          <a href="#getting-started">Get started</a>
+          <a class="nav-github" href="https://github.com/cris7ian/mana"
+            >GitHub <span aria-hidden="true">↗</span></a
+          >
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <section class="hero shell" aria-labelledby="hero-title">
+        <div class="mana-backdrop" aria-hidden="true">
+          <span class="mana-wordmark">MANA</span
+          ><span class="mana-spark spark-one">✦</span
+          ><span class="mana-spark spark-two">✧</span
+          ><span class="mana-spark spark-three">✦</span
+          ><span class="mana-spark spark-four">✧</span>
+        </div>
+        <div class="hero-copy">
+          <h1 id="hero-title">
+            save your mana.<br /><span>Careful with your spells</span>
+          </h1>
+          <p class="lede">
+            Mana keeps your Codex and OpenCode Go usage in the Mac menu bar.
+            Check your limits, see when they reset, and get back to building.
+          </p>
+          <div class="hero-actions">
+            <a
+              class="button primary"
+              href="https://github.com/cris7ian/mana/releases/latest"
+              >Download for macOS <span aria-hidden="true">↗</span></a
+            >
+            <a class="button secondary" href="https://github.com/cris7ian/mana"
+              >View source</a
+            >
+          </div>
+          <p class="requirements">macOS 13 or later · Free and open source</p>
+        </div>
+        <div class="hero-art" aria-label="Mana's blue hexagon app icon">
+          <div class="orb orb-one" aria-hidden="true"></div>
+          <div class="orb orb-two" aria-hidden="true"></div>
+          <div class="art-grid" aria-hidden="true"></div>
+          <img
+            class="app-icon"
+            src="/assets/app-icon.png"
+            width="360"
+            height="360"
+            alt="Mana app icon: a luminous blue hexagon on a rounded blue square"
+          />
+        </div>
+      </section>
+
+      <section
+        class="section shell setup"
+        id="getting-started"
+        aria-labelledby="setup-title"
+      >
+        <div class="setup-intro">
+          <p class="kicker">Getting started</p>
+          <h2 id="setup-title">Ready in a few steps.</h2>
+          <p>A native menu-bar app. No provider CLI installation required.</p>
+          <a
+            class="text-link"
+            href="https://github.com/cris7ian/mana/releases/latest"
+            >Get the latest signed release <span aria-hidden="true">→</span></a
+          >
+        </div>
+        <ol class="steps">
+          <li>
+            <span class="step-number">1</span>
+            <div>
+              <h3>Install Mana</h3>
+              <p>
+                Open the DMG, drag Mana into Applications, then open the app.
+                Quit an older copy before replacing it.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">2</span>
+            <div>
+              <h3>Connect your account</h3>
+              <p>
+                In Settings, sign in with your ChatGPT account for Codex usage,
+                add an OpenCode Go API key, or use both. Codex uses your ChatGPT
+                plan, not an OpenAI API key.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">3</span>
+            <div>
+              <h3>Check the menu bar</h3>
+              <p>
+                Select the hexagon to see your usage windows and reset times.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section
+        class="section shell details"
+        aria-label="Privacy and command line"
+      >
+        <div class="detail-panel">
+          <p class="kicker">Local by design</p>
+          <h2>Your usage stays on your Mac.</h2>
+          <p>
+            Mana does not save usage snapshots. It stores credentials as private
+            plain-text files in
+            <code>~/Library/Application Support/Mana/credentials/</code>. Keep
+            backups of that folder private.
+          </p>
+          <a
+            class="text-link"
+            href="https://github.com/cris7ian/mana#install-and-use"
+            >Read the setup notes <span aria-hidden="true">→</span></a
+          >
+        </div>
+        <div class="detail-panel cli-panel">
+          <p class="kicker">Prefer the terminal?</p>
+          <h2>There’s a CLI, too.</h2>
+          <p>
+            The installed app includes the <code>mana</code> command. Link it to
+            your PATH to check usage from your shell.
+          </p>
+          <pre><code>mana --provider all --json</code></pre>
+          <a class="text-link" href="https://github.com/cris7ian/mana#cli"
+            >See CLI instructions <span aria-hidden="true">→</span></a
+          >
+        </div>
+      </section>
+
+      <section class="closing shell">
+        <img src="/assets/hexagon-128.png" width="44" height="44" alt="" />
+        <h2>Keep your momentum.</h2>
+        <p>Less checking. More creating.</p>
+        <a
+          class="button primary"
+          href="https://github.com/cris7ian/mana/releases/latest"
+          >Download Mana <span aria-hidden="true">↗</span></a
+        >
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <span>© 2026 salsaparapizza · Mana is MIT licensed.</span
+        ><span
+          ><a href="https://github.com/cris7ian/mana">Source</a
+          ><a href="https://github.com/cris7ian/mana/releases/latest"
+            >Releases</a
+          ><a href="https://github.com/cris7ian/mana/issues">Issues</a></span
+        >
+      </div>
+    </footer>
+  </body>
+</html>

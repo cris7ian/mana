@@ -1,0 +1,163 @@
+/* Original mana field; Pixelify Sans is OFL-licensed (assets/fonts/OFL.txt). */
+@font-face {
+  font-family: "Pixelify Sans";
+  src: url("/assets/fonts/PixelifySans-variable.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+.hero {
+  position: relative;
+  isolation: isolate;
+}
+.hero-copy,
+.hero-art {
+  position: relative;
+  z-index: 1;
+}
+.hero h1 {
+  font-family: "Pixelify Sans", ui-monospace, monospace;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.16;
+  text-shadow: 0 2px 24px rgba(31, 78, 142, 0.24);
+}
+.hero h1 span {
+  color: #89c8ff;
+  text-shadow: 0 0 32px rgba(78, 164, 255, 0.2);
+}
+.mana-backdrop {
+  position: absolute;
+  top: 2%;
+  left: 50%;
+  width: 100vw;
+  height: 93%;
+  transform: translateX(-50%);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(
+      ellipse 32% 37% at 78% 49%,
+      rgba(42, 101, 219, 0.17),
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 31% 34% at 20% 67%,
+      rgba(25, 110, 198, 0.11),
+      transparent 100%
+    );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 12%,
+    #000 75%,
+    transparent
+  );
+}
+.mana-backdrop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle,
+    rgba(124, 205, 253, 0.36) 1px,
+    transparent 1.5px
+  );
+  background-size: 38px 38px;
+  opacity: 0.24;
+  mask-image: radial-gradient(ellipse 52% 63% at 50% 49%, #000, transparent);
+  animation: mana-drift 28s linear infinite;
+}
+.mana-wordmark {
+  position: absolute;
+  left: 50%;
+  top: 13%;
+  transform: translateX(-50%);
+  font:
+    700 clamp(9rem, 24vw, 23rem)/1 "Pixelify Sans",
+    ui-monospace,
+    monospace;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(114, 185, 255, 0.26);
+  background: linear-gradient(
+    180deg,
+    rgba(127, 191, 255, 0.18),
+    rgba(30, 95, 185, 0.02) 65%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 0 32px rgba(24, 105, 220, 0.18));
+  user-select: none;
+  animation: mana-breathe 8s ease-in-out infinite alternate;
+}
+.mana-spark {
+  position: absolute;
+  color: #85cfff;
+  text-shadow:
+    0 0 15px #4cafff,
+    0 0 38px #2674da;
+  opacity: 0.48;
+  font-size: 16px;
+  animation: mana-float 7s ease-in-out infinite alternate;
+}
+.spark-one {
+  top: 19%;
+  left: 17%;
+  animation-delay: -1s;
+}
+.spark-two {
+  top: 58%;
+  left: 7%;
+  font-size: 11px;
+  animation-delay: -4s;
+}
+.spark-three {
+  top: 17%;
+  right: 13%;
+  font-size: 12px;
+  animation-delay: -2s;
+}
+.spark-four {
+  bottom: 19%;
+  right: 23%;
+  animation-delay: -5s;
+}
+@keyframes mana-drift {
+  to {
+    transform: translate(38px, 38px);
+  }
+}
+@keyframes mana-breathe {
+  to {
+    opacity: 0.52;
+    filter: drop-shadow(0 0 48px rgba(54, 150, 255, 0.28));
+  }
+}
+@keyframes mana-float {
+  to {
+    transform: translateY(-13px);
+    opacity: 0.23;
+  }
+}
+@media (max-width: 800px) {
+  .mana-backdrop {
+    height: 74%;
+  }
+  .mana-wordmark {
+    top: 17%;
+    font-size: clamp(8rem, 30vw, 18rem);
+  }
+  .spark-four {
+    bottom: 8%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mana-backdrop::before,
+  .mana-wordmark,
+  .mana-spark {
+    animation: none;
+  }
+}
