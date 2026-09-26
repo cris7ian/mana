@@ -14,6 +14,9 @@
 "Offline" = "Sin conexión";
 "Unknown" = "Desconocido";
 "Resets" = "Se restablece";
+"%lldd %lldh" = "%lld d %lld h";
+"%lldh %lldm" = "%lld h %lld min";
+"Reset due" = "Restablecimiento pendiente";
 "Reset:" = "Restablecimiento:";
 "Mana Settings" = "Ajustes de Mana";
 "Usage sources and refresh behavior" = "Fuentes de uso y actualización";

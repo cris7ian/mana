@@ -6,6 +6,8 @@ struct UsagePopoverView: View {
     @EnvironmentObject private var settings: UsageSettings
     @Environment(\.dismiss) private var dismiss
     let openSettings: () -> Void
+    @State private var optionPressed = false
+    @State private var modifierMonitor: Any?
 
     private var lastUpdated: Date? {
         coordinator.states.values.compactMap(\.lastSuccessAt).max()
@@ -92,6 +94,19 @@ struct UsagePopoverView: View {
         .padding(16)
         .frame(width: 360)
         .fixedSize(horizontal: false, vertical: true)
+        .onAppear {
+            optionPressed = NSEvent.modifierFlags.contains(.option)
+            guard modifierMonitor == nil else { return }
+            modifierMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) { event in
+                optionPressed = event.modifierFlags.contains(.option)
+                return event
+            }
+        }
+        .onDisappear {
+            if let modifierMonitor { NSEvent.removeMonitor(modifierMonitor) }
+            modifierMonitor = nil
+            optionPressed = false
+        }
     }
 
     @ViewBuilder
@@ -197,11 +212,7 @@ struct UsagePopoverView: View {
                     .tint(percent >= 80 ? .red : (percent >= 50 ? .orange : .green))
             }
             if let resetAt = window.resetAt {
-                HStack(spacing: 4) {
-                    Label("Resets", systemImage: "clock")
-                    Text(resetAt, format: .dateTime.month(.abbreviated).day().hour().minute())
-                }
-                .font(.caption2).foregroundStyle(.secondary)
+                ResetTimeView(resetAt: resetAt, showDateForOption: optionPressed)
             } else if let resetText = window.resetText {
                 HStack(spacing: 4) {
                     Text("Reset:")
@@ -210,5 +221,44 @@ struct UsagePopoverView: View {
                 .font(.caption2).foregroundStyle(.secondary)
             }
         }
+    }
+}
+
+private struct ResetTimeView: View {
+    let resetAt: Date
+    let showDateForOption: Bool
+    @State private var isHovered = false
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Label("Resets", systemImage: "clock")
+            if isHovered || showDateForOption {
+                Text(resetAt, format: .dateTime.month(.abbreviated).day().year().hour().minute())
+            } else {
+                TimelineView(.periodic(from: .now, by: 1)) { context in
+                    Text(ResetCountdown.text(until: resetAt, now: context.date))
+                }
+            }
+        }
+        .font(.caption2).foregroundStyle(.secondary)
+        .onHover { isHovered = $0 }
+        .help(Text(resetAt, format: .dateTime.month(.abbreviated).day().year().hour().minute()))
+    }
+}
+
+enum ResetCountdown {
+    static func text(until resetAt: Date, now: Date) -> String {
+        let seconds = resetAt.timeIntervalSince(now)
+        guard seconds > 0 else { return NSLocalizedString("Reset due", comment: "Reset time has passed") }
+
+        if seconds >= 86_400 {
+            let days = Int(seconds / 86_400)
+            let hours = Int((seconds - Double(days * 86_400)) / 3_600)
+            return String(format: NSLocalizedString("%lldd %lldh", comment: "Days and hours until reset"), days, hours)
+        }
+
+        let hours = Int(seconds / 3_600)
+        let minutes = min(59, Int(ceil((seconds - Double(hours * 3_600)) / 60)))
+        return String(format: NSLocalizedString("%lldh %lldm", comment: "Hours and minutes until reset"), hours, minutes)
     }
 }

@@ -4,6 +4,23 @@ import XCTest
 @testable import Mana
 
 final class ManaTests: XCTestCase {
+    func testResetCountdownShowsDaysAndHoursAtOrAboveOneDay() {
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(2 * 86_400 + 3 * 3_600 + 59 * 60), now: now), "2d 3h")
+        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(86_400), now: now), "1d 0h")
+        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(86_401), now: now), "1d 0h")
+    }
+
+    func testResetCountdownShowsHoursAndMinutesBelowOneDay() {
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(86_399), now: now), "23h 59m")
+        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(3_600), now: now), "1h 0m")
+        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(3_601), now: now), "1h 1m")
+        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(59), now: now), "0h 1m")
+        XCTAssertEqual(ResetCountdown.text(until: now, now: now), "Reset due")
+        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(-60), now: now), "Reset due")
+    }
+
     func testCodexFixtureDecodesWindowsLabelsAndPercentages() throws {
         let snapshot = try CodexUsageDecoder.decode(fixture("codex_valid"))
         XCTAssertEqual(snapshot.provider, .codex)

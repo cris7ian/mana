@@ -1,5 +1,5 @@
 ---
-name: Mana Release
+name: mana-release
 description: Build Mana's signed and notarized macOS installer, or publish a versioned GitHub release. Use whenever asked to prepare an installer, bump Mana's release version, tag a release, or ship/publish Mana.
 ---
 

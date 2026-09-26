@@ -14,6 +14,9 @@
 "Offline" = "Offline";
 "Unknown" = "Unbekannt";
 "Resets" = "Zurücksetzung";
+"%lldd %lldh" = "%lld T. %lld Std.";
+"%lldh %lldm" = "%lld Std. %lld Min.";
+"Reset due" = "Zurücksetzung fällig";
 "Reset:" = "Zurücksetzung:";
 "Mana Settings" = "Mana-Einstellungen";
 "Usage sources and refresh behavior" = "Nutzungsquellen und Aktualisierung";
