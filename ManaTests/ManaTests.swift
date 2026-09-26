@@ -4,6 +4,14 @@ import XCTest
 @testable import Mana
 
 final class ManaTests: XCTestCase {
+    func testManaIconAssetsLoadWithCorrectRenderingIntent() throws {
+        let status = try XCTUnwrap(NSImage(named: "ManaStatusIcon"))
+        let brand = try XCTUnwrap(NSImage(named: "ManaBrandIcon"))
+        XCTAssertTrue(status.isTemplate)
+        XCTAssertFalse(brand.isTemplate)
+        XCTAssertEqual(status.size, NSSize(width: 20, height: 22))
+    }
+
     func testResetCountdownShowsDaysAndHoursAtOrAboveOneDay() {
         let now = Date(timeIntervalSince1970: 1_700_000_000)
         XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(2 * 86_400 + 3 * 3_600 + 59 * 60), now: now), "2d 3h")

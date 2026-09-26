@@ -50,7 +50,8 @@ struct ManaApp: App {
                 .environmentObject(coordinator)
                 .environmentObject(settings)
         } label: {
-            Image(systemName: "dial.medium")
+            Image("ManaStatusIcon")
+                .accessibilityLabel("Mana")
         }
         .menuBarExtraStyle(.window)
 

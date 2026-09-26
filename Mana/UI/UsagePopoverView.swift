@@ -16,9 +16,11 @@ struct UsagePopoverView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 10) {
-                Image(systemName: "dial.medium")
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundStyle(.tint)
+                Image("ManaBrandIcon")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 18, height: 18)
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Mana").font(.headline)
                     if let lastUpdated {
