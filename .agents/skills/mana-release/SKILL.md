@@ -48,6 +48,15 @@ gh release create "v$VERSION" "build/distribution/Mana-$VERSION.dmg" \
 
 Do not force-push. If a tag or release already exists, stop and report it. Do not replace an existing DMG; the release script refuses to overwrite it.
 
+## Replace the running app only when requested
+
+1. Mount the verified DMG read-only. Check the bundled app's version and signature before stopping the installed copy.
+2. Quit `/Applications/Mana.app` and wait for its process to exit. Do not replace a running app.
+3. Move the old app to a temporary backup, then copy the DMG app to `/Applications/Mana.app` with `ditto`.
+4. Verify the installed version, code signature, and Gatekeeper assessment. Launch it and confirm its process is running.
+5. If installation or launch fails, restore the backup and report the failure. Trash the backup only after verification succeeds.
+6. Detach the DMG and remove the temporary mount directory. Do not touch Mana's credentials or settings.
+
 ## Report
 
-Report the commit, tag, release URL, DMG path, and verification result. Include the DMG's SHA-256 when useful. State any remaining gate or local change that was left untouched.
+Report the commit, tag, release URL, DMG path, and verification result. For a requested local replacement, report the installed version and running status. Include the DMG's SHA-256 when useful. State any remaining gate or local change that was left untouched.
