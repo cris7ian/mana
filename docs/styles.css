@@ -321,6 +321,12 @@ img {
   .hero-art {
     height: 360px;
   }
+  .orb-one {
+    width: min(380px, 100%);
+    height: min(380px, 100%);
+    left: 50%;
+    transform: translateX(-50%);
+  }
   .app-icon {
     max-width: 260px;
   }
