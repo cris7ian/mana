@@ -286,10 +286,15 @@ img {
 }
 .closing h2 {
   margin-top: 20px;
+  font-size: clamp(41.6px, 4.29vw, 61.1px);
 }
 .closing p {
+  max-width: 700px;
   color: #a9b9cc;
-  margin-bottom: 30px;
+  font-size: 18px;
+  line-height: 1.65;
+  text-align: justify;
+  margin: 0 auto 30px;
 }
 .site-footer {
   border-top: 1px solid #ffffff15;
