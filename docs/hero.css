@@ -26,6 +26,49 @@
   color: #89c8ff;
   text-shadow: 0 0 32px rgba(78, 164, 255, 0.2);
 }
+.icon-float {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  animation: icon-levitate 6s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate;
+  will-change: transform;
+}
+.icon-float .app-icon {
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.icon-float .app-icon:hover {
+  animation: icon-tremor 1.4s cubic-bezier(0.33, 0, 0.67, 1) infinite;
+  filter: drop-shadow(0 38px 48px #020815a0) drop-shadow(0 0 28px #4ca8ff55);
+}
+@keyframes icon-levitate {
+  from {
+    transform: translateY(8px);
+  }
+  to {
+    transform: translateY(-12px);
+  }
+}
+@keyframes icon-tremor {
+  0%,
+  55%,
+  100% {
+    transform: rotate(-5deg) translateX(0);
+  }
+  10% {
+    transform: rotate(-8deg) translateX(-3px);
+  }
+  22% {
+    transform: rotate(-2deg) translateX(4px);
+  }
+  34% {
+    transform: rotate(-7deg) translateX(-2px);
+  }
+  46% {
+    transform: rotate(-4deg) translateX(1px);
+  }
+}
 .mana-backdrop {
   position: absolute;
   top: 2%;
@@ -155,9 +198,14 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .icon-float,
+  .icon-float .app-icon:hover,
   .mana-backdrop::before,
   .mana-wordmark,
   .mana-spark {
     animation: none;
+  }
+  .icon-float .app-icon {
+    transition: none;
   }
 }
