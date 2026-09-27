@@ -36,6 +36,10 @@ struct SettingsView: View {
                         codexCredentialsRow
                         Divider()
                         openCodeCredentialsRow
+                        Divider()
+                        antigravityRow
+                        Divider()
+                        claudeManualRow
                     }
                 }
 
@@ -74,7 +78,7 @@ struct SettingsView: View {
             .padding(20)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(width: 500, height: 560)
+        .frame(width: 500, height: 680)
         .onAppear { openCodeKeyExists = credentialLoader.hasOpenCodeGoAPIKey() }
     }
 
@@ -103,8 +107,8 @@ struct SettingsView: View {
 
     private var codexCredentialsRow: some View {
         HStack(spacing: 10) {
-            Image(systemName: "sparkles")
-                .foregroundStyle(.blue)
+            Image("Provider-codex")
+                .resizable().scaledToFit().frame(width: 21, height: 21)
                 .frame(width: 32, height: 32)
                 .background(Color.blue.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
             VStack(alignment: .leading, spacing: 3) {
@@ -142,8 +146,8 @@ struct SettingsView: View {
     private var openCodeCredentialsRow: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 10) {
-                Image(systemName: "bolt.circle")
-                    .foregroundStyle(.purple)
+                Image("Provider-opencode")
+                    .resizable().scaledToFit().frame(width: 21, height: 21)
                     .frame(width: 32, height: 32)
                     .background(Color.purple.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
                 VStack(alignment: .leading, spacing: 3) {
@@ -206,6 +210,64 @@ struct SettingsView: View {
                     }
                 }
             }
+        }
+    }
+
+    private var antigravityRow: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Image("Provider-antigravity")
+                    .resizable().scaledToFit().frame(width: 20, height: 20)
+                Text("Antigravity coding quota").font(.subheadline.weight(.medium))
+                Spacer()
+                Button("Test") { Task { await testAntigravity() } }
+                    .buttonStyle(.bordered).controlSize(.small)
+                    .disabled(testingProvider != nil)
+                Toggle("Show", isOn: $settings.antigravityEnabled)
+                    .labelsHidden()
+                    .onChange(of: settings.antigravityEnabled) { enabled in
+                        if enabled { Task { await coordinator.refresh(.antigravity) } }
+                        else { coordinator.clearSnapshot(for: .antigravity) }
+                    }
+            }
+            Text("Uses your signed-in agy CLI. No Google credentials are stored by Mana.")
+                .font(.caption).foregroundStyle(.secondary)
+            TextField("Absolute path to agy", text: $settings.antigravityPath)
+                .textFieldStyle(.roundedBorder)
+                .font(.system(.caption, design: .monospaced))
+            Text("Antigravity's Claude/GPT bucket is not your Claude subscription. Reset dates are hidden because agy moves them on each refresh.")
+                .font(.caption2).foregroundStyle(.secondary)
+        }
+    }
+
+    private var claudeManualRow: some View {
+        HStack {
+            Image("Provider-claude")
+                .resizable().scaledToFit().frame(width: 20, height: 20)
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Claude subscription").font(.subheadline.weight(.medium))
+                Text("No safe machine-readable plan quota from Claude Code's print mode.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+            Spacer()
+            Button("Check in browser") {
+                NSWorkspace.shared.open(URL(string: "https://claude.ai/settings/usage")!)
+            }
+            .buttonStyle(.bordered).controlSize(.small)
+        }
+    }
+
+    private func testAntigravity() async {
+        testingProvider = .antigravity
+        defer { testingProvider = nil }
+        do {
+            _ = try await AntigravityUsageProvider(executablePath: { UsageSettings.configuredAntigravityPath() }).fetchSnapshot()
+            message = String(localized: "Antigravity quota read succeeded.")
+            messageSucceeded = true
+            if settings.antigravityEnabled { await coordinator.refresh(.antigravity) }
+        } catch {
+            message = (error as? ProviderError)?.localizedDescription ?? String(localized: "Could not read agy usage.")
+            messageSucceeded = false
         }
     }
 
@@ -362,7 +424,7 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
             self.window = newWindow
         }
         guard let window else { return }
-        window.setContentSize(NSSize(width: 540, height: 600))
+        window.setContentSize(NSSize(width: 540, height: 680))
         if let screen = NSScreen.main ?? NSScreen.screens.first {
             let visibleFrame = screen.visibleFrame
             window.setFrameOrigin(NSPoint(

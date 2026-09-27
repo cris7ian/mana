@@ -17,12 +17,14 @@ struct ManaApp: App {
             switch provider {
             case .codex: return codexOAuth.isSignedIn
             case .openCodeGo: return credentialLoader.hasOpenCodeGoAPIKey()
+            case .antigravity: return UserDefaults.standard.bool(forKey: UsageSettings.antigravityEnabledKey)
             }
         }))
         let coordinator = UsageRefreshCoordinator(
             providers: [
                 CodexUsageProvider(oauth: codexOAuth, transport: transport),
-                OpenCodeGoUsageProvider(loader: credentialLoader, transport: transport)
+                OpenCodeGoUsageProvider(loader: credentialLoader, transport: transport),
+                AntigravityUsageProvider(executablePath: { UsageSettings.configuredAntigravityPath() })
             ],
             settings: settings
         )
@@ -60,6 +62,15 @@ struct ManaApp: App {
                 .environmentObject(coordinator)
                 .environmentObject(settings)
                 .frame(width: 480)
+        }
+        .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button("About Mana") {
+                    NSApplication.shared.orderFrontStandardAboutPanel(options: [
+                        .credits: NSAttributedString(string: "Built by Cristian E. Caroli 🍕")
+                    ])
+                }
+            }
         }
     }
 }

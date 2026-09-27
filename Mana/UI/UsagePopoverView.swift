@@ -116,8 +116,10 @@ struct UsagePopoverView: View {
         let state = coordinator.states[provider] ?? ProviderUsageState(provider: provider)
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
-                Image(systemName: provider == .codex ? "sparkles" : "bolt.circle")
-                    .foregroundStyle(provider == .codex ? Color.blue : Color.purple)
+                Image(provider.iconName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 17, height: 17)
                     .frame(width: 18)
                 Text(provider.displayName.uppercased())
                     .font(.caption.weight(.semibold))

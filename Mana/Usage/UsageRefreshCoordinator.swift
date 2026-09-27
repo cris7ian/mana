@@ -45,9 +45,11 @@ final class UsageRefreshCoordinator: ObservableObject {
     }
 
     func refreshAll(trigger: RefreshTrigger = .manual) async {
-        async let codex: Void = refresh(.codex, trigger: trigger)
-        async let go: Void = refresh(.openCodeGo, trigger: trigger)
-        _ = await (codex, go)
+        await withTaskGroup(of: Void.self) { group in
+            for providerID in providers.keys where providerID != .antigravity || settings.antigravityEnabled {
+                group.addTask { await self.refresh(providerID, trigger: trigger) }
+            }
+        }
     }
 
     func refresh(_ providerID: ProviderID, trigger: RefreshTrigger = .manual) async {

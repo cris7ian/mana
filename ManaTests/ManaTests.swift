@@ -10,6 +10,11 @@ final class ManaTests: XCTestCase {
         XCTAssertTrue(status.isTemplate)
         XCTAssertFalse(brand.isTemplate)
         XCTAssertEqual(status.size, NSSize(width: 20, height: 22))
+        for name in ["Provider-codex", "Provider-opencode", "Provider-antigravity", "Provider-claude"] {
+            let icon = try XCTUnwrap(NSImage(named: name))
+            XCTAssertFalse(icon.isTemplate)
+            XCTAssertGreaterThan(icon.size.width, 0)
+        }
     }
 
     func testResetCountdownShowsDaysAndHoursAtOrAboveOneDay() {
@@ -66,6 +71,44 @@ final class ManaTests: XCTestCase {
         XCTAssertEqual(partial.windows[0].content, .blocked("exhausted"))
         XCTAssertEqual(partial.windows[1].content, .unknownPercent)
         XCTAssertEqual(partial.windows[2].content, .missing)
+    }
+
+    func testAntigravityQuotaUsesFractionsAndOmitsSlidingResets() throws {
+        let body = """
+        {"status":"SUCCESS","num_turns":0,"command":{"name":"usage","data":{"groups":[
+          {"name":"Gemini Models","buckets":[
+            {"id":"gemini-weekly","name":"Weekly Limit Remaining","remaining_fraction":0.75,"reset_time":"2026-10-04T14:03:34Z"},
+            {"id":"gemini-5h","name":"Five Hour Limit Remaining","remaining_fraction":0.4,"reset_time":"2026-09-27T19:03:34Z"}]},
+          {"name":"Claude and GPT models","buckets":[
+            {"id":"3p-weekly","name":"Weekly Limit Remaining","remaining_fraction":1,"reset_time":"2026-10-04T14:03:34Z"},
+            {"id":"3p-5h","name":"Five Hour Limit Remaining","remaining_fraction":0,"reset_time":"2026-09-27T19:03:34Z"}]}
+        ]}}}
+        """
+        let snapshot = try AntigravityUsageProvider.decode(Data(body.utf8))
+        XCTAssertEqual(snapshot.provider, .antigravity)
+        XCTAssertEqual(snapshot.windows.map(\.id), ["gemini-weekly", "gemini-5h", "3p-weekly", "3p-5h"])
+        XCTAssertEqual(snapshot.windows.map(\.content), [.percent(25), .percent(60), .percent(0), .percent(100)])
+        XCTAssertTrue(snapshot.windows.allSatisfy { $0.resetAt == nil && $0.resetText == nil })
+        XCTAssertTrue(snapshot.windows[2].label.contains("Antigravity"))
+        XCTAssertThrowsError(try AntigravityUsageProvider.decode(Data(body.replacingOccurrences(of: "0.75", with: "1.5").utf8)))
+        XCTAssertThrowsError(try AntigravityUsageProvider.decode(Data(body.replacingOccurrences(of: "gemini-weekly", with: "unexpected").utf8)))
+        XCTAssertThrowsError(try AntigravityUsageProvider.decode(Data(body.replacingOccurrences(of: "SUCCESS", with: "FAILED").utf8)))
+    }
+
+    @MainActor
+    func testAntigravityPathSettingAndCLISelection() throws {
+        let suiteName = "mana-antigravity-test-\(UUID().uuidString)"
+        let suite = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { suite.removePersistentDomain(forName: suiteName) }
+        let settings = UsageSettings(defaults: suite)
+        XCTAssertFalse(settings.antigravityEnabled)
+        settings.antigravityPath = "/example/agy"
+        settings.antigravityEnabled = true
+        XCTAssertEqual(UsageSettings.configuredAntigravityPath(defaults: suite), "/example/agy")
+        XCTAssertTrue(settings.visibleProviders.contains(.antigravity))
+        settings.antigravityEnabled = false
+        XCTAssertFalse(settings.visibleProviders.contains(.antigravity))
+        XCTAssertEqual(try ManaCLIOptions.parse(["--provider", "antigravity", "--json"]).provider, .antigravity)
     }
 
     func testUnexpectedEnvelopesAreRejected() throws {

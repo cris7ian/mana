@@ -3,9 +3,24 @@ import Foundation
 enum ProviderID: String, CaseIterable, Identifiable, Sendable {
     case codex
     case openCodeGo
+    case antigravity
 
     var id: String { rawValue }
-    var displayName: String { self == .codex ? "Codex" : "OpenCode Go" }
+    var displayName: String {
+        switch self {
+        case .codex: return "Codex"
+        case .openCodeGo: return "OpenCode Go"
+        case .antigravity: return "Antigravity"
+        }
+    }
+
+    var iconName: String {
+        switch self {
+        case .codex: return "Provider-codex"
+        case .openCodeGo: return "Provider-opencode"
+        case .antigravity: return "Provider-antigravity"
+        }
+    }
 }
 
 enum WindowContent: Equatable, Sendable {

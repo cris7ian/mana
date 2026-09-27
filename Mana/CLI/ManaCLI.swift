@@ -49,7 +49,8 @@ struct ManaCLIOptions: Equatable {
         case "all": return nil
         case "codex": return .codex
         case "opencode-go": return .openCodeGo
-        default: throw ManaCLIError.invalidArguments("invalid provider; use codex, opencode-go, or all")
+        case "antigravity": return .antigravity
+        default: throw ManaCLIError.invalidArguments("invalid provider; use codex, opencode-go, antigravity, or all")
         }
     }
 }
@@ -98,6 +99,7 @@ enum ManaCLIOutput {
         switch provider {
         case .codex: return "Personal ChatGPT Codex usage"
         case .openCodeGo: return "OpenCode Go usage"
+        case .antigravity: return "Antigravity coding-plan usage"
         }
     }
 
@@ -159,8 +161,8 @@ enum ManaCLIOutput {
                     case .percent:
                         if let remaining = window.content.remainingPercent,
                            let usage = usageBar(for: remaining, colorEnabled: colorEnabled) {
-                            let reset = resetDescription(window.resetAt, now: now, timeZone: timeZone)
-                            lines.append("  \(label) \(usage.bar) left   resets \(reset)")
+                            let suffix = window.resetAt == nil ? "" : "   resets \(resetDescription(window.resetAt, now: now, timeZone: timeZone))"
+                            lines.append("  \(label) \(usage.bar) left\(suffix)")
                         } else {
                             lines.append("  \(label) unknown")
                         }
@@ -219,7 +221,7 @@ enum ManaCLIOutput {
 @MainActor
 enum ManaCLI {
     static let help = """
-    Usage: mana [--provider codex|opencode-go|all] [--json]
+    Usage: mana [--provider codex|opencode-go|antigravity|all] [--json]
            mana --provider opencode-go --key-stdin [--json]
            mana --help
            mana --version
@@ -227,7 +229,9 @@ enum ManaCLI {
     Fetch current provider usage once. Text output shows the percentage left.
     JSON includes remainingPercent and the compatible usedPercent field. Credentials are configured in Mana Settings.
     Mana stores credentials in private local files, not Keychain.
-    With both providers selected, one failure does not suppress the other.
+    With selected providers, one failure does not suppress the others.
+    Antigravity uses your signed-in agy CLI; configure its executable path in Settings.
+    --provider all includes Antigravity when enabled in Settings.
     --json prints an array; failed providers have an error instead of usage windows.
     --key-stdin uses one OpenCode Go key from standard input without storing it.
     Exit status: 0 success, 1 provider failure, 2 invalid arguments.
@@ -282,7 +286,8 @@ enum ManaCLI {
         let oauth = CodexOAuthClient(store: store)
         let transport = URLSessionTransport()
         var results: [ManaCLIResult] = []
-        for provider in ProviderID.allCases where options.provider == nil || options.provider == provider {
+        for provider in ProviderID.allCases where (options.provider == nil || options.provider == provider)
+            && (provider != .antigravity || options.provider == .antigravity || UserDefaults.standard.bool(forKey: UsageSettings.antigravityEnabledKey)) {
             do {
                 let snapshot: ProviderSnapshot
                 switch provider {
@@ -294,6 +299,10 @@ enum ManaCLI {
                         ?? loader.openCodeGoCredentials()
                     let data = try await OpenCodeGoUsageClient(transport: transport).fetch(credentials: credentials)
                     snapshot = try OpenCodeGoUsageDecoder.decode(data)
+                case .antigravity:
+                    snapshot = try await AntigravityUsageProvider(
+                        executablePath: { UsageSettings.configuredAntigravityPath() }
+                    ).fetchSnapshot()
                 }
                 results.append(.success(snapshot))
             } catch {
