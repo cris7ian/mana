@@ -157,27 +157,71 @@ img {
 }
 .brew-install code {
   overflow-x: auto;
+  border-radius: 3px;
   color: #c7d8eb;
   font-size: 13px;
   white-space: nowrap;
 }
 .copy-command {
+  appearance: none;
+  display: grid;
   flex: 0 0 auto;
-  border: 0;
-  border-radius: 7px;
-  padding: 7px 10px;
-  background: #24364d;
-  color: #eff6ff;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid #425266;
+  border-radius: 8px;
+  background: #17283c;
+  color: #d7e8fa;
   cursor: pointer;
-  font: inherit;
-  font-size: 12px;
+  transition:
+    transform 0.2s,
+    background 0.2s,
+    border-color 0.2s;
+}
+.copy-command svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
 }
 .copy-command:hover {
-  background: #314965;
+  transform: translateY(-1px);
+  border-color: #78bdff;
+  background: #243c56;
 }
-.copy-status {
-  color: #a8d9b0;
-  font-size: 12px;
+.copy-command:focus-visible {
+  outline: 2px solid #78bdff;
+  outline-offset: 3px;
+}
+.brew-install.copy-success code {
+  animation: command-flash 720ms ease-out;
+}
+@keyframes command-flash {
+  0% {
+    background-color: #78bdff;
+    box-shadow: 0 0 16px #78bdff99;
+    color: #071725;
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 transparent;
+    color: #c7d8eb;
+  }
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 .requirements {
   font-size: 12px;
@@ -442,7 +486,16 @@ img {
   .button {
     transition: none;
   }
-  .button:hover {
+  .button:hover,
+  .copy-command:hover {
     transform: none;
+  }
+  .copy-command {
+    transition: none;
+  }
+  .brew-install.copy-success code {
+    animation: none;
+    background-color: #78bdff;
+    color: #071725;
   }
 }

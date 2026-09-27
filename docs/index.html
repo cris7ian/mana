@@ -11,7 +11,7 @@
     <link rel="canonical" href="https://mana.salsaparapizza.com/" />
     <link rel="icon" type="image/png" href="/assets/hexagon-128.png" />
     <link rel="apple-touch-icon" href="/assets/app-icon.png" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/styles.css?v=homebrew-copy" />
     <link rel="stylesheet" href="/hero.css" />
     <script defer src="/mana-field.js"></script>
     <script defer src="/mana-bubbles.js"></script>
@@ -97,10 +97,16 @@
               class="copy-command"
               type="button"
               data-copy-command="brew install --cask cris7ian/tap/mana"
+              aria-label="Copy Homebrew install command"
               aria-describedby="brew-copy-status"
-            >Copy</button>
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="8" y="8" width="12" height="12" rx="2" />
+                <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+              </svg>
+            </button>
             <span
-              class="copy-status"
+              class="visually-hidden"
               id="brew-copy-status"
               role="status"
               aria-live="polite"
