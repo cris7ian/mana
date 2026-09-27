@@ -235,7 +235,7 @@ final class LoopbackOAuthListener: @unchecked Sendable {
                     bind(fd, $0, socklen_t(MemoryLayout<sockaddr_in>.size))
                 }
             }
-            if bindStatus == 0, listen(fd, 1) == 0 {
+            if bindStatus == 0, listen(fd, SOMAXCONN) == 0 {
                 var bound = sockaddr_in()
                 var length = socklen_t(MemoryLayout<sockaddr_in>.size)
                 let boundStatus = withUnsafeMutablePointer(to: &bound) {

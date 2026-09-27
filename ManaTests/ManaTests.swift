@@ -163,11 +163,11 @@ final class ManaTests: XCTestCase {
     func testOAuthListenerIgnoresInvalidCallbackBeforeValidOne() async throws {
         let listener = try LoopbackOAuthListener(ports: [0])
         defer { listener.close() }
-        let waiting = Task.detached { try listener.waitForCallback(expectedState: "expected", timeout: 2) }
+        // Queue all requests before accepting so a slow runner cannot drop the valid callback.
         try sendCallback(to: listener.redirectURI, path: "/other?state=expected&code=bad")
         try sendCallback(to: listener.redirectURI, path: "/auth/callback?state=wrong&code=bad")
         try sendCallback(to: listener.redirectURI, path: "/auth/callback?state=expected&code=good")
-        let callback = try await waiting.value
+        let callback = try listener.waitForCallback(expectedState: "expected", timeout: 2)
         XCTAssertEqual(callback.code, "good")
     }
 
