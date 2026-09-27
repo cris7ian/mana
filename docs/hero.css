@@ -39,7 +39,7 @@
     filter 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .icon-float .app-icon:hover {
-  animation: icon-tremor 1.4s cubic-bezier(0.33, 0, 0.67, 1) infinite;
+  animation: icon-tremor 1.8s cubic-bezier(0.22, 0.8, 0.28, 1) infinite;
   filter: drop-shadow(0 38px 48px #020815a0) drop-shadow(0 0 28px #4ca8ff55);
 }
 @keyframes icon-levitate {
@@ -52,21 +52,41 @@
 }
 @keyframes icon-tremor {
   0%,
-  55%,
   100% {
     transform: rotate(-5deg) translateX(0);
   }
-  10% {
-    transform: rotate(-8deg) translateX(-3px);
-  }
-  22% {
-    transform: rotate(-2deg) translateX(4px);
-  }
-  34% {
+  8% {
     transform: rotate(-7deg) translateX(-2px);
   }
-  46% {
-    transform: rotate(-4deg) translateX(1px);
+  16% {
+    transform: rotate(-2deg) translateX(3px);
+  }
+  24% {
+    transform: rotate(-10deg) translateX(-5px);
+  }
+  32% {
+    transform: rotate(2deg) translateX(7px);
+  }
+  40% {
+    transform: rotate(-13deg) translateX(-9px);
+  }
+  48% {
+    transform: rotate(5deg) translateX(11px);
+  }
+  56% {
+    transform: rotate(-17deg) translateX(-13px);
+  }
+  64% {
+    transform: rotate(7deg) translateX(13px);
+  }
+  72% {
+    transform: rotate(-13deg) translateX(-8px);
+  }
+  80% {
+    transform: rotate(0deg) translateX(5px);
+  }
+  88% {
+    transform: rotate(-7deg) translateX(-2px);
   }
 }
 .mana-backdrop {
