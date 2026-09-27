@@ -235,7 +235,7 @@ struct SettingsView: View {
             TextField("Absolute path to agy", text: $settings.antigravityPath)
                 .textFieldStyle(.roundedBorder)
                 .font(.system(.caption, design: .monospaced))
-            Text("Antigravity's Claude/GPT bucket is not your Claude subscription. Reset dates are hidden because agy moves them on each refresh.")
+            Text("Antigravity's Claude/GPT quota is separate from your Claude subscription.")
                 .font(.caption2).foregroundStyle(.secondary)
         }
     }
@@ -246,7 +246,7 @@ struct SettingsView: View {
                 .resizable().scaledToFit().frame(width: 20, height: 20)
             VStack(alignment: .leading, spacing: 3) {
                 Text("Claude subscription").font(.subheadline.weight(.medium))
-                Text("No safe machine-readable plan quota from Claude Code's print mode.")
+                Text("Claude doesn't expose subscription usage to third-party apps. Check your usage in the browser.")
                     .font(.caption).foregroundStyle(.secondary)
             }
             Spacer()
