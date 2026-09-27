@@ -235,6 +235,13 @@ img {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+.prose-link {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-link:hover {
+  color: #8fd2ff;
+}
 .text-link {
   display: inline-block;
   color: #8fd2ff;
@@ -295,6 +302,9 @@ img {
   line-height: 1.65;
   text-align: justify;
   margin: 0 auto 30px;
+}
+.closing p.signoff {
+  text-align: center;
 }
 .site-footer {
   border-top: 1px solid #ffffff15;
