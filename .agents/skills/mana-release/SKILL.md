@@ -48,6 +48,50 @@ gh release create "v$VERSION" "build/distribution/Mana-$VERSION.dmg" \
 
 Do not force-push. If a tag or release already exists, stop and report it. Do not replace an existing DMG; the release script refuses to overwrite it.
 
+## Update the Homebrew cask after a release
+
+Mana is distributed through the public `cris7ian/homebrew-tap` repository. Its cask is `Casks/mana.rb`; the install command is `brew install --cask cris7ian/tap/mana`.
+
+1. Update the cask only after the matching GitHub Release and DMG are public.
+2. Clone the tap to `~/Developer/homebrew-tap` if it is not already there:
+
+   ```sh
+   gh repo clone cris7ian/homebrew-tap "$HOME/Developer/homebrew-tap"
+   ```
+
+3. Confirm the tap clone has no local changes, then update it with a fast-forward pull:
+
+   ```sh
+   git -C "$HOME/Developer/homebrew-tap" status --short --branch
+   git -C "$HOME/Developer/homebrew-tap" pull --ff-only
+   ```
+
+   Stop and preserve any existing local changes.
+4. Calculate the checksum from the exact notarized release DMG:
+
+   ```sh
+   shasum -a 256 "build/distribution/Mana-$VERSION.dmg"
+   ```
+
+5. In `~/Developer/homebrew-tap/Casks/mana.rb`, set `version` to `$VERSION` and replace `sha256` with the calculated digest. Keep the release URL, macOS requirement, and `app "Mana.app"` artifact intact.
+6. Commit and push the tap change. Do not force-push:
+
+   ```sh
+   git -C "$HOME/Developer/homebrew-tap" add Casks/mana.rb
+   git -C "$HOME/Developer/homebrew-tap" commit -m "Update Mana to $VERSION"
+   git -C "$HOME/Developer/homebrew-tap" push
+   ```
+
+7. Refresh Homebrew metadata and verify the published cask:
+
+   ```sh
+   brew update
+   brew audit --cask --strict cris7ian/tap/mana
+   brew fetch --cask cris7ian/tap/mana
+   ```
+
+Do not publish a checksum until it matches the DMG attached to the public release. If audit or fetch fails, stop and fix the cask before reporting the release complete.
+
 ## Replace the running app only when requested
 
 1. Mount the verified DMG read-only. Check the bundled app's version and signature before stopping the installed copy.

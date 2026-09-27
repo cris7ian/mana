@@ -143,6 +143,42 @@ img {
 .button.secondary:hover {
   background: #ffffff0b;
 }
+.brew-install {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 14px;
+  padding: 10px 12px 10px 16px;
+  border: 1px solid #425266;
+  border-radius: 11px;
+  background: #0b111caa;
+}
+.brew-install code {
+  overflow-x: auto;
+  color: #c7d8eb;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.copy-command {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 7px;
+  padding: 7px 10px;
+  background: #24364d;
+  color: #eff6ff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+.copy-command:hover {
+  background: #314965;
+}
+.copy-status {
+  color: #a8d9b0;
+  font-size: 12px;
+}
 .requirements {
   font-size: 12px;
   color: #8093a9;

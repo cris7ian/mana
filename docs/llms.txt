@@ -4,6 +4,7 @@ Mana is a local macOS menu-bar app for Codex, OpenCode Go, and Antigravity usage
 Website: https://mana.salsaparapizza.com/
 Source and documentation: https://github.com/cris7ian/mana
 Latest signed and notarized installer: https://github.com/cris7ian/mana/releases/latest
+Install with Homebrew: `brew install --cask cris7ian/tap/mana` (tap: https://github.com/cris7ian/homebrew-tap).
 Requires macOS 13 or later. MIT licensed.
 
 See remaining usage from the menu bar. Codex and OpenCode Go show reset times; Antigravity does not. A separate Claude subscription is only a browser link in Settings. See the README for setup and CLI details.

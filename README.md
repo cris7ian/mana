@@ -10,7 +10,13 @@ Mana is a local macOS menu-bar app for Codex, OpenCode Go, and Antigravity usage
 
 ## Install and use
 
-Requires macOS 13 or later. Download the DMG from the [latest release](https://github.com/cris7ian/mana/releases/latest), open it, and drag Mana to Applications. Quit an older copy of Mana before replacing it.
+Requires macOS 13 or later. Install with Homebrew:
+
+```sh
+brew install --cask cris7ian/tap/mana
+```
+
+Or download the DMG from the [latest release](https://github.com/cris7ian/mana/releases/latest), open it, and drag Mana to Applications. Quit an older copy of Mana before replacing it.
 
 Open Mana from the menu bar. In Settings, sign in with ChatGPT or add an OpenCode Go API key. For Antigravity, install and sign in to `agy`, then enable it and set its executable path. Mana shows Gemini and Claude/GPT five-hour and weekly quotas without reset times. Settings also links to your separate Claude subscription.
 

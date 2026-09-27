@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/hero.css" />
     <script defer src="/mana-field.js"></script>
     <script defer src="/mana-bubbles.js"></script>
+    <script defer src="/homebrew-copy.js"></script>
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Mana — Save your mana" />
     <meta
@@ -89,6 +90,21 @@
             <a class="button secondary" href="https://github.com/cris7ian/mana"
               >View source</a
             >
+          </div>
+          <div class="brew-install" aria-label="Install with Homebrew">
+            <code>brew install --cask cris7ian/tap/mana</code>
+            <button
+              class="copy-command"
+              type="button"
+              data-copy-command="brew install --cask cris7ian/tap/mana"
+              aria-describedby="brew-copy-status"
+            >Copy</button>
+            <span
+              class="copy-status"
+              id="brew-copy-status"
+              role="status"
+              aria-live="polite"
+            ></span>
           </div>
           <p class="requirements">macOS 13 or later · Free and open source</p>
         </div>
