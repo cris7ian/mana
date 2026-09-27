@@ -106,15 +106,15 @@ enum ManaCLIOutput {
         return value + String(repeating: " ", count: max(0, 7 - value.count))
     }
 
-    private static func usageBar(for percent: Double, colorEnabled: Bool) -> (bar: String, percent: Int)? {
-        guard percent.isFinite else { return nil }
-        let displayedPercent = Int(min(max(percent, 0), 100).rounded())
+    private static func usageBar(for remainingPercent: Double, colorEnabled: Bool) -> (bar: String, percent: Int)? {
+        guard remainingPercent.isFinite else { return nil }
+        let displayedPercent = Int(min(max(remainingPercent, 0), 100).rounded())
         let filled = Int((Double(displayedPercent) / 100 * Double(barWidth)).rounded())
         let bar = String(repeating: "█", count: filled) + String(repeating: "░", count: barWidth - filled)
         let percentage = String(format: "%3d%%", displayedPercent)
         guard colorEnabled else { return ("\(bar) \(percentage)", displayedPercent) }
-        let color = displayedPercent >= 80 ? "\u{001B}[31m" :
-            displayedPercent >= 50 ? "\u{001B}[33m" : "\u{001B}[32m"
+        let color = displayedPercent <= 20 ? "\u{001B}[31m" :
+            displayedPercent <= 50 ? "\u{001B}[33m" : "\u{001B}[32m"
         return ("\(color)\(bar) \(percentage)\u{001B}[0m", displayedPercent)
     }
 
@@ -156,10 +156,11 @@ enum ManaCLIOutput {
                 for window in windows {
                     let label = alignedLabel(window.label)
                     switch window.content {
-                    case .percent(let percent):
-                        if let usage = usageBar(for: percent, colorEnabled: colorEnabled) {
+                    case .percent:
+                        if let remaining = window.content.remainingPercent,
+                           let usage = usageBar(for: remaining, colorEnabled: colorEnabled) {
                             let reset = resetDescription(window.resetAt, now: now, timeZone: timeZone)
-                            lines.append("  \(label) \(usage.bar)   resets \(reset)")
+                            lines.append("  \(label) \(usage.bar) left   resets \(reset)")
                         } else {
                             lines.append("  \(label) unknown")
                         }
@@ -196,7 +197,9 @@ enum ManaCLIOutput {
                 let windows: [[String: Any]] = snapshot.displayWindows.map { window in
                     var item: [String: Any] = ["id": window.id, "label": window.label]
                     switch window.content {
-                    case .percent(let value): item["usedPercent"] = value
+                    case .percent(let value):
+                        item["usedPercent"] = value
+                        item["remainingPercent"] = window.content.remainingPercent
                     case .unknownPercent: item["status"] = "unknown"
                     case .blocked(let reason): item["status"] = "blocked"; item["reason"] = safeStatus(reason)
                     case .missing: break
@@ -221,7 +224,8 @@ enum ManaCLI {
            mana --help
            mana --version
 
-    Fetch current provider usage once. Credentials are configured in Mana Settings.
+    Fetch current provider usage once. Text output shows the percentage left.
+    JSON includes remainingPercent and the compatible usedPercent field. Credentials are configured in Mana Settings.
     Mana stores credentials in private local files, not Keychain.
     With both providers selected, one failure does not suppress the other.
     --json prints an array; failed providers have an error instead of usage windows.

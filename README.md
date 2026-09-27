@@ -45,7 +45,7 @@ xcodebuild -project Mana.xcodeproj -scheme Mana -configuration Debug \
   -destination 'platform=macOS,arch=arm64' test
 ```
 
-Mana runs in the menu bar when launched as an app. Select the icon to open the usage popover. Reset times count down in days and hours, or hours and minutes when less than a day remains. Hover over a reset time or hold Option to see the exact date and time. Use Settings to configure credentials, test providers, or change the refresh interval. The default interval is 60 seconds.
+Mana runs in the menu bar when launched as an app. Select the icon to see how much Codex and OpenCode Go usage remains. The app and human-readable CLI show the percentage left in each window. CLI JSON includes both `remainingPercent` and the compatible `usedPercent` field. Reset times count down in days and hours, or hours and minutes when less than a day remains. Hover over a reset time or hold Option to see the exact date and time. Use Settings to configure credentials, test providers, or change the refresh interval. The default interval is 60 seconds.
 
 ## Release (maintainers)
 

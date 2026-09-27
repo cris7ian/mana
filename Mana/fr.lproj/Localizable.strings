@@ -13,6 +13,7 @@
 "Current" = "À jour";
 "Offline" = "Hors ligne";
 "Unknown" = "Inconnu";
+"Left" = "Restant";
 "Resets" = "Réinitialisation";
 "%lldd %lldh" = "%lld j %lld h";
 "%lldh %lldm" = "%lld h %lld min";

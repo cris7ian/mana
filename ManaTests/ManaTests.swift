@@ -29,6 +29,16 @@ final class ManaTests: XCTestCase {
         XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(-60), now: now), "Reset due")
     }
 
+    func testRemainingPercentInvertsAndClampsUsedPercent() {
+        XCTAssertEqual(WindowContent.percent(0).remainingPercent, 100)
+        XCTAssertEqual(WindowContent.percent(25).remainingPercent, 75)
+        XCTAssertEqual(WindowContent.percent(100).remainingPercent, 0)
+        XCTAssertEqual(WindowContent.percent(-10).remainingPercent, 100)
+        XCTAssertEqual(WindowContent.percent(120).remainingPercent, 0)
+        XCTAssertNil(WindowContent.unknownPercent.remainingPercent)
+        XCTAssertNil(WindowContent.percent(.nan).remainingPercent)
+    }
+
     func testCodexFixtureDecodesWindowsLabelsAndPercentages() throws {
         let snapshot = try CodexUsageDecoder.decode(fixture("codex_valid"))
         XCTAssertEqual(snapshot.provider, .codex)
@@ -178,14 +188,14 @@ final class ManaTests: XCTestCase {
         let expected = """
         Personal ChatGPT Codex usage
         --------------------------------------------
-          5h      █████░░░░░░░░░░░░░░░  25%   resets today 23:13
-          1w      ████████████████░░░░  80%   resets Nov 15 22:13
+          5h      ███████████████░░░░░  75% left   resets today 23:13
+          1w      ████░░░░░░░░░░░░░░░░  20% left   resets Nov 15 22:13
         --------------------------------------------
           requests are currently blocked by a rate limit
 
         OpenCode Go usage
         --------------------------------------------
-          5h      ██████████░░░░░░░░░░  50%   resets today 23:13
+          5h      ██████████░░░░░░░░░░  50% left   resets today 23:13
           week    status: exhausted
           month   unknown
         --------------------------------------------
@@ -206,6 +216,10 @@ final class ManaTests: XCTestCase {
             .failure(.openCodeGo, .missingCredential(provider: .openCodeGo, field: "API key"))
         ])
         XCTAssertTrue(json.contains("\"provider\" : \"codex\""))
+        let records = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(json.utf8)) as? [[String: Any]])
+        let windows = try XCTUnwrap(records[0]["windows"] as? [[String: Any]])
+        XCTAssertEqual(windows[0]["usedPercent"] as? Double, 25)
+        XCTAssertEqual(windows[0]["remainingPercent"] as? Double, 75)
         XCTAssertTrue(json.contains("\"provider\" : \"openCodeGo\""))
         XCTAssertFalse(json.contains("accessToken"))
     }
@@ -228,9 +242,9 @@ final class ManaTests: XCTestCase {
             isBlocked: false, blockedReason: nil, receivedAt: now
         )
         let colored = ManaCLIOutput.text([.success(snapshot)], colorEnabled: true, now: now, timeZone: utc)
-        XCTAssertTrue(colored.contains("\u{001B}[32m██████████░░░░░░░░░░  49%\u{001B}[0m"))
-        XCTAssertTrue(colored.contains("\u{001B}[33m██████████░░░░░░░░░░  50%\u{001B}[0m"))
-        XCTAssertTrue(colored.contains("\u{001B}[31m████████████████░░░░  80%\u{001B}[0m"))
+        XCTAssertTrue(colored.contains("\u{001B}[32m██████████░░░░░░░░░░  51%\u{001B}[0m left"))
+        XCTAssertTrue(colored.contains("\u{001B}[33m██████████░░░░░░░░░░  50%\u{001B}[0m left"))
+        XCTAssertTrue(colored.contains("\u{001B}[31m████░░░░░░░░░░░░░░░░  20%\u{001B}[0m left"))
         let plain = ManaCLIOutput.text([.success(snapshot)], colorEnabled: false, now: now, timeZone: utc)
         XCTAssertFalse(plain.contains("\u{001B}"))
     }

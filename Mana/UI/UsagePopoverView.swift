@@ -197,9 +197,18 @@ struct UsagePopoverView: View {
                     .font(.subheadline.weight(.medium))
                 Spacer()
                 switch window.content {
-                case .percent(let percent):
-                    Text("\(percent, specifier: "%.0f")%")
-                        .font(.system(.subheadline, design: .rounded).weight(.semibold).monospacedDigit())
+                case .percent:
+                    if let remaining = window.content.remainingPercent {
+                        HStack(spacing: 3) {
+                            Text("\(remaining, specifier: "%.0f")%")
+                                .font(.system(.subheadline, design: .rounded).weight(.semibold).monospacedDigit())
+                            Text("Left")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    } else {
+                        Text("Unknown").font(.caption).foregroundStyle(.secondary)
+                    }
                 case .unknownPercent:
                     Text("Unknown").font(.caption).foregroundStyle(.secondary)
                 case .blocked(let status):
@@ -208,10 +217,10 @@ struct UsagePopoverView: View {
                     EmptyView()
                 }
             }
-            if case .percent(let percent) = window.content {
-                ProgressView(value: min(100, max(0, percent)), total: 100)
+            if let remaining = window.content.remainingPercent {
+                ProgressView(value: remaining, total: 100)
                     .controlSize(.mini)
-                    .tint(percent >= 80 ? .red : (percent >= 50 ? .orange : .green))
+                    .tint(remaining <= 20 ? .red : (remaining <= 50 ? .orange : .green))
             }
             if let resetAt = window.resetAt {
                 ResetTimeView(resetAt: resetAt, showDateForOption: optionPressed)

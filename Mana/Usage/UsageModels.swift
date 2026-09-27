@@ -13,6 +13,11 @@ enum WindowContent: Equatable, Sendable {
     case unknownPercent
     case blocked(String)
     case missing
+
+    var remainingPercent: Double? {
+        guard case .percent(let usedPercent) = self, usedPercent.isFinite else { return nil }
+        return 100 - min(max(usedPercent, 0), 100)
+    }
 }
 
 struct UsageWindow: Identifiable, Equatable, Sendable {
