@@ -3,11 +3,17 @@
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
-team="${APPLE_TEAM_ID:-}"
-profile="${NOTARY_PROFILE:-}"
+provided_team="${APPLE_TEAM_ID:-}"
+provided_profile="${NOTARY_PROFILE:-}"
+if [[ -f "$root/.env.release.local" ]]; then
+    # Trusted local shell settings; explicit environment values take precedence.
+    source "$root/.env.release.local"
+fi
+team="${provided_team:-${APPLE_TEAM_ID:-}}"
+profile="${provided_profile:-${NOTARY_PROFILE:-}}"
 
 if [[ ! "$team" =~ ^[A-Z0-9]{10}$ || -z "$profile" ]]; then
-    echo "Set APPLE_TEAM_ID (10-character team ID) and NOTARY_PROFILE (Keychain profile name)." >&2
+    echo "Set APPLE_TEAM_ID (10-character team ID) and NOTARY_PROFILE (Keychain profile name) in .env.release.local or the environment." >&2
     exit 1
 fi
 

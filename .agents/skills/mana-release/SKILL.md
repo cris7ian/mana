@@ -23,11 +23,11 @@ Use the repository's documented release path. Read `AGENTS.md`, `scripts/release
 
 ## Build and verify the installer
 
-1. Confirm a Developer ID Application identity and a usable local `notarytool` Keychain profile exist.
-2. Use their team ID and profile name with the repository script:
+1. Confirm a Developer ID Application identity and a usable local `notarytool` Keychain profile exist. Use the ignored `.env.release.local` file (copy `.env.release.example` if needed). Do not print its contents.
+2. Build with the local config. Explicit `APPLE_TEAM_ID` and `NOTARY_PROFILE` environment values override it:
 
    ```sh
-   APPLE_TEAM_ID=TEAM_ID NOTARY_PROFILE=PROFILE_NAME ./scripts/release.sh
+   ./scripts/release.sh
    ```
 
 3. Confirm `build/distribution/Mana-$VERSION.dmg` exists.

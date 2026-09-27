@@ -19,3 +19,6 @@ Packages/
 # Test and coverage output
 *.xcresult
 *.profdata
+
+# Local release settings (never commit machine-specific values)
+/.env.release.local

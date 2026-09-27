@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Generate the 1200x630 social preview card for mana.salsaparapizza.com.
 
-Loads the app screenshot, crops the menu-bar popover, and composes a
-branded Open Graph / Twitter card. Requires Pillow and numpy.
+Composes a branded Open Graph / Twitter card with the app icon or an
+optional screenshot crop. Requires Pillow and numpy.
 
 Variants:
-    hero  - copy on the left, menu-bar popover on the right (default)
-    icon  - copy on the left, floating app icon on the right
+    icon  - copy on the left, floating app icon on the right (default)
+    hero  - copy on the left, menu-bar popover on the right
 
 Usage:
-    python3 scripts/social-card.py --variant hero --out docs/assets/social-preview.jpg
+    python3 scripts/social-card.py --variant icon --out docs/assets/social-preview.jpg
 """
 
 from __future__ import annotations
@@ -41,13 +41,13 @@ W, H = 1200, 630
 PAD = 76
 KICKER = "M A C   M E N U   B A R"
 HEADLINE = "Save your mana."
-TAGLINE = "Track Codex and OpenCode Go usage and reset times in your Mac menu bar."
+TAGLINE = "Track Codex, OpenCode Go, and Antigravity's Gemini usage in your Mac menu bar."
 URL = "mana.salsaparapizza.com"
 FOOTER = "Free and open source · macOS 13 or later"
 
 # Popover bounding box inside mana-app-preview.jpg (1280x640), measured from
 # the panel's luminance edges plus a small margin for corners and shadow.
-POPOVER_BOX = (430, 28, 900, 612)
+POPOVER_BOX = (395, 102, 915, 598)
 
 
 def font(name: str, size: int, weight: int | None = None) -> ImageFont.FreeTypeFont:
@@ -212,8 +212,9 @@ def copy_top(width: float) -> int:
 def build_hero() -> Image.Image:
     card = backdrop()
     src = Image.open(SCREENSHOT).convert("RGB").crop(POPOVER_BOX)
-    scale = 520 / src.height
-    pan = src.resize((round(src.width * scale), 520), Image.LANCZOS)
+    pan_height = 470
+    scale = pan_height / src.height
+    pan = src.resize((round(src.width * scale), pan_height), Image.LANCZOS)
     px = W - PAD - pan.width
     py = (H - pan.height) // 2
     card.alpha_composite(drop_shadow(pan.size, 30, 34, 170, (0, 20)), (px, py))
@@ -244,7 +245,7 @@ def build_icon() -> Image.Image:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--variant", choices=["hero", "icon"], default="hero")
+    ap.add_argument("--variant", choices=["hero", "icon"], default="icon")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
 

@@ -11,9 +11,15 @@ xcodebuild -project Mana.xcodeproj -scheme Mana -configuration Debug \
 
 Source files use Xcode synchronized groups; new Swift files do not need project-file entries.
 
+## Website and providers
+
+The static website lives in `docs/index.html`; keep `docs/llms.txt` and the generated `docs/assets/social-preview.jpg` in sync with public copy. Generate the card with `python3 scripts/social-card.py --variant icon --out docs/assets/social-preview.jpg`.
+
+Antigravity usage comes from the signed-in `agy` CLI, not a separate Gemini or Claude subscription. Its Gemini and Claude/GPT quota bars omit reset dates because `agy` reports shifting timestamps. Keep the Claude subscription browser link distinct.
+
 ## Release
 
-A plain Release build is ad-hoc signed. Never publish it. Use `scripts/release.sh` with `APPLE_TEAM_ID` and `NOTARY_PROFILE` to sign, notarize, staple, and verify the DMG. It requires a Developer ID Application certificate and a local `notarytool` Keychain profile. Keep signing credentials out of git.
+A plain Release build is ad-hoc signed. Never publish it. The release script needs a Developer ID Application certificate and a local `notarytool` Keychain profile. Put the team ID and profile name in ignored `.env.release.local` (see `.env.release.example`), or set `APPLE_TEAM_ID` and `NOTARY_PROFILE` in the environment. The script signs, notarizes, staples, and verifies the DMG. Keep signing credentials out of git.
 
 Use the `mana-release` skill for versioned installer and public-release work. Keep the workflow there; keep release-signing and credential safety constraints here.
 
