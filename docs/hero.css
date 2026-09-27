@@ -1,9 +1,16 @@
-/* Original mana field; Pixelify Sans is OFL-licensed (assets/fonts/OFL.txt). */
+/* Self-hosted OFL fonts; licenses live alongside the font files. */
 @font-face {
   font-family: "Pixelify Sans";
   src: url("/assets/fonts/PixelifySans-variable.ttf") format("truetype");
   font-style: normal;
   font-weight: 400 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Puppies Play";
+  src: url("/assets/fonts/PuppiesPlay-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
   font-display: swap;
 }
 .hero {
@@ -16,15 +23,19 @@
   z-index: 1;
 }
 .hero h1 {
-  font-family: "Pixelify Sans", ui-monospace, monospace;
+  font-family: "Puppies Play", cursive;
   font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.16;
+  font-synthesis: weight;
+  font-size: clamp(76px, 7vw, 100px);
+  letter-spacing: 0;
+  line-height: 0.98;
+  -webkit-text-stroke: 0.45px currentColor;
   text-shadow: 0 2px 24px rgba(31, 78, 142, 0.24);
 }
-.hero h1 span {
-  color: #89c8ff;
-  text-shadow: 0 0 32px rgba(78, 164, 255, 0.2);
+.hero .lede {
+  font-family: "Pixelify Sans", ui-monospace, monospace;
+  font-size: clamp(17px, 1.65vw, 21px);
+  line-height: 1.4;
 }
 .icon-float {
   width: 100%;
@@ -164,6 +175,12 @@
   .hero {
     padding-top: 32px;
     gap: 8px;
+  }
+  .hero h1 {
+    font-size: clamp(62px, 15vw, 76px);
+  }
+  .hero .lede {
+    font-size: 17px;
   }
   .hero-art {
     height: 190px;

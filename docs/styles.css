@@ -98,9 +98,6 @@ img {
   margin: 0 0 25px;
   font-weight: 760;
 }
-.hero h1 span {
-  color: #76baff;
-}
 .lede {
   max-width: 560px;
   color: #b3c3d5;
@@ -121,8 +118,9 @@ img {
   gap: 13px;
   padding: 15px 20px;
   border-radius: 11px;
-  font-size: 14px;
-  font-weight: 720;
+  font-family: "Pixelify Sans", ui-monospace, monospace;
+  font-size: 16px;
+  font-weight: 700;
   transition:
     transform 0.2s,
     background 0.2s;
@@ -195,6 +193,22 @@ img {
   height: auto;
   filter: drop-shadow(0 32px 44px #020815a0);
   transform: rotate(-5deg);
+}
+.showcase {
+  border-top: 1px solid #ffffff15;
+  padding: 44px 0 90px;
+}
+.showcase-image {
+  display: block;
+  overflow: hidden;
+  border: 1px solid #8cb3e333;
+  border-radius: 22px;
+  box-shadow: 0 30px 70px #02081580;
+}
+.showcase-image img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 .section {
   padding-top: 90px;
@@ -334,11 +348,25 @@ img {
   .lede {
     font-size: 16px;
   }
+  .hero-actions {
+    gap: 10px;
+  }
+  .hero-actions .button {
+    font-size: 15px;
+  }
   .hero-art {
     height: 310px;
   }
   .app-icon {
     max-width: 225px;
+  }
+  .showcase {
+    padding: 32px 0 64px;
+  }
+  .showcase-image img {
+    height: 390px;
+    object-fit: cover;
+    object-position: center;
   }
   .detail-panel {
     padding: 25px;

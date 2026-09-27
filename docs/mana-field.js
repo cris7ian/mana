@@ -12,6 +12,11 @@
   let height = 0;
   let pointerX = -torchRadius;
   let pointerY = -torchRadius;
+  let glowX = -torchRadius;
+  let glowY = -torchRadius;
+  let rippleX = -torchRadius;
+  let rippleY = -torchRadius;
+  let rippleStarted = -Infinity;
   let torch = 0;
   let torchTarget = 0;
   let frame = 0;
@@ -22,26 +27,32 @@
     torch += reducedMotion.matches
       ? torchTarget - torch
       : (torchTarget - torch) * 0.16;
+    if (reducedMotion.matches) {
+      glowX = pointerX;
+      glowY = pointerY;
+    } else {
+      glowX += (pointerX - glowX) * 0.22;
+      glowY += (pointerY - glowY) * 0.22;
+    }
+    const radius = reducedMotion.matches
+      ? torchRadius
+      : torchRadius + Math.sin(time * 0.004) * 18;
+    const rippleAge = time - rippleStarted;
     context.clearRect(0, 0, width, height);
 
     if (torch > 0.001) {
       const glow = context.createRadialGradient(
-        pointerX,
-        pointerY,
+        glowX,
+        glowY,
         0,
-        pointerX,
-        pointerY,
-        torchRadius,
+        glowX,
+        glowY,
+        radius,
       );
-      glow.addColorStop(0, `rgba(67, 162, 255, ${0.14 * torch})`);
+      glow.addColorStop(0, `rgba(67, 162, 255, ${0.2 * torch})`);
       glow.addColorStop(1, "rgba(67, 162, 255, 0)");
       context.fillStyle = glow;
-      context.fillRect(
-        pointerX - torchRadius,
-        pointerY - torchRadius,
-        torchRadius * 2,
-        torchRadius * 2,
-      );
+      context.fillRect(glowX - radius, glowY - radius, radius * 2, radius * 2);
     }
 
     for (let y = 0; y < height; y += tile) {
@@ -56,8 +67,20 @@
           centerY * 0.019 - centerX * 0.009 + time * 0.00055,
         );
         const wind = Math.max(0, (wave + eddy + 0.4) / 2.4) ** 2;
-        const distance = Math.hypot(centerX - pointerX, centerY - pointerY);
-        const light = torch * Math.max(0, 1 - distance / torchRadius) ** 2;
+        const distance = Math.hypot(centerX - glowX, centerY - glowY);
+        const core = Math.max(0, 1 - distance / radius) ** 2;
+        const flicker = reducedMotion.matches
+          ? 1
+          : 0.87 + 0.13 * Math.sin(time * 0.015 - distance * 0.065);
+        let ripple = 0;
+        if (!reducedMotion.matches && rippleAge >= 0 && rippleAge < 900) {
+          const fromRipple = Math.hypot(centerX - rippleX, centerY - rippleY);
+          ripple =
+            Math.exp(-(((fromRipple - rippleAge * 0.23) / 22) ** 2)) *
+            (1 - rippleAge / 900) *
+            0.38;
+        }
+        const light = torch * (core * flicker + ripple);
         const seed =
           Math.sin((x / tile + 1) * 127.1 + (y / tile + 1) * 311.7) *
           43758.5453;
@@ -71,6 +94,11 @@
   }
 
   function animate(time) {
+    if (reducedMotion.matches || document.hidden) {
+      frame = 0;
+      draw(0);
+      return;
+    }
     frame = requestAnimationFrame(animate);
     if (time - lastFrame < 32) return;
     lastFrame = time;
@@ -103,6 +131,19 @@
     const bounds = canvas.getBoundingClientRect();
     pointerX = event.clientX - bounds.left;
     pointerY = event.clientY - bounds.top;
+    const now = performance.now();
+    if (torchTarget === 0) {
+      glowX = pointerX;
+      glowY = pointerY;
+    }
+    if (
+      now - rippleStarted > 180 &&
+      Math.hypot(pointerX - rippleX, pointerY - rippleY) > 40
+    ) {
+      rippleX = pointerX;
+      rippleY = pointerY;
+      rippleStarted = now;
+    }
     torchTarget = 1;
     if (reducedMotion.matches) draw(0);
   });

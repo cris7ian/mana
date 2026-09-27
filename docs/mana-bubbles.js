@@ -4,7 +4,7 @@
   if (!icon) return;
 
   const random = (min, max) => min + Math.random() * (max - min);
-  const bubbles = Array.from({ length: 18 }, () => {
+  const bubbles = Array.from({ length: 9 }, () => {
     const bubble = document.createElement("span");
     bubble.className = "mana-bubble";
     bubble.setAttribute("aria-hidden", "true");
