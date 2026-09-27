@@ -213,6 +213,14 @@ img {
   line-height: 1.65;
   margin: 0;
 }
+.detail-panel p.contribute {
+  margin-top: 18px;
+}
+.contribute a {
+  color: #8fd2ff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .text-link {
   display: inline-block;
   color: #8fd2ff;

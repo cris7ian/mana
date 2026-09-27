@@ -30,17 +30,38 @@
   width: 100%;
   display: grid;
   place-items: center;
+  position: relative;
   animation: icon-levitate 6s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate;
   will-change: transform;
+}
+.mana-bubble {
+  position: absolute;
+  z-index: 2;
+  width: var(--size);
+  height: var(--size);
+  border: 1px solid #b3e7ffb3;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 25%,
+    #fff,
+    #82d2ff80 45%,
+    #4aabff26
+  );
+  box-shadow: 0 0 18px #4ca8ff80;
+  opacity: 0;
+  pointer-events: none;
 }
 .icon-float .app-icon {
   transition:
     transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
     filter 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.icon-float .app-icon:hover {
-  animation: icon-tremor 1.8s cubic-bezier(0.22, 0.8, 0.28, 1) infinite;
+.icon-float:hover .app-icon {
+  animation: icon-boil-bounce 2s cubic-bezier(0.34, 0.85, 0.33, 1) infinite;
   filter: drop-shadow(0 38px 48px #020815a0) drop-shadow(0 0 28px #4ca8ff55);
+}
+.icon-float:hover .mana-bubble {
+  animation: bubble-rise var(--duration) ease-out var(--delay) infinite;
 }
 @keyframes icon-levitate {
   from {
@@ -50,179 +71,112 @@
     transform: translateY(-12px);
   }
 }
-@keyframes icon-tremor {
+@keyframes icon-boil-bounce {
   0%,
   100% {
-    transform: rotate(-5deg) translateX(0);
+    transform: translateY(0) rotate(-5deg);
   }
-  8% {
-    transform: rotate(-7deg) translateX(-2px);
-  }
-  16% {
-    transform: rotate(-2deg) translateX(3px);
+  12% {
+    transform: translateY(-3px) rotate(-5deg);
   }
   24% {
-    transform: rotate(-10deg) translateX(-5px);
+    transform: translateY(0) rotate(-5deg);
   }
-  32% {
-    transform: rotate(2deg) translateX(7px);
+  38% {
+    transform: translateY(-8px) rotate(-7deg);
   }
-  40% {
-    transform: rotate(-13deg) translateX(-9px);
+  50% {
+    transform: translateY(1px) rotate(-4deg);
   }
-  48% {
-    transform: rotate(5deg) translateX(11px);
+  70% {
+    transform: translateY(-17px) rotate(-7deg);
   }
-  56% {
-    transform: rotate(-17deg) translateX(-13px);
+  84% {
+    transform: translateY(2px) rotate(-3deg);
   }
-  64% {
-    transform: rotate(7deg) translateX(13px);
+}
+@keyframes bubble-rise {
+  0% {
+    transform: translate(0, 0) scale(0.4);
+    opacity: 0;
   }
-  72% {
-    transform: rotate(-13deg) translateX(-8px);
+  18% {
+    opacity: 0.85;
   }
-  80% {
-    transform: rotate(0deg) translateX(5px);
+  78% {
+    opacity: 0.7;
   }
-  88% {
-    transform: rotate(-7deg) translateX(-2px);
+  100% {
+    transform: translate(var(--drift), calc(-1 * var(--rise))) scale(1.35);
+    opacity: 0;
   }
+}
+@keyframes closing-levitate {
+  from {
+    transform: translateY(3px);
+  }
+  to {
+    transform: translateY(-6px);
+  }
+}
+.closing img {
+  animation: closing-levitate 5.5s cubic-bezier(0.42, 0, 0.58, 1) infinite
+    alternate;
 }
 .mana-backdrop {
   position: absolute;
-  top: 2%;
+  top: 0;
   left: 50%;
   width: 100vw;
-  height: 93%;
+  height: 100%;
   transform: translateX(-50%);
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
-  background:
-    radial-gradient(
-      ellipse 32% 37% at 78% 49%,
-      rgba(42, 101, 219, 0.17),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 31% 34% at 20% 67%,
-      rgba(25, 110, 198, 0.11),
-      transparent 100%
-    );
+  background: radial-gradient(
+    ellipse 50% 55% at 70% 50%,
+    rgba(25, 71, 145, 0.12),
+    transparent
+  );
   mask-image: linear-gradient(
     to bottom,
     transparent,
-    #000 12%,
-    #000 75%,
+    #000 8%,
+    #000 88%,
     transparent
   );
 }
-.mana-backdrop::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(
-    circle,
-    rgba(124, 205, 253, 0.36) 1px,
-    transparent 1.5px
-  );
-  background-size: 38px 38px;
-  opacity: 0.24;
-  mask-image: radial-gradient(ellipse 52% 63% at 50% 49%, #000, transparent);
-  animation: mana-drift 28s linear infinite;
-}
-.mana-wordmark {
-  position: absolute;
-  left: 50%;
-  top: 13%;
-  transform: translateX(-50%);
-  font:
-    700 clamp(9rem, 24vw, 23rem)/1 "Pixelify Sans",
-    ui-monospace,
-    monospace;
-  letter-spacing: -0.025em;
-  white-space: nowrap;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(114, 185, 255, 0.26);
-  background: linear-gradient(
-    180deg,
-    rgba(127, 191, 255, 0.18),
-    rgba(30, 95, 185, 0.02) 65%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  filter: drop-shadow(0 0 32px rgba(24, 105, 220, 0.18));
-  user-select: none;
-  animation: mana-breathe 8s ease-in-out infinite alternate;
-}
-.mana-spark {
-  position: absolute;
-  color: #85cfff;
-  text-shadow:
-    0 0 15px #4cafff,
-    0 0 38px #2674da;
-  opacity: 0.48;
-  font-size: 16px;
-  animation: mana-float 7s ease-in-out infinite alternate;
-}
-.spark-one {
-  top: 19%;
-  left: 17%;
-  animation-delay: -1s;
-}
-.spark-two {
-  top: 58%;
-  left: 7%;
-  font-size: 11px;
-  animation-delay: -4s;
-}
-.spark-three {
-  top: 17%;
-  right: 13%;
-  font-size: 12px;
-  animation-delay: -2s;
-}
-.spark-four {
-  bottom: 19%;
-  right: 23%;
-  animation-delay: -5s;
-}
-@keyframes mana-drift {
-  to {
-    transform: translate(38px, 38px);
-  }
-}
-@keyframes mana-breathe {
-  to {
-    opacity: 0.52;
-    filter: drop-shadow(0 0 48px rgba(54, 150, 255, 0.28));
-  }
-}
-@keyframes mana-float {
-  to {
-    transform: translateY(-13px);
-    opacity: 0.23;
-  }
+.mana-grid {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 @media (max-width: 800px) {
-  .mana-backdrop {
-    height: 74%;
+  .hero-art {
+    order: -1;
+    height: 260px;
   }
-  .mana-wordmark {
-    top: 17%;
-    font-size: clamp(8rem, 30vw, 18rem);
+  .hero-art .app-icon {
+    max-width: 210px;
   }
-  .spark-four {
-    bottom: 8%;
+}
+@media (max-width: 560px) {
+  .hero {
+    padding-top: 32px;
+    gap: 8px;
+  }
+  .hero-art {
+    height: 190px;
+  }
+  .hero-art .app-icon {
+    max-width: 165px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
   .icon-float,
-  .icon-float .app-icon:hover,
-  .mana-backdrop::before,
-  .mana-wordmark,
-  .mana-spark {
+  .icon-float:hover .app-icon,
+  .icon-float:hover .mana-bubble,
+  .closing img {
     animation: none;
   }
   .icon-float .app-icon {

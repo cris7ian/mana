@@ -13,6 +13,8 @@
     <link rel="apple-touch-icon" href="/assets/app-icon.png" />
     <link rel="stylesheet" href="/styles.css" />
     <link rel="stylesheet" href="/hero.css" />
+    <script defer src="/mana-field.js"></script>
+    <script defer src="/mana-bubbles.js"></script>
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Mana — save your mana" />
     <meta
@@ -48,19 +50,15 @@
     <main id="main">
       <section class="hero shell" aria-labelledby="hero-title">
         <div class="mana-backdrop" aria-hidden="true">
-          <span class="mana-wordmark">MANA</span
-          ><span class="mana-spark spark-one">✦</span
-          ><span class="mana-spark spark-two">✧</span
-          ><span class="mana-spark spark-three">✦</span
-          ><span class="mana-spark spark-four">✧</span>
+          <canvas class="mana-grid"></canvas>
         </div>
         <div class="hero-copy">
           <h1 id="hero-title">
             save your mana.<br /><span>Careful with your spells</span>
           </h1>
           <p class="lede">
-            Every spell spends mana. See your Codex and OpenCode Go usage and
-            reset times in the Mac menu bar, before the next cast.
+            Running out of mana? See your Codex and OpenCode Go usage and reset
+            times in the Mac menu bar, before the next cast.
           </p>
           <div class="hero-actions">
             <a
@@ -96,11 +94,15 @@
       >
         <div class="detail-panel">
           <p class="kicker">Where’d my mana go?</p>
-          <h2>Many spellbooks. One mana pool.</h2>
+          <h2>Check your spellbooks.</h2>
           <p>
             Codex, Hermes, Pi, and other tools can share a subscription. Their
             spells draw from the same limit. Mana shows your Codex and OpenCode
             Go usage together, so you know what’s left.
+          </p>
+          <p class="contribute">
+            Want more spellbooks? We welcome provider contributions.
+            <a href="https://github.com/cris7ian/mana/pulls">Shoot us a PR</a>
           </p>
         </div>
         <div class="detail-panel cli-panel">
@@ -120,7 +122,7 @@
       <section class="closing shell">
         <img src="/assets/hexagon-128.png" width="44" height="44" alt="" />
         <h2>Save a spell for the boss fight.</h2>
-        <p>Know what’s left before you cast.</p>
+        <p>Keep up your tempo.</p>
         <a
           class="button primary"
           href="https://github.com/cris7ian/mana/releases/latest"
