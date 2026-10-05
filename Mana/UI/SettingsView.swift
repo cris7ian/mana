@@ -272,7 +272,7 @@ struct SettingsView: View {
     }
 
     private var maskedOpenCodeKey: String {
-        guard let key = try? credentialLoader.openCodeGoAPIKey(), !key.isEmpty else { return "Key saved" }
+        guard let key = try? credentialLoader.openCodeGoAPIKey(), !key.isEmpty else { return String(localized: "Key saved") }
         return String(key.prefix(6)) + String(repeating: "•", count: 6)
     }
 

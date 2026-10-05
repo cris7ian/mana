@@ -86,7 +86,7 @@ struct AntigravityUsageProvider: UsageProviding {
             do {
                 try process.run()
             } catch {
-                gate.finish(.failure(ProviderError.transport("Could not launch agy.")))
+                gate.finish(.failure(ProviderError.transport(String(localized: "Could not launch agy."))))
                 return
             }
             DispatchQueue.global(qos: .utility).async {
@@ -105,13 +105,13 @@ struct AntigravityUsageProvider: UsageProviding {
                 if process.terminationStatus == 0 {
                     gate.finish(.success(data))
                 } else {
-                    gate.finish(.failure(ProviderError.transport("agy could not fetch usage. Check its sign-in in a terminal.")))
+                    gate.finish(.failure(ProviderError.transport(String(localized: "agy could not fetch usage. Check its sign-in in a terminal."))))
                 }
             }
             DispatchQueue.global().asyncAfter(deadline: .now() + 20) {
                 if gate.isPending {
                     if process.isRunning { process.terminate() }
-                    gate.finish(.failure(ProviderError.transport("agy usage timed out.")))
+                    gate.finish(.failure(ProviderError.transport(String(localized: "agy usage timed out."))))
                 }
             }
         }
@@ -139,4 +139,3 @@ private final class AntigravityResultGate: @unchecked Sendable {
         continuation.resume(with: result)
     }
 }
-

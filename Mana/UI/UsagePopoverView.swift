@@ -130,7 +130,7 @@ struct UsagePopoverView: View {
 
             if let snapshot = state.snapshot {
                 if snapshot.isBlocked, let reason = snapshot.blockedReason {
-                    Label(reason, systemImage: "exclamationmark.triangle.fill")
+                    Label(UsageLocalization.text(reason), systemImage: "exclamationmark.triangle.fill")
                         .font(.caption).foregroundStyle(.orange)
                         .padding(.leading, 26)
                 }
@@ -195,7 +195,7 @@ struct UsagePopoverView: View {
     private func windowRow(_ window: UsageWindow) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .firstTextBaseline) {
-                Text(window.label)
+                Text(UsageLocalization.compactLabel(window.label))
                     .font(.subheadline.weight(.medium))
                 Spacer()
                 switch window.content {
@@ -213,8 +213,8 @@ struct UsagePopoverView: View {
                     }
                 case .unknownPercent:
                     Text("Unknown").font(.caption).foregroundStyle(.secondary)
-                case .blocked(let status):
-                    Text(status.capitalized).font(.caption).foregroundStyle(.orange)
+                case .blocked:
+                    Text("Blocked").font(.caption).foregroundStyle(.orange)
                 case .missing:
                     EmptyView()
                 }
@@ -249,29 +249,12 @@ private struct ResetTimeView: View {
                 Text(resetAt, format: .dateTime.month(.abbreviated).day().year().hour().minute())
             } else {
                 TimelineView(.periodic(from: .now, by: 1)) { context in
-                    Text(ResetCountdown.text(until: resetAt, now: context.date))
+                    Text(UsageLocalization.countdown(until: resetAt, now: context.date))
                 }
             }
         }
         .font(.caption2).foregroundStyle(.secondary)
         .onHover { isHovered = $0 }
         .help(Text(resetAt, format: .dateTime.month(.abbreviated).day().year().hour().minute()))
-    }
-}
-
-enum ResetCountdown {
-    static func text(until resetAt: Date, now: Date) -> String {
-        let seconds = resetAt.timeIntervalSince(now)
-        guard seconds > 0 else { return NSLocalizedString("Reset due", comment: "Reset time has passed") }
-
-        if seconds >= 86_400 {
-            let days = Int(seconds / 86_400)
-            let hours = Int((seconds - Double(days * 86_400)) / 3_600)
-            return String(format: NSLocalizedString("%lldd %lldh", comment: "Days and hours until reset"), days, hours)
-        }
-
-        let hours = Int(seconds / 3_600)
-        let minutes = min(59, Int(ceil((seconds - Double(hours * 3_600)) / 60)))
-        return String(format: NSLocalizedString("%lldh %lldm", comment: "Hours and minutes until reset"), hours, minutes)
     }
 }

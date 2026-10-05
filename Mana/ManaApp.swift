@@ -67,7 +67,7 @@ struct ManaApp: App {
             CommandGroup(replacing: .appInfo) {
                 Button("About Mana") {
                     NSApplication.shared.orderFrontStandardAboutPanel(options: [
-                        .credits: NSAttributedString(string: "Built by Cristian E. Caroli 🍕")
+                        .credits: NSAttributedString(string: String(localized: "Built by Cristian E. Caroli 🍕"))
                     ])
                 }
             }

@@ -1,0 +1,798 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+
+	};
+	objectVersion = 77;
+	objects = {
+		2CB37BCDC51550F7CB23194A = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {
+
+			};
+			explicitFolders = (
+			);
+			path = Mana;
+			sourceTree = "<group>";
+		};
+		D579B5DC88A76E4D62810DFF = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {
+
+			};
+			explicitFolders = (
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		6A29E2B557BBD19A47C2FCE1 = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {
+
+			};
+			explicitFolders = (
+			);
+			path = ManaWidgets;
+			sourceTree = "<group>";
+		};
+		31058494C3BBA59C9BC5969F = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {
+
+			};
+			explicitFolders = (
+			);
+			path = ManaTests;
+			sourceTree = "<group>";
+		};
+		4073274843D5DC40AC0B75E5 = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {
+
+			};
+			explicitFolders = (
+			);
+			path = ManaUITests;
+			sourceTree = "<group>";
+		};
+		6735E0AC0EDF706753A2A0CE = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Packages/ManaCore;
+		};
+		0C291A8ECAFEC74143A1A2F6 = {
+			isa = PBXFileReference;
+			explicitFileType = wrapper.application;
+			includeInIndex = 0;
+			path = Mana.app;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3099A2BFED947F7A553B0671 = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6735E0AC0EDF706753A2A0CE;
+			productName = ManaCore;
+		};
+		FB8256556B9A924718C0391E = {
+			isa = PBXBuildFile;
+			productRef = 3099A2BFED947F7A553B0671;
+		};
+		1783EC4368C6CA07AF6CFECB = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96A0878EDFA2615D8EF39E56 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FB8256556B9A924718C0391E,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		32D9030911A513A036FDB2D9 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAD94E557D3F701DCC510B44 = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AEACDD79EE7DDE5AE34A09FC;
+			proxyType = 1;
+			remoteGlobalIDString = F4A9C36B97028ECFCA43430D;
+			remoteInfo = ManaWidgets;
+		};
+		CFA155DE378CDAE163B2B265 = {
+			isa = PBXTargetDependency;
+			target = F4A9C36B97028ECFCA43430D;
+			targetProxy = CAD94E557D3F701DCC510B44;
+		};
+		3BEEB7B3E6E9E6F300C38368 = {
+			isa = PBXBuildFile;
+			fileRef = 8E75B155D0B98E4FB1330A0D;
+			settings = {
+				ATTRIBUTES = (
+					RemoveHeadersOnCopy,
+				);
+			};
+		};
+		D4C6C35F557B575351525BF6 = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				3BEEB7B3E6E9E6F300C38368,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		02B24A09319DB252483C1E24 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5P4X92K99Q;
+				GENERATE_INFOPLIST_FILE = NO;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.salsaparapizza.mana.ios;
+				PRODUCT_NAME = Mana;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_MODULE_NAME = ManaIOS;
+				INFOPLIST_FILE = "Config/Mana-Info.plist";
+				CODE_SIGN_ENTITLEMENTS = Config/Mana.entitlements;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ENABLE_PREVIEWS = YES;
+			};
+			name = Debug;
+		};
+		0DBDA0A7A121407187404E9F = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5P4X92K99Q;
+				GENERATE_INFOPLIST_FILE = NO;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.salsaparapizza.mana.ios;
+				PRODUCT_NAME = Mana;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_MODULE_NAME = ManaIOS;
+				INFOPLIST_FILE = "Config/Mana-Info.plist";
+				CODE_SIGN_ENTITLEMENTS = Config/Mana.entitlements;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ENABLE_PREVIEWS = YES;
+			};
+			name = Release;
+		};
+		CBF73F128F038DE8BDFB91FB = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				02B24A09319DB252483C1E24,
+				0DBDA0A7A121407187404E9F,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A12F813CEAAB1AEBD9BC5D46 = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CBF73F128F038DE8BDFB91FB;
+			buildPhases = (
+				1783EC4368C6CA07AF6CFECB,
+				96A0878EDFA2615D8EF39E56,
+				32D9030911A513A036FDB2D9,
+				D4C6C35F557B575351525BF6,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CFA155DE378CDAE163B2B265,
+			);
+			fileSystemSynchronizedGroups = (
+				2CB37BCDC51550F7CB23194A,
+				D579B5DC88A76E4D62810DFF,
+			);
+			name = ManaIOS;
+			packageProductDependencies = (
+				3099A2BFED947F7A553B0671,
+			);
+			productName = Mana;
+			productReference = 0C291A8ECAFEC74143A1A2F6;
+			productType = "com.apple.product-type.application";
+		};
+		8E75B155D0B98E4FB1330A0D = {
+			isa = PBXFileReference;
+			explicitFileType = "wrapper.app-extension";
+			includeInIndex = 0;
+			path = ManaWidgets.appex;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B55C434B117D73DBE2683E82 = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6735E0AC0EDF706753A2A0CE;
+			productName = ManaCore;
+		};
+		9AB775BE24B21B054BF681BF = {
+			isa = PBXBuildFile;
+			productRef = B55C434B117D73DBE2683E82;
+		};
+		037252281C6043A21985C2B1 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2853AAF1B1C13558B3E855C8 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9AB775BE24B21B054BF681BF,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6AF5F37BC76833F777D7CE51 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		789F6226B4527FA122A03799 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5P4X92K99Q;
+				GENERATE_INFOPLIST_FILE = NO;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.salsaparapizza.mana.ios.widgets;
+				PRODUCT_NAME = ManaWidgets;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				INFOPLIST_FILE = "Config/ManaWidgets-Info.plist";
+				CODE_SIGN_ENTITLEMENTS = Config/ManaWidgets.entitlements;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		6BD15D40908F92C598C1F21C = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5P4X92K99Q;
+				GENERATE_INFOPLIST_FILE = NO;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.salsaparapizza.mana.ios.widgets;
+				PRODUCT_NAME = ManaWidgets;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				INFOPLIST_FILE = "Config/ManaWidgets-Info.plist";
+				CODE_SIGN_ENTITLEMENTS = Config/ManaWidgets.entitlements;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		0FBEC78218135378E21A31F9 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				789F6226B4527FA122A03799,
+				6BD15D40908F92C598C1F21C,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F4A9C36B97028ECFCA43430D = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0FBEC78218135378E21A31F9;
+			buildPhases = (
+				037252281C6043A21985C2B1,
+				2853AAF1B1C13558B3E855C8,
+				6AF5F37BC76833F777D7CE51,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				6A29E2B557BBD19A47C2FCE1,
+				D579B5DC88A76E4D62810DFF,
+			);
+			name = ManaWidgets;
+			packageProductDependencies = (
+				B55C434B117D73DBE2683E82,
+			);
+			productName = ManaWidgets;
+			productReference = 8E75B155D0B98E4FB1330A0D;
+			productType = "com.apple.product-type.app-extension";
+		};
+		2F0538FD7AB73C4399B4001D = {
+			isa = PBXFileReference;
+			explicitFileType = wrapper.cfbundle;
+			includeInIndex = 0;
+			path = ManaIOSTests.xctest;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		121BD920F02D88F476E0B55F = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6735E0AC0EDF706753A2A0CE;
+			productName = ManaCore;
+		};
+		D2175618A624CFE057A6EF15 = {
+			isa = PBXBuildFile;
+			productRef = 121BD920F02D88F476E0B55F;
+		};
+		9363C7970F877B8503FBA756 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		23E92B1C87D5D47C37A1EC6C = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2175618A624CFE057A6EF15,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A4A5F6DAF455A1E89A81E292 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		49BAF5D5A510B3707C9DE98E = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AEACDD79EE7DDE5AE34A09FC;
+			proxyType = 1;
+			remoteGlobalIDString = A12F813CEAAB1AEBD9BC5D46;
+			remoteInfo = ManaIOS;
+		};
+		E560D2927A6849DA01A62D01 = {
+			isa = PBXTargetDependency;
+			target = A12F813CEAAB1AEBD9BC5D46;
+			targetProxy = 49BAF5D5A510B3707C9DE98E;
+		};
+		E45BB79D0AA59B1896EB5294 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5P4X92K99Q;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.salsaparapizza.mana.ios.tests;
+				PRODUCT_NAME = ManaIOSTests;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SKIP_INSTALL = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mana.app/Mana";
+			};
+			name = Debug;
+		};
+		EAA9949B68EAEA8E686C4B9E = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5P4X92K99Q;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.salsaparapizza.mana.ios.tests;
+				PRODUCT_NAME = ManaIOSTests;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SKIP_INSTALL = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mana.app/Mana";
+			};
+			name = Release;
+		};
+		DB2966735DDB141C5AA53BD6 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E45BB79D0AA59B1896EB5294,
+				EAA9949B68EAEA8E686C4B9E,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F78970D61EA8F51AB5B365A8 = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DB2966735DDB141C5AA53BD6;
+			buildPhases = (
+				9363C7970F877B8503FBA756,
+				23E92B1C87D5D47C37A1EC6C,
+				A4A5F6DAF455A1E89A81E292,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E560D2927A6849DA01A62D01,
+			);
+			fileSystemSynchronizedGroups = (
+				31058494C3BBA59C9BC5969F,
+			);
+			name = ManaIOSTests;
+			packageProductDependencies = (
+				121BD920F02D88F476E0B55F,
+			);
+			productName = ManaIOSTests;
+			productReference = 2F0538FD7AB73C4399B4001D;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		14A614135D58ED6276665D1D = {
+			isa = PBXFileReference;
+			explicitFileType = wrapper.cfbundle;
+			includeInIndex = 0;
+			path = ManaIOSUITests.xctest;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A7E5E5554E81AB7971BA4064 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F37D57E58BDF7774C0EC6874 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		60530082FF562E51440746E5 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B615D7ADDB6D768B4DC39D97 = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AEACDD79EE7DDE5AE34A09FC;
+			proxyType = 1;
+			remoteGlobalIDString = A12F813CEAAB1AEBD9BC5D46;
+			remoteInfo = ManaIOS;
+		};
+		B2D22EA02FAB503406AFFC02 = {
+			isa = PBXTargetDependency;
+			target = A12F813CEAAB1AEBD9BC5D46;
+			targetProxy = B615D7ADDB6D768B4DC39D97;
+		};
+		62082D25EEAA459DC14443E0 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5P4X92K99Q;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.salsaparapizza.mana.ios.uitests;
+				PRODUCT_NAME = ManaIOSUITests;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SKIP_INSTALL = YES;
+				TEST_TARGET_NAME = ManaIOS;
+			};
+			name = Debug;
+		};
+		CAE15A3544007E55BBAFB75F = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5P4X92K99Q;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.salsaparapizza.mana.ios.uitests;
+				PRODUCT_NAME = ManaIOSUITests;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SKIP_INSTALL = YES;
+				TEST_TARGET_NAME = ManaIOS;
+			};
+			name = Release;
+		};
+		AA9F0D82144700FCE9473142 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				62082D25EEAA459DC14443E0,
+				CAE15A3544007E55BBAFB75F,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E86F46BACF0A6D5315410439 = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA9F0D82144700FCE9473142;
+			buildPhases = (
+				A7E5E5554E81AB7971BA4064,
+				F37D57E58BDF7774C0EC6874,
+				60530082FF562E51440746E5,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B2D22EA02FAB503406AFFC02,
+			);
+			fileSystemSynchronizedGroups = (
+				4073274843D5DC40AC0B75E5,
+			);
+			name = ManaIOSUITests;
+			packageProductDependencies = (
+			);
+			productName = ManaIOSUITests;
+			productReference = 14A614135D58ED6276665D1D;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		82BA78E949CF74FC3E43509A = {
+			isa = PBXGroup;
+			children = (
+				0C291A8ECAFEC74143A1A2F6,
+				8E75B155D0B98E4FB1330A0D,
+				2F0538FD7AB73C4399B4001D,
+				14A614135D58ED6276665D1D,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E691A73B22A45DCB77A61234 = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.xml;
+			path = "Mana-Info.plist";
+			sourceTree = "<group>";
+		};
+		F403168C110BF5C90408FDB2 = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.xml;
+			path = "ManaWidgets-Info.plist";
+			sourceTree = "<group>";
+		};
+		A23C5247C48B74B1C9AE7C5D = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.entitlements;
+			path = Mana.entitlements;
+			sourceTree = "<group>";
+		};
+		4842A652054FC892F0E1FB74 = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.entitlements;
+			path = ManaWidgets.entitlements;
+			sourceTree = "<group>";
+		};
+		D3FD7CFA46AEB905B8C7F8C8 = {
+			isa = PBXGroup;
+			children = (
+				E691A73B22A45DCB77A61234,
+				F403168C110BF5C90408FDB2,
+				A23C5247C48B74B1C9AE7C5D,
+				4842A652054FC892F0E1FB74,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		FC103B9211520C231EDDF60F = {
+			isa = PBXGroup;
+			children = (
+				2CB37BCDC51550F7CB23194A,
+				D579B5DC88A76E4D62810DFF,
+				6A29E2B557BBD19A47C2FCE1,
+				31058494C3BBA59C9BC5969F,
+				4073274843D5DC40AC0B75E5,
+				D3FD7CFA46AEB905B8C7F8C8,
+				82BA78E949CF74FC3E43509A,
+			);
+			sourceTree = "<group>";
+		};
+		308F4F5CFA8AEA9764E8C85A = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+			};
+			name = Debug;
+		};
+		9F4D5D34A0CAB820ACA06AA0 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E85B073F110AFBDE82145FD2 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				308F4F5CFA8AEA9764E8C85A,
+				9F4D5D34A0CAB820ACA06AA0,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AEACDD79EE7DDE5AE34A09FC = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					A12F813CEAAB1AEBD9BC5D46 = {
+						CreatedOnToolsVersion = 26.0;
+						DevelopmentTeam = 5P4X92K99Q;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
+					};
+					F4A9C36B97028ECFCA43430D = {
+						CreatedOnToolsVersion = 26.0;
+						DevelopmentTeam = 5P4X92K99Q;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
+					};
+					F78970D61EA8F51AB5B365A8 = {
+						CreatedOnToolsVersion = 26.0;
+						DevelopmentTeam = 5P4X92K99Q;
+						ProvisioningStyle = Automatic;
+						TestTargetID = A12F813CEAAB1AEBD9BC5D46;
+					};
+					E86F46BACF0A6D5315410439 = {
+						CreatedOnToolsVersion = 26.0;
+						DevelopmentTeam = 5P4X92K99Q;
+						ProvisioningStyle = Automatic;
+						TestTargetID = A12F813CEAAB1AEBD9BC5D46;
+					};
+				};
+			};
+			buildConfigurationList = E85B073F110AFBDE82145FD2;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				de,
+				es,
+				fr,
+				Base,
+			);
+			mainGroup = FC103B9211520C231EDDF60F;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6735E0AC0EDF706753A2A0CE,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 82BA78E949CF74FC3E43509A;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A12F813CEAAB1AEBD9BC5D46,
+				F4A9C36B97028ECFCA43430D,
+				F78970D61EA8F51AB5B365A8,
+				E86F46BACF0A6D5315410439,
+			);
+		};
+	};
+	rootObject = AEACDD79EE7DDE5AE34A09FC;
+}

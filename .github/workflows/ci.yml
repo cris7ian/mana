@@ -14,7 +14,24 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
+      - name: Verify localization coverage and format arguments
+        run: python3 scripts/verify-localizations.py
       - name: Run Mana test suite
         env:
           DEVELOPER_DIR: /Applications/Xcode_26.0.1.app/Contents/Developer
         run: xcodebuild -project Mana.xcodeproj -scheme Mana -configuration Debug -destination 'platform=macOS,arch=arm64' test
+
+  ios:
+    name: Shared core and iPhone tests
+    runs-on: macos-15
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.0.1.app/Contents/Developer
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+      - name: Test shared provider core
+        run: swift test --package-path Packages/ManaCore
+      - name: Test iPhone app and build widgets
+        run: zsh scripts/verify-ios.sh
+      - name: Verify compiler-extracted localization keys
+        run: python3 scripts/verify-localizations.py --extracted build/ios/Build/Intermediates.noindex

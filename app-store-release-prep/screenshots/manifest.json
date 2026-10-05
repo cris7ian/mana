@@ -1,0 +1,122 @@
+[
+  {
+    "file": "screenshots/iphone-6.9/01-save-your-mana.png",
+    "width": 1320,
+    "height": 2868,
+    "mode": "RGB",
+    "headline": "Save your mana.",
+    "source": "usage-dark",
+    "source-crops": [],
+    "sha256": "61eea5e8b263eef45cb0da1076cde6ddefa36448194b1cfe0d0f84c634e1ee4c"
+  },
+  {
+    "file": "screenshots/iphone-6.9/02-two-spellbooks.png",
+    "width": 1320,
+    "height": 2868,
+    "mode": "RGB",
+    "headline": "Two spellbooks. One place.",
+    "source": "usage-light",
+    "source-crops": [
+      [
+        60,
+        564,
+        1260,
+        1356
+      ],
+      [
+        60,
+        1416,
+        1260,
+        2430
+      ]
+    ],
+    "sha256": "5562ed2f64849772c7ff9941acee266e26d350da125cca4c27ee19b071222e35"
+  },
+  {
+    "file": "screenshots/iphone-6.9/03-reset-countdowns.png",
+    "width": 1320,
+    "height": 2868,
+    "mode": "RGB",
+    "headline": "Know when you\u2019re back.",
+    "source": "codex-dark",
+    "source-crops": [
+      [
+        60,
+        648,
+        1260,
+        1410
+      ]
+    ],
+    "sha256": "7247e3ebc98b1975819e97f91965aece8981341644ed49126c59360e43ca1002"
+  },
+  {
+    "file": "screenshots/iphone-6.9/04-your-keys.png",
+    "width": 1320,
+    "height": 2868,
+    "mode": "RGB",
+    "headline": "Your keys. Your iPhone.",
+    "source": "privacy-light",
+    "source-crops": [],
+    "sha256": "8e43e060ae890eecad15617ed78fbf66575df8a97811263f09872092ff4932f5"
+  },
+  {
+    "file": "screenshots/iphone-6.5/01-save-your-mana.png",
+    "width": 1284,
+    "height": 2778,
+    "mode": "RGB",
+    "headline": "Save your mana.",
+    "source": "usage-dark",
+    "source-crops": [],
+    "sha256": "3c303928e92deeb214c7dca2cbded8fae47227040bf894492118c20e9db4badc"
+  },
+  {
+    "file": "screenshots/iphone-6.5/02-two-spellbooks.png",
+    "width": 1284,
+    "height": 2778,
+    "mode": "RGB",
+    "headline": "Two spellbooks. One place.",
+    "source": "usage-light",
+    "source-crops": [
+      [
+        60,
+        564,
+        1260,
+        1356
+      ],
+      [
+        60,
+        1416,
+        1260,
+        2430
+      ]
+    ],
+    "sha256": "3eb9ec821f5014fcf2997f808cfb5e3d6b8d96a93fbe510b4e32707f15de2efd"
+  },
+  {
+    "file": "screenshots/iphone-6.5/03-reset-countdowns.png",
+    "width": 1284,
+    "height": 2778,
+    "mode": "RGB",
+    "headline": "Know when you\u2019re back.",
+    "source": "codex-dark",
+    "source-crops": [
+      [
+        60,
+        648,
+        1260,
+        1410
+      ]
+    ],
+    "sha256": "a38abf951a798dc248a7c6a8dbade5297eb264197e5ab0bf3f4cd160da7c18ab"
+  },
+  {
+    "file": "screenshots/iphone-6.5/04-your-keys.png",
+    "width": 1284,
+    "height": 2778,
+    "mode": "RGB",
+    "headline": "Your keys. Your iPhone.",
+    "source": "privacy-light",
+    "source-crops": [],
+    "sha256": "833736634b2ec5c86d4686cc1a048b2e87d7899322c9d8e7c359fb9956db4530"
+  }
+]

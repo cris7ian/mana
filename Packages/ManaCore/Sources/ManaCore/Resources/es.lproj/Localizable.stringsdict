@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+    <key>Rate limited. Try again in %lld seconds.</key><dict>
+        <key>NSStringLocalizedFormatKey</key><string>%#@seconds@</string>
+        <key>seconds</key><dict>
+            <key>NSStringFormatSpecTypeKey</key><string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key><string>lld</string>
+            <key>one</key><string>Límite de solicitudes alcanzado. Inténtalo de nuevo en %lld segundo.</string>
+            <key>other</key><string>Límite de solicitudes alcanzado. Inténtalo de nuevo en %lld segundos.</string>
+        </dict>
+    </dict>
+</dict></plist>

@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		1A0000000000000000000050 /* ManaCore in Frameworks */ = {isa = PBXBuildFile; productRef = 1A0000000000000000000052 /* ManaCore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		1A0000000000000000000011 /* Mana.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mana.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A0000000000000000000021 /* ManaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ManaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -21,6 +25,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A0000000000000000000050 /* ManaCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,6 +77,7 @@
 			);
 			name = Mana;
 			packageProductDependencies = (
+				1A0000000000000000000052 /* ManaCore */,
 			);
 			productName = Mana;
 			productReference = 1A0000000000000000000011 /* Mana.app */;
@@ -131,6 +137,9 @@
 			);
 			mainGroup = 1A0000000000000000000002;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				1A0000000000000000000051 /* XCLocalSwiftPackageReference "Packages/ManaCore" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1A0000000000000000000003 /* Products */;
 			projectDirPath = "";
@@ -444,6 +453,21 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		1A0000000000000000000051 /* XCLocalSwiftPackageReference "Packages/ManaCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/ManaCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1A0000000000000000000052 /* ManaCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A0000000000000000000051 /* XCLocalSwiftPackageReference "Packages/ManaCore" */;
+			productName = ManaCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1A0000000000000000000001 /* Project object */;
 }

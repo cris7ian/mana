@@ -1,0 +1,1 @@
+codex,opencode,quota,limits,remaining,reset,widget,developer,coding,assistant,subscription,monitor

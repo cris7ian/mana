@@ -1,0 +1,19 @@
+Mana is an independent iPhone utility for viewing Codex and OpenCode Go usage quotas. It does not generate AI content or sell provider subscriptions. Existing provider access is required for live usage.
+
+To explore the interface without a provider account:
+1. Open Mana.
+2. Open Settings.
+3. Enable Demo mode.
+4. Open Usage.
+5. Tap Codex or OpenCode Go to inspect quota windows and reset countdowns.
+6. Tap a reset countdown to see its date and time.
+
+Demo mode is a user-facing feature in the submitted app. All demo quotas are synthetic and labeled “Demo • Sample data.” Demo mode does not contact providers or read provider credentials.
+
+For live functionality, disable Demo mode. Codex uses browser device-code approval with an OpenAI account. OpenCode Go uses a provider API key entered in a secure field. Credentials remain in device-only Keychain storage. Only the latest normalized usage is cached locally; there is no usage history or cloud sync.
+
+Home Screen widgets support both providers together or a selected provider. Lock Screen widgets show one selected quota. iOS controls background and widget refresh timing. Demo widgets also label their sample data.
+
+Mana is not affiliated with or endorsed by OpenAI or OpenCode.
+
+PRE-SUBMISSION ACTION: Verify supported live account access, provider authorization, and the distributed build before using these notes. Supply any required review access through App Store Connect's private review fields. Demo mode is not a substitute for review access to the app's full functionality. Do not submit this preparation note unchanged.

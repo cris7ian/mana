@@ -1,0 +1,31 @@
+Save your mana.
+
+Your AI tools have limits. Mana puts them in one clear view, so you can see what’s left before your next task.
+
+TWO SPELLBOOKS. ONE PLACE.
+
+Check Codex and OpenCode Go usage on your iPhone. See your five-hour and weekly quotas, plus the monthly quota for OpenCode Go. The bars show what’s left, not what you’ve spent.
+
+KNOW WHEN YOU’RE BACK.
+
+See quota reset countdowns. Tap a countdown to see its date and time. Pull down to refresh when you want another look. Mana also checks every minute while the app is open.
+
+KEEP IT CLOSE.
+
+Add a Home Screen widget for both providers or just one. Add a Lock Screen widget for a selected quota. iOS decides when background and widget updates run; they are not live meters.
+
+YOUR KEYS. YOUR IPHONE.
+
+Connect Codex through browser approval with your OpenAI account. Connect OpenCode Go with your own API key. Credentials stay in your iPhone’s Keychain. Mana saves only the latest usage, not a history. Disconnect a provider to remove its saved credentials and usage.
+
+Small, focused, and open source. No charts to study. No extra dashboard to manage. Just a place to check your mana.
+
+Save a spell for the boss fight.
+
+COMPATIBILITY
+
+iPhone with iOS 18 or later. Live usage requires a supported provider account and an internet connection. Provider subscriptions and service access are separate from Mana.
+
+The iPhone app supports Codex and OpenCode Go. It does not include Antigravity, notifications, multiple accounts per provider, usage history, or cloud sync.
+
+Mana is an independent utility. It is not affiliated with or endorsed by OpenAI or OpenCode.

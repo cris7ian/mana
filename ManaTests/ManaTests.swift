@@ -17,62 +17,6 @@ final class ManaTests: XCTestCase {
         }
     }
 
-    func testResetCountdownShowsDaysAndHoursAtOrAboveOneDay() {
-        let now = Date(timeIntervalSince1970: 1_700_000_000)
-        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(2 * 86_400 + 3 * 3_600 + 59 * 60), now: now), "2d 3h")
-        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(86_400), now: now), "1d 0h")
-        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(86_401), now: now), "1d 0h")
-    }
-
-    func testResetCountdownShowsHoursAndMinutesBelowOneDay() {
-        let now = Date(timeIntervalSince1970: 1_700_000_000)
-        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(86_399), now: now), "23h 59m")
-        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(3_600), now: now), "1h 0m")
-        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(3_601), now: now), "1h 1m")
-        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(59), now: now), "0h 1m")
-        XCTAssertEqual(ResetCountdown.text(until: now, now: now), "Reset due")
-        XCTAssertEqual(ResetCountdown.text(until: now.addingTimeInterval(-60), now: now), "Reset due")
-    }
-
-    func testRemainingPercentInvertsAndClampsUsedPercent() {
-        XCTAssertEqual(WindowContent.percent(0).remainingPercent, 100)
-        XCTAssertEqual(WindowContent.percent(25).remainingPercent, 75)
-        XCTAssertEqual(WindowContent.percent(100).remainingPercent, 0)
-        XCTAssertEqual(WindowContent.percent(-10).remainingPercent, 100)
-        XCTAssertEqual(WindowContent.percent(120).remainingPercent, 0)
-        XCTAssertNil(WindowContent.unknownPercent.remainingPercent)
-        XCTAssertNil(WindowContent.percent(.nan).remainingPercent)
-    }
-
-    func testCodexFixtureDecodesWindowsLabelsAndPercentages() throws {
-        let snapshot = try CodexUsageDecoder.decode(fixture("codex_valid"))
-        XCTAssertEqual(snapshot.provider, .codex)
-        XCTAssertFalse(snapshot.isBlocked)
-        XCTAssertEqual(snapshot.windows.map(\.label), ["5h", "1w"])
-        XCTAssertEqual(snapshot.windows[0].content, .percent(42.5))
-        XCTAssertNotNil(snapshot.windows[0].resetAt)
-    }
-
-    func testCodexBlockedAndMissingValuesRemainExplicit() throws {
-        let snapshot = try CodexUsageDecoder.decode(fixture("codex_blocked_missing"))
-        XCTAssertTrue(snapshot.isBlocked)
-        XCTAssertEqual(snapshot.windows[0].content, .unknownPercent)
-        XCTAssertEqual(snapshot.windows[0].resetText, "invalid")
-        XCTAssertEqual(snapshot.windows[1].content, .missing)
-        XCTAssertEqual(snapshot.displayWindows.map(\.id), ["primary_window"])
-    }
-
-    func testGoFixtureDecodesAllWindowsAndStatuses() throws {
-        let snapshot = try OpenCodeGoUsageDecoder.decode(fixture("go_valid"))
-        XCTAssertEqual(snapshot.windows.map(\.label), ["5h", "week", "month"])
-        XCTAssertEqual(snapshot.windows[0].content, .percent(25))
-        XCTAssertNotNil(snapshot.windows[1].resetAt)
-        let partial = try OpenCodeGoUsageDecoder.decode(fixture("go_status_missing"))
-        XCTAssertEqual(partial.windows[0].content, .blocked("exhausted"))
-        XCTAssertEqual(partial.windows[1].content, .unknownPercent)
-        XCTAssertEqual(partial.windows[2].content, .missing)
-    }
-
     func testAntigravityQuotaUsesFractionsAndOmitsSlidingResets() throws {
         let body = """
         {"status":"SUCCESS","num_turns":0,"command":{"name":"usage","data":{"groups":[
@@ -109,55 +53,6 @@ final class ManaTests: XCTestCase {
         settings.antigravityEnabled = false
         XCTAssertFalse(settings.visibleProviders.contains(.antigravity))
         XCTAssertEqual(try ManaCLIOptions.parse(["--provider", "antigravity", "--json"]).provider, .antigravity)
-    }
-
-    func testUnexpectedEnvelopesAreRejected() throws {
-        XCTAssertThrowsError(try CodexUsageDecoder.decode(fixture("unexpected")))
-        XCTAssertThrowsError(try OpenCodeGoUsageDecoder.decode(fixture("unexpected")))
-    }
-
-    func testClientRequestsUseExpectedURLsHeadersAndTimeouts() throws {
-        let codex = try CodexUsageClient().makeRequest(credentials: .init(accessToken: "token", accountID: "acct"))
-        XCTAssertEqual(codex.url, CodexUsageClient.usageURL)
-        XCTAssertEqual(codex.timeoutInterval, 15)
-        XCTAssertEqual(codex.value(forHTTPHeaderField: "Authorization"), "Bearer token")
-        XCTAssertEqual(codex.value(forHTTPHeaderField: "ChatGPT-Account-Id"), "acct")
-        XCTAssertEqual(codex.value(forHTTPHeaderField: "Accept"), "application/json")
-        XCTAssertEqual(codex.value(forHTTPHeaderField: "User-Agent"), "codexusage/1.0")
-
-        let go = try OpenCodeGoUsageClient().makeRequest(credentials: .init(apiKey: "key"))
-        XCTAssertEqual(go.url, OpenCodeGoUsageClient.usageURL)
-        XCTAssertEqual(go.timeoutInterval, 15)
-        XCTAssertEqual(go.value(forHTTPHeaderField: "Authorization"), "Bearer key")
-        XCTAssertEqual(go.value(forHTTPHeaderField: "User-Agent"), "gousage/1.0")
-    }
-
-    func testClientsRejectMissingCredentialsAndClassifyStatuses() throws {
-        XCTAssertThrowsError(try CodexUsageClient().makeRequest(credentials: .init(accessToken: "", accountID: "acct")))
-        XCTAssertThrowsError(try OpenCodeGoUsageClient().makeRequest(credentials: .init(apiKey: " ")))
-        XCTAssertThrowsError(try CodexUsageClient.validate(statusCode: 401, retryAfter: nil)) { error in
-            XCTAssertEqual(error as? ProviderError, .authentication(statusCode: 401))
-        }
-        XCTAssertThrowsError(try OpenCodeGoUsageClient.validate(statusCode: 429, retryAfter: 42)) { error in
-            XCTAssertEqual(error as? ProviderError, .rateLimited(retryAfter: 42))
-        }
-        XCTAssertThrowsError(try CodexUsageClient.validate(statusCode: 500, retryAfter: nil)) { error in
-            XCTAssertEqual(error as? ProviderError, .response(statusCode: 500))
-        }
-    }
-
-    func testTypedErrorsDoNotContainResponseBodies() {
-        let error = ProviderError.response(statusCode: 500)
-        XCTAssertFalse(error.localizedDescription.contains("secret"))
-        XCTAssertEqual(RetryAfterParser.interval("120"), 120)
-    }
-
-    func testRetryAfterRejectsNonFiniteAndUnrepresentableIntervals() {
-        XCTAssertNil(RetryAfterParser.interval("inf"))
-        XCTAssertNil(RetryAfterParser.interval("nan"))
-        XCTAssertNil(RetryAfterParser.interval("1e25"))
-        XCTAssertNotNil(ProviderError.rateLimited(retryAfter: .infinity).errorDescription)
-        XCTAssertNotNil(ProviderError.rateLimited(retryAfter: 1e25).errorDescription)
     }
 
     func testOAuthListenerIgnoresInvalidCallbackBeforeValidOne() async throws {
@@ -369,7 +264,7 @@ final class ManaTests: XCTestCase {
 
     @MainActor
     func testRefreshCoordinatorKeepsGoodProviderWhenOtherFails() async {
-        let settings = UsageSettings(defaults: UserDefaults(suiteName: UUID().uuidString)!)
+        let settings = makeSettings()
         let good = TestProvider(provider: .openCodeGo, result: .success(sampleSnapshot(.openCodeGo)))
         let bad = TestProvider(provider: .codex, result: .failure(.authentication(statusCode: 401)))
         let coordinator = UsageRefreshCoordinator(providers: [good, bad], settings: settings)
@@ -380,26 +275,27 @@ final class ManaTests: XCTestCase {
 
     @MainActor
     func testRefreshFailureRetainsLastGoodSnapshotAndMarksStale() async {
-        let settings = UsageSettings(defaults: UserDefaults(suiteName: UUID().uuidString)!)
+        let settings = makeSettings()
         let provider = MutableTestProvider(provider: .codex)
         let coordinator = UsageRefreshCoordinator(providers: [provider], settings: settings)
         await coordinator.refresh(.codex)
+        let previous = coordinator.states[.codex]
         provider.failNext = true
         await coordinator.refresh(.codex)
-        XCTAssertNotNil(coordinator.states[.codex]?.snapshot)
+        XCTAssertEqual(coordinator.states[.codex]?.snapshot, previous?.snapshot)
+        XCTAssertEqual(coordinator.states[.codex]?.lastSuccessAt, previous?.lastSuccessAt)
+        XCTAssertEqual(coordinator.states[.codex]?.requestState, .failed(.transport("network unavailable")))
         XCTAssertTrue(coordinator.states[.codex]?.isStale == true)
     }
 
     @MainActor
     func testSameProviderRequestsDoNotOverlap() async throws {
-        let settings = UsageSettings(defaults: UserDefaults(suiteName: UUID().uuidString)!)
-        let provider = GatedTestProvider(provider: .codex, snapshot: sampleSnapshot(.codex))
+        let settings = makeSettings()
+        let started = expectation(description: "Provider refresh started")
+        let provider = GatedTestProvider(provider: .codex, snapshot: sampleSnapshot(.codex), started: started)
         let coordinator = UsageRefreshCoordinator(providers: [provider], settings: settings)
         let first = Task { await coordinator.refresh(.codex, trigger: .manual) }
-        for _ in 0..<100 {
-            if await provider.callCount() == 1 { break }
-            try await Task.sleep(for: .milliseconds(5))
-        }
+        await fulfillment(of: [started], timeout: 2)
         let countAfterFirstStart = await provider.callCount()
         XCTAssertEqual(countAfterFirstStart, 1)
         await coordinator.refresh(.codex, trigger: .manual)
@@ -412,14 +308,12 @@ final class ManaTests: XCTestCase {
 
     @MainActor
     func testClearingProviderInvalidatesAnInFlightSnapshot() async throws {
-        let settings = UsageSettings(defaults: UserDefaults(suiteName: UUID().uuidString)!)
-        let provider = GatedTestProvider(provider: .codex, snapshot: sampleSnapshot(.codex))
+        let settings = makeSettings()
+        let started = expectation(description: "Provider refresh started")
+        let provider = GatedTestProvider(provider: .codex, snapshot: sampleSnapshot(.codex), started: started)
         let coordinator = UsageRefreshCoordinator(providers: [provider], settings: settings)
         let refresh = Task { await coordinator.refresh(.codex) }
-        for _ in 0..<100 {
-            if await provider.callCount() == 1 { break }
-            try await Task.sleep(for: .milliseconds(5))
-        }
+        await fulfillment(of: [started], timeout: 2)
 
         coordinator.clearSnapshot(for: .codex)
         await provider.release()
@@ -429,7 +323,7 @@ final class ManaTests: XCTestCase {
 
     @MainActor
     func testRetryAfterSkipsAutomaticRefreshButAllowsManualRefresh() async {
-        let settings = UsageSettings(defaults: UserDefaults(suiteName: UUID().uuidString)!)
+        let settings = makeSettings()
         let provider = MutableTestProvider(provider: .codex)
         provider.rateLimitNext = true
         let now = Date(timeIntervalSince1970: 1_790_000_000)
@@ -446,7 +340,7 @@ final class ManaTests: XCTestCase {
 
     @MainActor
     func testWakeRefreshesProviders() async {
-        let settings = UsageSettings(defaults: UserDefaults(suiteName: UUID().uuidString)!)
+        let settings = makeSettings()
         let provider = MutableTestProvider(provider: .codex)
         let coordinator = UsageRefreshCoordinator(providers: [provider], settings: settings)
         await coordinator.handleWake()
@@ -455,7 +349,7 @@ final class ManaTests: XCTestCase {
 
     @MainActor
     func testSettingsWindowControllerCentersWindowBeforeActivation() async throws {
-        let settings = UsageSettings(defaults: UserDefaults(suiteName: UUID().uuidString)!)
+        let settings = makeSettings()
         let coordinator = UsageRefreshCoordinator(providers: [], settings: settings)
         let store = InMemoryCredentialStore()
         SettingsWindowController.shared.show(
@@ -465,7 +359,7 @@ final class ManaTests: XCTestCase {
             credentialLoader: ProviderCredentialLoader(store: store),
             codexOAuth: CodexOAuthClient(store: store)
         )
-        let window = try XCTUnwrap(NSApp.windows.first { $0.title == "Mana Settings" })
+        let window = try XCTUnwrap(NSApp.windows.first { $0.title == String(localized: "Mana Settings") })
         let screen = try XCTUnwrap(NSScreen.main ?? NSScreen.screens.first)
         XCTAssertEqual(window.frame.midX, screen.visibleFrame.midX, accuracy: 1)
         XCTAssertEqual(window.frame.midY, screen.visibleFrame.midY, accuracy: 1)
@@ -475,16 +369,13 @@ final class ManaTests: XCTestCase {
 
     @MainActor
     func testSettingsDefaultRefreshIntervalIsSixtySeconds() {
-        let settings = UsageSettings(defaults: UserDefaults(suiteName: UUID().uuidString)!)
+        let settings = makeSettings()
         XCTAssertEqual(settings.refreshInterval, 60)
     }
 
     @MainActor
     func testConfiguredProvidersAreTheOnlyProvidersVisibleInMenu() {
-        let settings = UsageSettings(
-            defaults: UserDefaults(suiteName: UUID().uuidString)!,
-            configuredProviders: [.codex, .openCodeGo]
-        )
+        let settings = makeSettings(configuredProviders: [.codex, .openCodeGo])
 
         XCTAssertEqual(settings.visibleProviders, [.codex, .openCodeGo])
 
@@ -496,6 +387,14 @@ final class ManaTests: XCTestCase {
 
         settings.setProviderConfigured(.codex, isConfigured: true)
         XCTAssertEqual(settings.visibleProviders, [.codex])
+    }
+
+    @MainActor
+    private func makeSettings(configuredProviders: Set<ProviderID> = []) -> UsageSettings {
+        let name = "mana-settings-test-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: name)!
+        addTeardownBlock { defaults.removePersistentDomain(forName: name) }
+        return UsageSettings(defaults: defaults, configuredProviders: configuredProviders)
     }
 
     private func connectToListener(_ url: URL) throws -> Int32 {
@@ -523,14 +422,6 @@ final class ManaTests: XCTestCase {
         defer { Darwin.close(fd) }
         let request = "GET \(path) HTTP/1.1\r\nHost: localhost\r\n\r\n"
         _ = request.withCString { send(fd, $0, request.utf8.count, 0) }
-    }
-
-    private func fixture(_ name: String) throws -> Data {
-        let bundle = Bundle(for: Self.self)
-        let url = bundle.url(forResource: name, withExtension: "json", subdirectory: "Fixtures")
-            ?? bundle.url(forResource: name, withExtension: "json")
-        guard let url else { throw NSError(domain: "ManaTests", code: 1, userInfo: [NSLocalizedDescriptionKey: "Fixture not found: \(name)"]) }
-        return try Data(contentsOf: url)
     }
 
     private func sampleSnapshot(_ provider: ProviderID) -> ProviderSnapshot {
@@ -572,12 +463,20 @@ private struct TestProvider: UsageProviding {
 private actor GatedTestProvider: UsageProviding {
     nonisolated let provider: ProviderID
     private let snapshot: ProviderSnapshot
+    private let started: XCTestExpectation
     private var calls = 0
     private var continuation: CheckedContinuation<ProviderSnapshot, Never>?
-    init(provider: ProviderID, snapshot: ProviderSnapshot) { self.provider = provider; self.snapshot = snapshot }
+    init(provider: ProviderID, snapshot: ProviderSnapshot, started: XCTestExpectation) {
+        self.provider = provider
+        self.snapshot = snapshot
+        self.started = started
+    }
     func fetchSnapshot() async throws -> ProviderSnapshot {
         calls += 1
-        return await withCheckedContinuation { continuation = $0 }
+        return await withCheckedContinuation {
+            continuation = $0
+            started.fulfill()
+        }
     }
     func callCount() -> Int { calls }
     func release() { continuation?.resume(returning: snapshot); continuation = nil }

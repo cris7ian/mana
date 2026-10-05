@@ -1,0 +1,44 @@
+[
+  {
+    "name": "codex-dark",
+    "sha256": "47fdc21ff36316e2a5bf41e1b1dd3c788c937c11b2b9e474783af8869c548346",
+    "source": "XCTest screenshot of the real app in isolated demo mode",
+    "synthetic": true
+  },
+  {
+    "name": "usage-dark",
+    "sha256": "c4e330b7adacb1897a7c7b0645886adfb6e96b200d22e611b2e758f11b386e69",
+    "source": "XCTest screenshot of the real app in isolated demo mode",
+    "synthetic": true
+  },
+  {
+    "name": "privacy-light",
+    "sha256": "920d458ff0fd5be429b7d29cc6019e09c747345e5f342c8679486b0e720cb45a",
+    "source": "XCTest screenshot of the real app in isolated demo mode",
+    "synthetic": true
+  },
+  {
+    "name": "settings-light",
+    "sha256": "17831b32695ee30d3842cb6db5a638954c20a6f7eb8278e7493cea1d1301a9d3",
+    "source": "XCTest screenshot of the real app in isolated demo mode",
+    "synthetic": true
+  },
+  {
+    "name": "opencode-light",
+    "sha256": "25391262ee85f36e791737e8d02b5e6fb2e5c9c292f75c1661dcb612bf8c1197",
+    "source": "XCTest screenshot of the real app in isolated demo mode",
+    "synthetic": true
+  },
+  {
+    "name": "codex-light",
+    "sha256": "150e931098b65395111872e3b50d358eb35ee8016cee468654346ca315e6cf2c",
+    "source": "XCTest screenshot of the real app in isolated demo mode",
+    "synthetic": true
+  },
+  {
+    "name": "usage-light",
+    "sha256": "9d6af04388949de3ee457ddbd845205a4699f7cfa1f397bb88df7c7ce596cd65",
+    "source": "XCTest screenshot of the real app in isolated demo mode",
+    "synthetic": true
+  }
+]
