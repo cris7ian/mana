@@ -29,6 +29,7 @@ func usagePresentationUsesRequestedLanguage(language: String, weekly: String, ho
 
 @Test func localizedCountdownPreservesBoundaryRounding() {
     let now = Date(timeIntervalSince1970: 1_700_000_000)
+    let multiDayInterval: TimeInterval = 2 * 86_400 + 3 * 3_600 + 59 * 60
     let cases: [(TimeInterval, String, String)] = [
         (-60.0, "Reset due", "Zurücksetzung fällig"),
         (0, "Reset due", "Zurücksetzung fällig"),
@@ -38,7 +39,7 @@ func usagePresentationUsesRequestedLanguage(language: String, weekly: String, ho
         (86_399, "23h 59m", "23 Std. 59 Min."),
         (86_400, "1d 0h", "1 T. 0 Std."),
         (86_401, "1d 0h", "1 T. 0 Std."),
-        (2 * 86_400 + 3 * 3_600 + 59 * 60, "2d 3h", "2 T. 3 Std.")
+        (multiDayInterval, "2d 3h", "2 T. 3 Std.")
     ]
     for (seconds, english, german) in cases {
         let reset = now.addingTimeInterval(seconds)
