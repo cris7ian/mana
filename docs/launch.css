@@ -1,0 +1,21 @@
+/* Launch preview and information pages use the existing Mana palette. */
+.iphone-preview { border-top: 1px solid #ffffff15; display: grid; grid-template-columns: 1fr 1.05fr; gap: 48px; align-items: center; }
+.iphone-copy h2, .info-page h1 { font-size: clamp(36px, 4vw, 54px); letter-spacing: -0.055em; line-height: 1.12; margin: 12px 0 24px; }
+.iphone-copy p:not(.kicker):not(.lede), .info-page p, .info-page li { color: #a9b9cc; line-height: 1.7; }
+.iphone-copy .preview-status { border-left: 2px solid #67d9f5; padding-left: 16px; }
+.iphone-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.iphone-gallery figure { margin: 0; }
+.iphone-gallery img { display: block; width: 100%; height: auto; border: 1px solid #8cb3e333; border-radius: 24px; }
+.iphone-gallery figcaption, .demo-caption { color: #a9b9cc; font-size: 12px; line-height: 1.6; margin-top: 12px; }
+.demo-caption { grid-column: 1 / -1; margin: 0; }
+.info-page { max-width: 800px; padding-top: 64px; padding-bottom: 80px; }
+.info-page section { margin-top: 40px; }
+.info-page h2 { font-size: 25px; letter-spacing: -0.035em; }
+.info-page a:not(.button) { color: #8fd2ff; text-decoration: underline; text-underline-offset: 3px; }
+.info-page code { overflow-wrap: anywhere; font-size: 0.9em; }
+.info-page li { margin-bottom: 10px; }
+.footer-inner > span:last-child { flex-wrap: wrap; }
+.hero-copy, .hero-art { min-width: 0; }
+@media (max-width: 800px) { .iphone-preview { grid-template-columns: 1fr; gap: 32px; } .iphone-gallery { max-width: 520px; margin: auto; } }
+@media (max-width: 360px) { .header-inner { flex-wrap: wrap; gap: 14px; padding-top: 16px; padding-bottom: 16px; } .site-header nav { width: 100%; justify-content: space-between; } }
+@media (max-width: 560px) { .iphone-gallery { gap: 12px; } .iphone-gallery img { border-radius: 16px; } .info-page { padding-top: 40px; } }

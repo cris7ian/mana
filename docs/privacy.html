@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b111c" />
+    <meta name="description" content="How Mana handles provider authentication, network requests, local credentials, quota caches, and support information." />
+    <link rel="canonical" href="https://mana.salsaparapizza.com/privacy.html" />
+    <link rel="icon" type="image/png" href="/assets/hexagon-128.png" />
+    <link rel="apple-touch-icon" href="/assets/app-icon.png" />
+    <link rel="stylesheet" href="/styles.css?v=homebrew-copy" />
+    <link rel="stylesheet" href="/hero.css" />
+    <link rel="stylesheet" href="/launch.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Mana — Privacy" />
+    <meta property="og:description" content="How Mana handles provider authentication, network requests, local credentials, quota caches, and support information." />
+    <meta property="og:url" content="https://mana.salsaparapizza.com/privacy.html" />
+    <meta property="og:image" content="https://mana.salsaparapizza.com/assets/app-icon.png" />
+    <meta property="og:image:alt" content="Mana’s blue hexagon app icon" />
+    <meta name="twitter:card" content="summary" />
+    <title>Mana — Privacy</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header"><div class="shell header-inner">
+      <a class="brand" href="/" aria-label="Mana home"><img src="/assets/hexagon-128.png" width="28" height="28" alt="" />Mana</a>
+      <nav aria-label="Main navigation"><a href="/">Home</a><a href="/support.html">Support</a><a href="/privacy.html">Privacy</a></nav>
+    </div></header>
+    <main id="main" class="shell info-page">
+      <p class="kicker">Mana privacy</p>
+      <h1>Your usage. Clear boundaries.</h1>
+      <p>This policy describes Mana’s current Mac app and pre-release iPhone app, including its widgets.
+        Mana is developed by Cristian Caroli. Contact the creator through the
+        <a href="https://github.com/cris7ian/mana/issues">Mana GitHub issue tracker</a>.
+        Issues are public; do not post credentials or other private account data.</p>
+      <section aria-labelledby="network"><h2 id="network">What leaves your iPhone</h2>
+        <p>Connecting a provider and fetching usage require network requests. Mana sends credentials directly to the relevant provider over HTTPS,
+          not through a Mana-operated server.</p>
+        <ul><li><strong>Codex sign-in:</strong> Mana requests a device code, polls approval, exchanges the authorization code,
+            and refreshes tokens at <code>auth.openai.com</code>. These requests include the client identifier and relevant device-code,
+            authorization, or refresh-token values. You approve access on OpenAI’s website.</li>
+          <li><strong>Codex usage:</strong> Mana sends the access token and ChatGPT account identifier to
+            <code>chatgpt.com/backend-api/wham/usage</code> to request quota information.</li>
+          <li><strong>OpenCode Go:</strong> Mana sends your API key as a bearer credential to
+            <code>opencode.ai/zen/go/v1/usage</code>, both to validate a connection and to fetch quota information.</li></ul>
+        <p>Providers receive these requests, including network information such as your IP address, and process them under their own policies.
+          Browser sign-in also uses the provider’s website and its browser storage practices.</p>
+        <p>See <a href="https://openai.com/policies/privacy-policy/">OpenAI’s privacy policy</a> and
+          <a href="https://opencode.ai">OpenCode’s website</a> for provider information.
+          Mana is not affiliated with these providers.</p>
+      </section>
+      <section aria-labelledby="storage"><h2 id="storage">What your iPhone stores</h2>
+        <p>Mana saves Codex access and refresh tokens, the account identifier, and token expiry,
+          or your OpenCode Go API key, in non-synchronizing, device-only Keychain items.
+          The app and widget extension use a shared access group. Items become accessible after the device’s first unlock.</p>
+        <p>A protected App Group cache shared by the app and widgets stores only each provider’s latest normalized quota values,
+          reset times, fetch time, and safe freshness/error metadata. The cache is excluded from backup.
+          Mana does not keep a usage history or persist raw provider response bodies.</p>
+        <p>Widgets can use the saved provider credentials to refresh directly with the provider and display the latest cached values.
+          iOS controls their update schedule. Mana also stores local preferences, including your Demo choice.</p>
+        <p>The owner reports successful daily use. The TestFlight and App Store distribution builds still require separate verification.</p>
+      </section>
+      <section aria-labelledby="control"><h2 id="control">Your controls and retention</h2>
+        <p>Disconnecting a provider clears its cached usage and removes its saved credentials when the operation succeeds.
+          Replacing a provider account clears its previous cached usage. Storage errors can prevent credential removal;
+          check Mana’s status and retry after unlocking.</p>
+        <p>Use Disconnect before uninstalling. Keychain items can survive uninstalling an app.
+          Revoke tokens or API keys with the provider if you also want to end provider-side access.
+          Disconnect does not delete your provider account or its records.</p>
+        <p>Demo uses labeled synthetic quotas without reading credentials, persisting quota snapshots, or contacting providers.
+          The current app has no Mana-operated backend, cloud sync, advertising, or analytics SDK.
+          This does not mean that no data leaves your device: real-provider requests are described above.</p>
+      </section>
+      <section aria-labelledby="mac"><h2 id="mac">Mac storage is different</h2>
+        <p>The Mac app stores Codex and OpenCode Go credentials in private local plain-text files under
+          <code>~/Library/Application Support/Mana/credentials</code>, not in Keychain.
+          The directory uses owner-only permissions (0700); credential files use owner-only permissions (0600).
+          These permissions are not encryption.</p>
+        <p>The Mac app keeps usage snapshots in memory, not persistent storage.
+          It sends credentials to OpenAI or OpenCode to authenticate and fetch usage.
+          Antigravity usage comes from your signed-in <code>agy</code> CLI; Mana does not read or store its credentials.
+          The CLI and its provider handle their own authentication and network activity.</p>
+        <p>Remove saved Mac provider credentials through Mana Settings. This does not revoke them at the provider.</p>
+      </section>
+      <section aria-labelledby="website"><h2 id="website">Website and support services</h2>
+        <p>This website serves static pages, scripts, fonts, and images. It does not include an analytics script or a contact form.
+          Its hosting service receives ordinary web requests, including network information such as IP addresses.
+          Following external links uses the destination service.</p>
+        <p>Support uses GitHub, not an in-app upload service. GitHub processes information you choose to submit under
+          <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub’s privacy statement</a>.
+          Only share redacted information needed to explain a problem.</p>
+        <p>This policy describes implementation, not a final App Store privacy label.
+          Provider processing and Apple’s disclosure definitions must be reviewed before submission.
+          Read the <a href="/support.html">support page</a> for current availability and limitations.</p>
+      </section>
+    </main>
+    <footer class="site-footer"><div class="shell footer-inner"><span>© 2026 Cristian Caroli · Mana is MIT licensed.</span>
+      <span><a href="/">Home</a><a href="/support.html">Support</a><a href="/privacy.html">Privacy</a><a href="https://github.com/cris7ian/mana">Source</a></span>
+    </div></footer>
+  </body>
+</html>

@@ -2,6 +2,9 @@
 
 Mana is a local macOS menu-bar app for Codex, OpenCode Go, and Antigravity usage. Antigravity includes Gemini and Claude/GPT coding-plan quotas, not separate subscriptions.
 Website: https://mana.salsaparapizza.com/
+Support and contact (Cristian Caroli, via the public GitHub issue tracker): https://mana.salsaparapizza.com/support.html
+Privacy policy: https://mana.salsaparapizza.com/privacy.html
+The support and privacy pages are published at the URLs above.
 Source and documentation: https://github.com/cris7ian/mana
 Latest signed and notarized installer: https://github.com/cris7ian/mana/releases/latest
 Install with Homebrew: `brew install --cask cris7ian/tap/mana` (tap: https://github.com/cris7ian/homebrew-tap). The cask links the `mana` command into Homebrew's `bin` directory, so it is available in the terminal after installation.
@@ -10,11 +13,11 @@ The macOS app, iPhone prototype, and widgets support English, German, Spanish, a
 
 See remaining usage from the menu bar. Codex and OpenCode Go show reset times; Antigravity does not. A separate Claude subscription is only a browser link in Settings. See the README for setup and CLI details.
 
-macOS privacy: Usage snapshots are not persisted. Mana stores Codex and OpenCode Go credentials in private local files. Mana does not read or store Antigravity credentials.
+macOS privacy: Usage snapshots are not persisted. Mana stores Codex and OpenCode Go credentials in private local plain-text files, not Keychain. Owner-only file permissions are not encryption. Mana does not read or store Antigravity credentials.
 
-iPhone status: The repository contains a standalone iOS 18+ prototype for Codex and OpenCode Go, with quota cards and Home Screen/Lock Screen widgets. Antigravity and the CLI remain macOS-only. Live provider access, public provider permission, and signed-device behavior remain unverified. The macOS downloads are not iPhone installers; no verified public iPhone release is claimed.
+iPhone status: The repository contains an iOS 18+ pre-release app for Codex and OpenCode Go, with quota cards and Home Screen/Lock Screen widgets. Antigravity and the CLI remain macOS-only. The owner reports successful daily use; public provider permission and App Store-distributed behavior remain unverified. The macOS downloads are not iPhone installers; no public iPhone release is claimed.
 iPhone guide: https://github.com/cris7ian/mana/blob/main/ios/README.md
 App Store asset proposal and open release gates: https://github.com/cris7ian/mana/tree/main/app-store-release-prep
-iPhone privacy: Credentials use non-synchronizing, device-only Keychain storage. A protected, backup-excluded App Group cache holds only the latest normalized quota values and freshness metadata. No history or raw responses are retained. Disconnecting clears the provider's credentials and cached usage. Widget/background refresh is best-effort and system-controlled. Demo screenshots contain labeled synthetic values, not live usage evidence.
+iPhone privacy: Real-provider requests send authentication data directly over HTTPS to auth.openai.com, Codex access tokens and ChatGPT account identifiers to chatgpt.com/backend-api/wham/usage, and OpenCode Go API keys to opencode.ai/zen/go/v1/usage. Providers receive network information such as IP addresses. There is no Mana-operated backend; this is not a nothing-leaves-device or finalized App Store Data Not Collected claim. Credentials use non-synchronizing, device-only Keychain storage. A protected, backup-excluded App Group cache holds only the latest normalized quota values and freshness metadata. No history or raw responses are retained. Disconnecting clears the provider's cached usage and removes credentials when the operation succeeds; storage errors can prevent credential removal. Widget/background refresh is best-effort and system-controlled. Demo screenshots contain labeled synthetic values, not live usage evidence.
 
 Mana is not affiliated with OpenAI, OpenCode Go, Google, or Antigravity. For current behavior and installation instructions, consult the source repository and latest release rather than inferring account details from this page.

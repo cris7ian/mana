@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b111c" />
+    <meta name="description" content="Help with Mana for Mac and the pre-release iPhone app. Contact, provider setup, and widget refresh limitations." />
+    <link rel="canonical" href="https://mana.salsaparapizza.com/support.html" />
+    <link rel="icon" type="image/png" href="/assets/hexagon-128.png" />
+    <link rel="apple-touch-icon" href="/assets/app-icon.png" />
+    <link rel="stylesheet" href="/styles.css?v=homebrew-copy" />
+    <link rel="stylesheet" href="/hero.css" />
+    <link rel="stylesheet" href="/launch.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Mana — Support" />
+    <meta property="og:description" content="Help with Mana for Mac and the pre-release iPhone app. Contact, provider setup, and widget refresh limitations." />
+    <meta property="og:url" content="https://mana.salsaparapizza.com/support.html" />
+    <meta property="og:image" content="https://mana.salsaparapizza.com/assets/app-icon.png" />
+    <meta property="og:image:alt" content="Mana’s blue hexagon app icon" />
+    <meta name="twitter:card" content="summary" />
+    <title>Mana — Support</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header"><div class="shell header-inner">
+      <a class="brand" href="/" aria-label="Mana home"><img src="/assets/hexagon-128.png" width="28" height="28" alt="" />Mana</a>
+      <nav aria-label="Main navigation"><a href="/">Home</a><a href="/support.html">Support</a><a href="/privacy.html">Privacy</a></nav>
+    </div></header>
+    <main id="main" class="shell info-page">
+      <p class="kicker">Mana support</p>
+      <h1>Keep your mana in view.</h1>
+      <p>Need help with Mana? Contact Cristian Caroli, Mana’s creator, through the
+        <a href="https://github.com/cris7ian/mana/issues">Mana GitHub issue tracker</a>.
+        A GitHub account is required to create an issue. Issues are public.</p>
+      <p>Include your Mana version, operating system version, provider, and steps to reproduce the problem.
+        Never include API keys, tokens, device codes, account identifiers, raw provider responses, or unredacted screenshots.</p>
+      <section aria-labelledby="availability"><h2 id="availability">Mac downloads and iPhone preview</h2>
+        <p>The <a href="https://github.com/cris7ian/mana/releases/latest">current downloads</a> and Homebrew cask are for macOS 13 or later.
+          See the <a href="https://github.com/cris7ian/mana#readme">Mac setup and CLI guide</a>.</p>
+        <p>Mana for iPhone is a pre-release prototype for iOS 18 or later. It is not available on the App Store.
+          It supports Codex and OpenCode Go, with Home Screen and Lock Screen widgets.
+          Antigravity and the command line are Mac-only.</p>
+        <p>The owner reports successful daily use with live provider access. Public provider permission and App Store-distributed behavior remain unverified.
+          See the <a href="https://github.com/cris7ian/mana/blob/main/ios/README.md">iPhone development guide</a> for current release gates.</p>
+      </section>
+      <section aria-labelledby="connect"><h2 id="connect">Connect a provider on iPhone</h2>
+        <ol><li>Turn off Demo in Mana Settings before connecting a real account.</li>
+          <li>For Codex, start sign-in and approve the displayed device code on OpenAI’s website.</li>
+          <li>Return to Mana after approval. If the code expires, start sign-in again.</li>
+          <li>For OpenCode Go, enter your own API key in the provider’s secure field.</li></ol>
+        <p>Pending Codex approval stays in memory. Force-quitting requires a new code; Cancel stops the current sign-in.
+          Do not copy credentials from another app or CLI.</p>
+      </section>
+      <section aria-labelledby="refresh"><h2 id="refresh">Usage or widgets look out of date</h2>
+        <ol><li>Unlock your iPhone and open Mana.</li><li>Check your internet connection.</li>
+          <li>Pull to refresh on Usage.</li><li>Check the provider’s status in Settings.</li></ol>
+        <p>Mana refreshes when you open it and every 60 seconds while active. Provider retry delays still apply.
+          Usage is marked stale after 15 minutes or a failed fetch. A failed refresh can leave the last valid values visible.</p>
+        <p>iOS controls widget and background updates. Widgets are not continuous or guaranteed real-time monitors.
+          Signed-device widget behavior still needs verification. No notification alerts are included.</p>
+        <p>Demo uses synthetic values and does not contact providers. Sample screenshots do not prove live account access.</p>
+      </section>
+      <section aria-labelledby="disconnect"><h2 id="disconnect">Disconnect or change accounts</h2>
+        <p>Use Disconnect in the provider’s settings to remove that provider’s saved iPhone credentials and clear its cached usage.
+          If Mana reports a storage error, unlock the device and retry. An error can prevent credential removal.</p>
+        <p>Disconnect does not revoke access at the provider or delete your provider account. Manage or revoke provider credentials with the provider.
+          Do not rely on uninstalling Mana to remove Keychain credentials.</p>
+        <p>Mac credentials use private local plain-text files, not the iPhone storage system.
+          See the <a href="/privacy.html">privacy policy</a> for storage, network requests, and deletion details.</p>
+      </section>
+    </main>
+    <footer class="site-footer"><div class="shell footer-inner"><span>© 2026 Cristian Caroli · Mana is MIT licensed.</span>
+      <span><a href="/">Home</a><a href="/support.html">Support</a><a href="/privacy.html">Privacy</a><a href="https://github.com/cris7ian/mana">Source</a></span>
+    </div></footer>
+  </body>
+</html>
