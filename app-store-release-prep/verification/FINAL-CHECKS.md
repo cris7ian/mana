@@ -12,10 +12,11 @@ git diff --check
 
 The asset verifier checks:
 
-- All eight screenshot exports exist and match their manifest hashes.
+- All twelve screenshot exports exist and match their manifest hashes.
+- No superseded or unexpected PNG is mixed into an upload directory.
 - The exports are RGB PNGs with no alpha channel.
-- The large set is 1320 × 2868; the legacy set is 1284 × 2778.
-- Metadata is within name, subtitle, promotional-text, description, and keyword limits.
+- The medium Dynamic Island set is 1206 × 2622; the large set is 1320 × 2868; the legacy set is 1284 × 2778.
+- Metadata is within name, subtitle, promotional-text, description, and keyword limits; keywords are checked in UTF-8 bytes and exclude third-party brand names.
 - Copy-ready text fields match the JSON source.
 - Raw screenshot hashes match their capture provenance.
 - The icon is opaque RGB at 1024 × 1024.
@@ -54,4 +55,4 @@ xcodebuild -project Mana.xcodeproj -scheme Mana -configuration Debug \
 
 Inspect the signed archive for app and widget identifiers, matching versions, signing, App Group and Keychain entitlements, and required privacy manifests. Test the distribution build on a real device through TestFlight.
 
-**Open release gates:** provider permission, live account access, distribution signing, real-device Keychain/cache/widget behavior, published public URLs, final privacy answers, and App Review.
+**Current release gates:** provider permission, App Store Connect setup, distribution signing and archive validation, final App Store privacy answers, TestFlight installation, review access, and App Review. The owner reports that feature validation and daily live use are complete; support and privacy URLs are published. Recheck the distribution build as part of delivery.

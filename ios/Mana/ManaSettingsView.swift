@@ -42,6 +42,16 @@ struct ManaSettingsView: View {
                 Label("Credentials stay on this device", systemImage: "lock.shield")
                 Text("Credentials are stored in your iPhone’s Keychain. Mana saves only the latest usage, never a history. Disconnecting removes the saved credentials and usage.")
                     .font(.subheadline).foregroundStyle(.secondary)
+                Link(destination: AppInformation.privacyURL) {
+                    Label("Privacy policy", systemImage: "hand.raised")
+                }
+                .accessibilityIdentifier("privacy-policy-link")
+                .accessibilityHint(Text("Opens the privacy policy in your browser."))
+                Link(destination: AppInformation.supportURL) {
+                    Label("Support", systemImage: "questionmark.circle")
+                }
+                .accessibilityIdentifier("support-link")
+                .accessibilityHint(Text("Opens support in your browser."))
             }
             Section {
                 Toggle("Demo mode", isOn: Binding(get: { model.isDemo }, set: { enabled in

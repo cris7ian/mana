@@ -51,7 +51,7 @@ A plain Release build is ad-hoc signed. Never publish it. The release script nee
 
 Use the `mana-release` skill for versioned installer and public-release work. Keep the workflow there; keep release-signing and credential safety constraints here.
 
-The iPhone app is a local prototype, not a verified public release. See `ios/README.md` and `app-store-release-prep/MANUAL.md` for the remaining gates. App Store assets contain synthetic demo captures, not live-account evidence. Provider permission, live access, signed-device storage/widgets, privacy disclosures, and public URLs remain unverified. TestFlight upload and App Store submission require explicit authorization.
+The iPhone app is a pre-release app, not a public App Store release. The owner reports successful daily use and confirms product technical validation is complete; synthetic asset captures remain demo evidence only. Public provider permission, final App Store privacy answers, App Store Connect setup, distribution signing/archive, TestFlight, and App Review remain release steps. Support and privacy pages are published on the existing site. See `ios/README.md` and `app-store-release-prep/MANUAL.md`. TestFlight upload and App Store submission require explicit authorization.
 
 ## Safety
 

@@ -12,14 +12,20 @@
     "synthetic": true
   },
   {
+    "name": "home-widget",
+    "sha256": "9cfdf190b5ec94c025eb642a6de5d2aeaab5c381e70697780bc9bb594f147f27",
+    "source": "XCTest screenshot of the native iOS Home Screen widget in shared credential-free Demo mode",
+    "synthetic": true
+  },
+  {
     "name": "privacy-light",
-    "sha256": "920d458ff0fd5be429b7d29cc6019e09c747345e5f342c8679486b0e720cb45a",
+    "sha256": "f45ef3edfa6576c6125003a19cd53a5c3011513aa9430ac46a9e694e019815b1",
     "source": "XCTest screenshot of the real app in isolated demo mode",
     "synthetic": true
   },
   {
     "name": "settings-light",
-    "sha256": "17831b32695ee30d3842cb6db5a638954c20a6f7eb8278e7493cea1d1301a9d3",
+    "sha256": "16936342a98c90a25c8db641533b3d9e72c85bd36013f7b21bcb05b1f36bb964",
     "source": "XCTest screenshot of the real app in isolated demo mode",
     "synthetic": true
   },

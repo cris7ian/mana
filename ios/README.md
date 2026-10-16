@@ -41,9 +41,8 @@ Explicit Cancel stops sign-in. Pending approval stays in memory; force-quitting 
 OpenCode Go accepts an API key in a secure field.
 Never extract tokens from another app or CLI.
 
-Live account access is not verified by synthetic tests or simulator screenshots.
-Public third-party provider permission, signed-device storage/widget behavior, privacy disclosures, and published support/privacy URLs remain release gates.
-Do not distribute this prototype as a verified public release.
+The owner reports successful daily use and confirms the app's technical functionality is verified. Synthetic tests and simulator screenshots remain demo evidence, not live-account evidence.
+Public third-party provider permission, final App Store privacy answers, distribution signing, and App Store review remain release gates. The support and privacy pages are published. Do not describe this pre-release app as publicly available.
 
 ## Device signing
 
@@ -55,7 +54,7 @@ The shared container is `group.com.salsaparapizza.mana.ios`.
 
 Credentials use non-synchronizing, device-only Keychain storage after first unlock.
 Simulator scripts use local ad-hoc signing so Keychain operations can run without a distribution certificate.
-Unsigned simulator apps cannot use Keychain. App/extension Keychain sharing must be verified on a signed physical device.
+Unsigned simulator apps cannot use Keychain. The owner reports successful signed-device use; the App Store distribution build still needs its release-pipeline check.
 The protected, backup-excluded cache holds only the latest normalized quota values and freshness metadata.
 Disconnecting a provider removes its credentials and clears its cached usage.
 App and widget fetches share per-provider file locks, including token refresh and account changes.

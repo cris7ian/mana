@@ -39,11 +39,7 @@ struct ProviderQuotaCard: View {
                     ForEach(snapshot.displayWindows) { window in
                         QuotaWindowView(window: window, now: context.date, isDemo: isDemo)
                     }
-                    if !isDemo {
-                        Text("Updated \(snapshot.receivedAt.formatted(date: .omitted, time: .shortened))")
-                            .font(.caption).foregroundStyle(.secondary)
-                            .accessibilityLabel("Last updated \(snapshot.receivedAt.formatted(date: .abbreviated, time: .shortened))")
-                    }
+
                 } else if record.isConfigured {
                     Text("Usage unavailable. Pull down to refresh.")
                         .font(.subheadline).foregroundStyle(.secondary)
@@ -55,6 +51,9 @@ struct ProviderQuotaCard: View {
                             .buttonStyle(.borderedProminent)
                             .accessibilityIdentifier("connect-\(provider.rawValue)")
                     }
+                }
+                if !isDemo && (record.isConfigured || record.snapshot != nil) {
+                    refreshFooter
                 }
             }
             .padding(20)
@@ -73,8 +72,38 @@ struct ProviderQuotaCard: View {
         }
     }
 
+    private var refreshFooter: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .firstTextBaseline, spacing: 12) {
+                updatedTime
+                Spacer(minLength: 0)
+                refreshingStatus
+            }
+            VStack(alignment: .trailing, spacing: 4) {
+                updatedTime.frame(maxWidth: .infinity, alignment: .leading)
+                refreshingStatus
+            }
+        }
+        .font(.caption)
+        .foregroundStyle(.secondary)
+    }
+
+    @ViewBuilder private var updatedTime: some View {
+        if let snapshot = record.snapshot {
+            Text("Updated \(snapshot.receivedAt.formatted(date: .omitted, time: .shortened))")
+                .accessibilityLabel("Last updated \(snapshot.receivedAt.formatted(date: .abbreviated, time: .shortened))")
+        }
+    }
+
+    private var refreshingStatus: some View {
+        // Keep the same layout footprint while idle, including at larger text sizes.
+        Label("Refreshing…", systemImage: "arrow.clockwise")
+            .fixedSize(horizontal: true, vertical: false)
+            .opacity(isLoading ? 1 : 0)
+            .accessibilityHidden(!isLoading)
+    }
+
     @ViewBuilder private func state(now: Date) -> some View {
-        if isLoading { Label("Refreshing…", systemImage: "arrow.clockwise").font(.subheadline).foregroundStyle(.secondary) }
         if record.snapshot?.isBlocked == true {
             Label("Quota blocked", systemImage: "hand.raised.fill").font(.subheadline.weight(.semibold)).foregroundStyle(.orange)
         }

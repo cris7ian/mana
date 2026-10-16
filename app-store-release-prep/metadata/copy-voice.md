@@ -19,7 +19,9 @@ Borrow the clarity of [Basecamp](https://basecamp.com/), not its branding or tes
 - Keep “Save a spell for the boss fight” as the sign-off, not the functional explanation.
 - Do not promote Demo mode in the listing. Keep demo details in review notes and sample-data disclosures.
 - State that widgets are system-controlled. Never call them real-time.
-- Say “credentials stay in Keychain,” not “nothing leaves your phone.” Provider requests require the internet.
+- Lead with quotas, resets, and widgets, not storage implementation. Explain connections plainly.
+- Keep necessary credential-storage specifics in privacy and review documents, not marketing panels.
+- Never say “nothing leaves your phone.” Provider requests require the internet.
 - Do not promise Antigravity, alerts, spending controls, history, or cloud sync on iPhone.
 - Do not imply provider endorsement or guaranteed service availability.
 
@@ -36,9 +38,10 @@ Borrow the clarity of [Basecamp](https://basecamp.com/), not its branding or tes
 | Magical accent | Existing Puppies Play, only for “mana.” |
 | Brand | Existing Pixelify Sans and the blue hexagon |
 | Structure | Left-aligned headline, short explanation, genuine screen or enlarged native card, small provenance note |
-| Detail | Quiet hexagon outlines; no wallpaper of stars or fake glass dashboards |
+| Background | Website-inspired blue square-tile field: diagonal wind bands and cyan/cobalt torch glows; lighter blue washes on paper panels |
+| Detail | Sparse luminous mana motes at the margins; calm headline zone; decoration stays behind genuine product captures |
 
-The first screenshot has both the personality and the product. The second proves provider coverage. The third explains resets. The fourth explains storage.
+The first screenshot has both the personality and the product. The second proves provider coverage. The third shows quota windows. The fourth presents the genuine Home Screen widget. The owner rejected the reset-countdown panel.
 
 Light and dark captures demonstrate the app's actual appearances. Phone outlines are presentation framing, not a claim of Apple endorsement.
 
@@ -48,7 +51,7 @@ Light and dark captures demonstrate the app's actual appearances. Phone outlines
 | --- | --- | --- |
 | 1 | Save your mana. | Your AI usage. One clear view. |
 | 2 | Two spellbooks. One place. | Codex and OpenCode Go. See what’s left in both. |
-| 3 | Know when you’re back. | See when your quotas reset. Plan your next spell. |
-| 4 | Your keys. Your iPhone. | Credentials stay in Keychain. Only the latest usage is saved. |
+| 3 | Every limit. One look. | Five-hour, weekly, monthly. Your OpenCode Go quotas. |
+| 4 | Your quotas. Close at hand. | Home Screen widgets. Both providers, one glance. |
 
 No discount, price, rating, testimonial, fabricated notification, or unsupported feature appears in the screenshots.

@@ -277,7 +277,15 @@ def generate_configuration():
         **base, "CFBundleDisplayName": "Mana Widgets",
         "NSExtension": {"NSExtensionPointIdentifier": "com.apple.widgetkit-extension"},
     })
+    # Both executables share only the demo preference within their App Group.
+    # Apple approves 1C8F.1 for defaults shared by members of the same App Group.
+    # Do not infer App Store data-collection answers from required-reason APIs.
+    privacy = {"NSPrivacyAccessedAPITypes": [{
+        "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+        "NSPrivacyAccessedAPITypeReasons": ["1C8F.1"],
+    }]}
     for name in ("Mana", "ManaWidgets"):
+        (IOS / name / "PrivacyInfo.xcprivacy").write_bytes(plistlib.dumps(privacy, sort_keys=False))
         write_plist(name + ".entitlements", {
             "com.apple.security.application-groups": ["group." + BUNDLE],
             "keychain-access-groups": ["$(AppIdentifierPrefix)" + BUNDLE + ".shared"],

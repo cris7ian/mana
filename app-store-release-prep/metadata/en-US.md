@@ -36,8 +36,8 @@ Suggested name: **Mana — AI Usage**. Suggested subtitle: **Save a spell for th
 Use the existing Mana website; do not create a second site for this package.
 
 - Marketing: `https://mana.salsaparapizza.com/`
-- Support: confirm the final URL before submission.
-- Privacy: confirm the final published policy URL before submission.
+- Support: `https://mana.salsaparapizza.com/support.html`
+- Privacy: `https://mana.salsaparapizza.com/privacy.html`
 
 Do not paste unverified URLs into the live listing.
 
@@ -53,3 +53,5 @@ Do not paste unverified URLs into the live listing.
 - Claim accessibility support only after evaluating the distributed build against Apple's criteria.
 
 The screenshots use Demo mode. They do not establish real account compatibility or provider permission.
+
+Keywords use nonbrand search terms only. The verifier counts UTF-8 bytes against Apple’s 100-byte limit. Provider names belong in the accurate description, not the keyword field.

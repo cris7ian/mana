@@ -100,3 +100,7 @@
 "OpenCode Go quota" = "OpenCode-Go-Kontingent";
 "Choose the provider and Lock Screen quota window." = "Wähle den Anbieter und den Kontingentzeitraum für den Sperrbildschirm.";
 "Lock Screen quota" = "Sperrbildschirm-Kontingent";
+"Privacy policy" = "Datenschutzerklärung";
+"Support" = "Support";
+"Opens the privacy policy in your browser." = "Öffnet die Datenschutzerklärung in deinem Browser.";
+"Opens support in your browser." = "Öffnet den Support in deinem Browser.";

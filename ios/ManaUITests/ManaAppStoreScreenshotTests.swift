@@ -36,6 +36,38 @@ final class ManaAppStoreScreenshotTests: ManaUITestCase {
         capture(app, named: "codex-dark")
     }
 
+    func testCaptureHomeWidget() throws {
+        guard ProcessInfo.processInfo.environment["SIMULATOR_DEVICE_NAME"] == "Mana App Store Assets" else {
+            throw XCTSkip("Shared Demo widget capture requires the dedicated credential-free asset simulator.")
+        }
+        let app = XCUIApplication()
+        app.launchArguments = ["--demo", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+        XCTAssertTrue(app.staticTexts["Demo • Sample data"].firstMatch.waitForExistence(timeout: 10))
+        XCUIDevice.shared.press(.home)
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        if !springboard.staticTexts["DEMO · SAMPLE"].exists {
+            springboard.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.65)).press(forDuration: 2)
+            springboard.buttons["Edit"].tap()
+            springboard.buttons["Add Widget"].tap()
+            let search = springboard.searchFields.firstMatch
+            XCTAssertTrue(search.waitForExistence(timeout: 5))
+            search.tap()
+            search.typeText("Mana")
+            if springboard.buttons["Continue"].exists { springboard.buttons["Continue"].tap() }
+            springboard.cells["Mana"].tap()
+            // SpringBoard's widget gallery hierarchy can stall XCTest on iOS 26.
+            // Tap the native gallery's Add Widget and Home Screen Done positions.
+            springboard.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.915)).tap()
+            springboard.coordinate(withNormalizedOffset: CGVector(dx: 0.81, dy: 0.035)).tap()
+        }
+        XCTAssertTrue(springboard.staticTexts["DEMO · SAMPLE"].waitForExistence(timeout: 15))
+        let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        attachment.name = "app-store-home-widget"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
     private func launchDemo(dark: Bool = false) -> XCUIApplication {
         let app = launch(demo: true, arguments: dark ? ["--demo-dark"] : [])
         XCTAssertTrue(app.buttons["provider-codex"].waitForExistence(timeout: 10))

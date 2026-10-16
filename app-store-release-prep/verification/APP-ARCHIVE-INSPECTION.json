@@ -1,0 +1,318 @@
+{
+  "archives": [
+    {
+      "archive": "build/app-preparation/Mana-DEVELOPMENT-NOT-FOR-UPLOAD.xcarchive",
+      "bundles": [
+        {
+          "bundle": "Products/Applications/Mana.app",
+          "identifier": "com.salsaparapizza.mana.ios",
+          "version": "1.0.0",
+          "build": "1",
+          "minimum_os": "18.0",
+          "device_family": [
+            1
+          ],
+          "privacy_manifest": {
+            "NSPrivacyAccessedAPITypes": [
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "1C8F.1"
+                ]
+              }
+            ]
+          },
+          "signed": true,
+          "authorities": [
+            "Apple Development: Cristian Caroli (97RFWQH57D)",
+            "Apple Worldwide Developer Relations Certification Authority",
+            "Apple Root CA"
+          ],
+          "entitlements": {
+            "application-identifier": "5P4X92K99Q.com.salsaparapizza.mana.ios",
+            "com.apple.developer.team-identifier": "5P4X92K99Q",
+            "com.apple.security.application-groups": [
+              "group.com.salsaparapizza.mana.ios"
+            ],
+            "get-task-allow": true,
+            "keychain-access-groups": [
+              "5P4X92K99Q.com.salsaparapizza.mana.ios.shared"
+            ]
+          },
+          "provisioning": {
+            "type": "development",
+            "expiration": "2027-10-05T08:08:59",
+            "application_identifier": "5P4X92K99Q.com.salsaparapizza.mana.ios",
+            "app_groups": [
+              "group.com.salsaparapizza.mana.ios"
+            ],
+            "keychain_groups": [
+              "5P4X92K99Q.*",
+              "com.apple.token"
+            ]
+          },
+          "required_reason_import_candidates": [
+            "_OBJC_CLASS_$_NSUserDefaults"
+          ],
+          "dynamic_dependencies": [
+            "\t/System/Library/Frameworks/Foundation.framework/Foundation (compatibility version 300.0.0, current version 5026.5.4)",
+            "\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)",
+            "\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)",
+            "\t/System/Library/Frameworks/AppIntents.framework/AppIntents (compatibility version 0.0.0, current version 300.5.12)",
+            "\t/System/Library/Frameworks/BackgroundTasks.framework/BackgroundTasks (compatibility version 1.0.0, current version 1.0.0)",
+            "\t/System/Library/Frameworks/Combine.framework/Combine (compatibility version 1.0.0, current version 3023.0.0)",
+            "\t/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation (compatibility version 150.0.0, current version 5026.5.4)",
+            "\t/System/Library/Frameworks/Security.framework/Security (compatibility version 1.0.0, current version 61901.120.67)",
+            "\t/System/Library/Frameworks/SwiftUI.framework/SwiftUI (compatibility version 1.0.0, current version 7.5.3)",
+            "\t/System/Library/Frameworks/UIKit.framework/UIKit (compatibility version 1.0.0, current version 9126.5.5)",
+            "\t/System/Library/Frameworks/WidgetKit.framework/WidgetKit (compatibility version 1.0.0, current version 664.5.28)",
+            "\t/usr/lib/swift/libswiftCore.dylib (compatibility version 0.0.0, current version 0.0.0)",
+            "\t/usr/lib/swift/libswiftCoreFoundation.dylib (compatibility version 1.0.0, current version 120.100.0, weak)",
+            "\t/usr/lib/swift/libswiftCoreImage.dylib (compatibility version 1.0.0, current version 2.2.0, weak)",
+            "\t/usr/lib/swift/libswiftCoreLocation.dylib (compatibility version 1.0.0, current version 53.0.0, weak)",
+            "\t/usr/lib/swift/libswiftDarwin.dylib (compatibility version 1.0.0, current version 377.120.8)",
+            "\t/usr/lib/swift/libswiftDispatch.dylib (compatibility version 1.0.0, current version 1542.100.32, weak)",
+            "\t/usr/lib/swift/libswiftIntents.dylib (compatibility version 1.0.0, current version 12.0.0, weak)",
+            "\t/usr/lib/swift/libswiftMetal.dylib (compatibility version 1.0.0, current version 373.2.0, weak)",
+            "\t/usr/lib/swift/libswiftOSLog.dylib (compatibility version 1.0.0, current version 10.0.0, weak)",
+            "\t/usr/lib/swift/libswiftObjectiveC.dylib (compatibility version 1.0.0, current version 951.7.0, weak)",
+            "\t/usr/lib/swift/libswiftQuartzCore.dylib (compatibility version 1.0.0, current version 5.0.0, weak)",
+            "\t/usr/lib/swift/libswiftSpatial.dylib (compatibility version 1.0.0, current version 1.0.0, weak)",
+            "\t/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib (compatibility version 1.0.0, current version 879.5.1, weak)",
+            "\t/usr/lib/swift/libswiftXPC.dylib (compatibility version 1.0.0, current version 128.120.2, weak)",
+            "\t/usr/lib/swift/libswift_Builtin_float.dylib (compatibility version 0.0.0, current version 0.0.0, weak)",
+            "\t/usr/lib/swift/libswift_Concurrency.dylib (compatibility version 0.0.0, current version 0.0.0)",
+            "\t/usr/lib/swift/libswiftos.dylib (compatibility version 1.0.0, current version 1082.0.0)",
+            "\t/usr/lib/swift/libswiftsimd.dylib (compatibility version 1.0.0, current version 23.0.0, weak)",
+            "\t/usr/lib/swift/libswift_errno.dylib (compatibility version 1.0.0, current version 377.120.8)"
+          ],
+          "all_privacy_manifests": [
+            "PlugIns/ManaWidgets.appex/PrivacyInfo.xcprivacy",
+            "PrivacyInfo.xcprivacy"
+          ]
+        },
+        {
+          "bundle": "Products/Applications/Mana.app/PlugIns/ManaWidgets.appex",
+          "identifier": "com.salsaparapizza.mana.ios.widgets",
+          "version": "1.0.0",
+          "build": "1",
+          "minimum_os": "18.0",
+          "device_family": [
+            1
+          ],
+          "privacy_manifest": {
+            "NSPrivacyAccessedAPITypes": [
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "1C8F.1"
+                ]
+              }
+            ]
+          },
+          "signed": true,
+          "authorities": [
+            "Apple Development: Cristian Caroli (97RFWQH57D)",
+            "Apple Worldwide Developer Relations Certification Authority",
+            "Apple Root CA"
+          ],
+          "entitlements": {
+            "application-identifier": "5P4X92K99Q.com.salsaparapizza.mana.ios.widgets",
+            "com.apple.developer.team-identifier": "5P4X92K99Q",
+            "com.apple.security.application-groups": [
+              "group.com.salsaparapizza.mana.ios"
+            ],
+            "get-task-allow": true,
+            "keychain-access-groups": [
+              "5P4X92K99Q.com.salsaparapizza.mana.ios.shared"
+            ]
+          },
+          "provisioning": {
+            "type": "development",
+            "expiration": "2027-10-05T08:09:02",
+            "application_identifier": "5P4X92K99Q.com.salsaparapizza.mana.ios.widgets",
+            "app_groups": [
+              "group.com.salsaparapizza.mana.ios"
+            ],
+            "keychain_groups": [
+              "5P4X92K99Q.*",
+              "com.apple.token"
+            ]
+          },
+          "required_reason_import_candidates": [
+            "_OBJC_CLASS_$_NSUserDefaults"
+          ],
+          "dynamic_dependencies": [
+            "\t/System/Library/Frameworks/Foundation.framework/Foundation (compatibility version 300.0.0, current version 5026.5.4)",
+            "\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)",
+            "\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)",
+            "\t/System/Library/Frameworks/AppIntents.framework/AppIntents (compatibility version 0.0.0, current version 300.5.12)",
+            "\t/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation (compatibility version 150.0.0, current version 5026.5.4)",
+            "\t/System/Library/Frameworks/Security.framework/Security (compatibility version 1.0.0, current version 61901.120.67)",
+            "\t/System/Library/Frameworks/SwiftUI.framework/SwiftUI (compatibility version 1.0.0, current version 7.5.3)",
+            "\t/System/Library/Frameworks/UIKit.framework/UIKit (compatibility version 1.0.0, current version 9126.5.5, weak)",
+            "\t/System/Library/Frameworks/WidgetKit.framework/WidgetKit (compatibility version 1.0.0, current version 664.5.28)",
+            "\t/usr/lib/swift/libswiftCore.dylib (compatibility version 0.0.0, current version 0.0.0)",
+            "\t/usr/lib/swift/libswiftCoreFoundation.dylib (compatibility version 1.0.0, current version 120.100.0, weak)",
+            "\t/usr/lib/swift/libswiftCoreImage.dylib (compatibility version 1.0.0, current version 2.2.0, weak)",
+            "\t/usr/lib/swift/libswiftCoreLocation.dylib (compatibility version 1.0.0, current version 53.0.0, weak)",
+            "\t/usr/lib/swift/libswiftDarwin.dylib (compatibility version 1.0.0, current version 377.120.8)",
+            "\t/usr/lib/swift/libswiftDispatch.dylib (compatibility version 1.0.0, current version 1542.100.32, weak)",
+            "\t/usr/lib/swift/libswiftIntents.dylib (compatibility version 1.0.0, current version 12.0.0, weak)",
+            "\t/usr/lib/swift/libswiftMetal.dylib (compatibility version 1.0.0, current version 373.2.0, weak)",
+            "\t/usr/lib/swift/libswiftOSLog.dylib (compatibility version 1.0.0, current version 10.0.0, weak)",
+            "\t/usr/lib/swift/libswiftObjectiveC.dylib (compatibility version 1.0.0, current version 951.7.0, weak)",
+            "\t/usr/lib/swift/libswiftQuartzCore.dylib (compatibility version 1.0.0, current version 5.0.0, weak)",
+            "\t/usr/lib/swift/libswiftSpatial.dylib (compatibility version 1.0.0, current version 1.0.0, weak)",
+            "\t/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib (compatibility version 1.0.0, current version 879.5.1, weak)",
+            "\t/usr/lib/swift/libswiftXPC.dylib (compatibility version 1.0.0, current version 128.120.2, weak)",
+            "\t/usr/lib/swift/libswift_Builtin_float.dylib (compatibility version 0.0.0, current version 0.0.0, weak)",
+            "\t/usr/lib/swift/libswift_Concurrency.dylib (compatibility version 0.0.0, current version 0.0.0)",
+            "\t/usr/lib/swift/libswiftos.dylib (compatibility version 1.0.0, current version 1082.0.0)",
+            "\t/usr/lib/swift/libswiftsimd.dylib (compatibility version 1.0.0, current version 23.0.0, weak)",
+            "\t/usr/lib/swift/libswift_errno.dylib (compatibility version 1.0.0, current version 377.120.8)"
+          ],
+          "all_privacy_manifests": [
+            "PrivacyInfo.xcprivacy"
+          ]
+        }
+      ],
+      "upload_ready": false
+    },
+    {
+      "archive": "build/app-preparation/Mana-UNSIGNED-NOT-FOR-UPLOAD.xcarchive",
+      "bundles": [
+        {
+          "bundle": "Products/Applications/Mana.app",
+          "identifier": "com.salsaparapizza.mana.ios",
+          "version": "1.0.0",
+          "build": "1",
+          "minimum_os": "18.0",
+          "device_family": [
+            1
+          ],
+          "privacy_manifest": {
+            "NSPrivacyAccessedAPITypes": [
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "1C8F.1"
+                ]
+              }
+            ]
+          },
+          "signed": false,
+          "required_reason_import_candidates": [
+            "_OBJC_CLASS_$_NSUserDefaults"
+          ],
+          "dynamic_dependencies": [
+            "\t/System/Library/Frameworks/Foundation.framework/Foundation (compatibility version 300.0.0, current version 5026.5.4)",
+            "\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)",
+            "\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)",
+            "\t/System/Library/Frameworks/AppIntents.framework/AppIntents (compatibility version 0.0.0, current version 300.5.12)",
+            "\t/System/Library/Frameworks/BackgroundTasks.framework/BackgroundTasks (compatibility version 1.0.0, current version 1.0.0)",
+            "\t/System/Library/Frameworks/Combine.framework/Combine (compatibility version 1.0.0, current version 3023.0.0)",
+            "\t/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation (compatibility version 150.0.0, current version 5026.5.4)",
+            "\t/System/Library/Frameworks/Security.framework/Security (compatibility version 1.0.0, current version 61901.120.67)",
+            "\t/System/Library/Frameworks/SwiftUI.framework/SwiftUI (compatibility version 1.0.0, current version 7.5.3)",
+            "\t/System/Library/Frameworks/UIKit.framework/UIKit (compatibility version 1.0.0, current version 9126.5.5)",
+            "\t/System/Library/Frameworks/WidgetKit.framework/WidgetKit (compatibility version 1.0.0, current version 664.5.28)",
+            "\t/usr/lib/swift/libswiftCore.dylib (compatibility version 0.0.0, current version 0.0.0)",
+            "\t/usr/lib/swift/libswiftCoreFoundation.dylib (compatibility version 1.0.0, current version 120.100.0, weak)",
+            "\t/usr/lib/swift/libswiftCoreImage.dylib (compatibility version 1.0.0, current version 2.2.0, weak)",
+            "\t/usr/lib/swift/libswiftCoreLocation.dylib (compatibility version 1.0.0, current version 53.0.0, weak)",
+            "\t/usr/lib/swift/libswiftDarwin.dylib (compatibility version 1.0.0, current version 377.120.8)",
+            "\t/usr/lib/swift/libswiftDispatch.dylib (compatibility version 1.0.0, current version 1542.100.32, weak)",
+            "\t/usr/lib/swift/libswiftIntents.dylib (compatibility version 1.0.0, current version 12.0.0, weak)",
+            "\t/usr/lib/swift/libswiftMetal.dylib (compatibility version 1.0.0, current version 373.2.0, weak)",
+            "\t/usr/lib/swift/libswiftOSLog.dylib (compatibility version 1.0.0, current version 10.0.0, weak)",
+            "\t/usr/lib/swift/libswiftObjectiveC.dylib (compatibility version 1.0.0, current version 951.7.0, weak)",
+            "\t/usr/lib/swift/libswiftQuartzCore.dylib (compatibility version 1.0.0, current version 5.0.0, weak)",
+            "\t/usr/lib/swift/libswiftSpatial.dylib (compatibility version 1.0.0, current version 1.0.0, weak)",
+            "\t/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib (compatibility version 1.0.0, current version 879.5.1, weak)",
+            "\t/usr/lib/swift/libswiftXPC.dylib (compatibility version 1.0.0, current version 128.120.2, weak)",
+            "\t/usr/lib/swift/libswift_Builtin_float.dylib (compatibility version 0.0.0, current version 0.0.0, weak)",
+            "\t/usr/lib/swift/libswift_Concurrency.dylib (compatibility version 0.0.0, current version 0.0.0)",
+            "\t/usr/lib/swift/libswiftos.dylib (compatibility version 1.0.0, current version 1082.0.0)",
+            "\t/usr/lib/swift/libswiftsimd.dylib (compatibility version 1.0.0, current version 23.0.0, weak)",
+            "\t/usr/lib/swift/libswift_errno.dylib (compatibility version 1.0.0, current version 377.120.8)"
+          ],
+          "all_privacy_manifests": [
+            "PlugIns/ManaWidgets.appex/PrivacyInfo.xcprivacy",
+            "PrivacyInfo.xcprivacy"
+          ]
+        },
+        {
+          "bundle": "Products/Applications/Mana.app/PlugIns/ManaWidgets.appex",
+          "identifier": "com.salsaparapizza.mana.ios.widgets",
+          "version": "1.0.0",
+          "build": "1",
+          "minimum_os": "18.0",
+          "device_family": [
+            1
+          ],
+          "privacy_manifest": {
+            "NSPrivacyAccessedAPITypes": [
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "1C8F.1"
+                ]
+              }
+            ]
+          },
+          "signed": false,
+          "required_reason_import_candidates": [
+            "_OBJC_CLASS_$_NSUserDefaults"
+          ],
+          "dynamic_dependencies": [
+            "\t/System/Library/Frameworks/Foundation.framework/Foundation (compatibility version 300.0.0, current version 5026.5.4)",
+            "\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)",
+            "\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)",
+            "\t/System/Library/Frameworks/AppIntents.framework/AppIntents (compatibility version 0.0.0, current version 300.5.12)",
+            "\t/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation (compatibility version 150.0.0, current version 5026.5.4)",
+            "\t/System/Library/Frameworks/Security.framework/Security (compatibility version 1.0.0, current version 61901.120.67)",
+            "\t/System/Library/Frameworks/SwiftUI.framework/SwiftUI (compatibility version 1.0.0, current version 7.5.3)",
+            "\t/System/Library/Frameworks/UIKit.framework/UIKit (compatibility version 1.0.0, current version 9126.5.5, weak)",
+            "\t/System/Library/Frameworks/WidgetKit.framework/WidgetKit (compatibility version 1.0.0, current version 664.5.28)",
+            "\t/usr/lib/swift/libswiftCore.dylib (compatibility version 0.0.0, current version 0.0.0)",
+            "\t/usr/lib/swift/libswiftCoreFoundation.dylib (compatibility version 1.0.0, current version 120.100.0, weak)",
+            "\t/usr/lib/swift/libswiftCoreImage.dylib (compatibility version 1.0.0, current version 2.2.0, weak)",
+            "\t/usr/lib/swift/libswiftCoreLocation.dylib (compatibility version 1.0.0, current version 53.0.0, weak)",
+            "\t/usr/lib/swift/libswiftDarwin.dylib (compatibility version 1.0.0, current version 377.120.8)",
+            "\t/usr/lib/swift/libswiftDispatch.dylib (compatibility version 1.0.0, current version 1542.100.32, weak)",
+            "\t/usr/lib/swift/libswiftIntents.dylib (compatibility version 1.0.0, current version 12.0.0, weak)",
+            "\t/usr/lib/swift/libswiftMetal.dylib (compatibility version 1.0.0, current version 373.2.0, weak)",
+            "\t/usr/lib/swift/libswiftOSLog.dylib (compatibility version 1.0.0, current version 10.0.0, weak)",
+            "\t/usr/lib/swift/libswiftObjectiveC.dylib (compatibility version 1.0.0, current version 951.7.0, weak)",
+            "\t/usr/lib/swift/libswiftQuartzCore.dylib (compatibility version 1.0.0, current version 5.0.0, weak)",
+            "\t/usr/lib/swift/libswiftSpatial.dylib (compatibility version 1.0.0, current version 1.0.0, weak)",
+            "\t/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib (compatibility version 1.0.0, current version 879.5.1, weak)",
+            "\t/usr/lib/swift/libswiftXPC.dylib (compatibility version 1.0.0, current version 128.120.2, weak)",
+            "\t/usr/lib/swift/libswift_Builtin_float.dylib (compatibility version 0.0.0, current version 0.0.0, weak)",
+            "\t/usr/lib/swift/libswift_Concurrency.dylib (compatibility version 0.0.0, current version 0.0.0)",
+            "\t/usr/lib/swift/libswiftos.dylib (compatibility version 1.0.0, current version 1082.0.0)",
+            "\t/usr/lib/swift/libswiftsimd.dylib (compatibility version 1.0.0, current version 23.0.0, weak)",
+            "\t/usr/lib/swift/libswift_errno.dylib (compatibility version 1.0.0, current version 377.120.8)"
+          ],
+          "all_privacy_manifests": [
+            "PrivacyInfo.xcprivacy"
+          ]
+        }
+      ],
+      "upload_ready": false
+    }
+  ],
+  "local_provisioning_profiles": [
+    {
+      "application_identifier": "5P4X92K99Q.com.salsaparapizza.mana.ios.widgets",
+      "type": "development",
+      "expiration": "2027-10-05T08:09:02"
+    },
+    {
+      "application_identifier": "5P4X92K99Q.com.salsaparapizza.mana.ios",
+      "type": "development",
+      "expiration": "2027-10-05T08:08:59"
+    }
+  ]
+}

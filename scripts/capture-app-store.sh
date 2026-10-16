@@ -3,6 +3,21 @@
 set -euo pipefail
 ROOT="${0:A:h:h}"
 cd "$ROOT"
+if [[ "${1:-}" == "--help" ]]; then
+  printf '%s\n' 'Usage: zsh scripts/capture-app-store.sh [--reuse-captures]' 'Default: build app, capture demo screens/widget, render, verify, and ZIP.' 'Use --reuse-captures only for poster/copy changes, not app UI changes.'
+  exit 0
+fi
+if [[ "${1:-}" == "--reuse-captures" && $# == 1 ]]; then
+  python3 scripts/app-store-assets.py render
+  python3 scripts/app-store-assets.py package
+  exit 0
+fi
+if (( $# != 0 )); then
+  printf '%s\n' 'Unknown argument. Use --help.' >&2
+  exit 2
+fi
+python3 -c 'import PIL, numpy' || { printf '%s\n' 'Install Python dependencies: uv pip install --python python3 Pillow numpy' >&2; exit 1; }
+mkdir -p build
 NAME="Mana App Store Assets"
 DEVICE_ID="$(xcrun simctl list devices available --json | python3 -c '
 import json, sys
@@ -30,7 +45,7 @@ if [[ "$STATE" != Booted ]]; then xcrun simctl boot "$DEVICE_ID"; fi
 xcrun simctl bootstatus "$DEVICE_ID" -b
 xcrun simctl ui "$DEVICE_ID" appearance light
 xcrun simctl status_bar "$DEVICE_ID" override --time '9:41' --dataNetwork wifi --wifiMode active --wifiBars 3 --batteryState charged --batteryLevel 100
-STAMP="$(date +%Y%m%d-%H%M%S)"
+STAMP="$(date +%Y%m%d-%H%M%S)-$$"
 RESULT="build/app-store-capture-$STAMP.xcresult"
 EXPORT="build/app-store-attachments-$STAMP"
 xcodebuild -quiet -project ios/ManaIOS.xcodeproj -scheme ManaIOS -configuration Debug \
@@ -41,3 +56,5 @@ xcodebuild -quiet -project ios/ManaIOS.xcodeproj -scheme ManaIOS -configuration 
 xcrun xcresulttool export attachments --path "$RESULT" --output-path "$EXPORT"
 python3 scripts/app-store-assets.py import-captures "$EXPORT"
 python3 scripts/app-store-assets.py render
+python3 scripts/app-store-assets.py package
+printf '%s\n' "Capture evidence: $RESULT" 'Assets: app-store-release-prep/' 'ZIP: build/mana-iphone-app-store-assets.zip'

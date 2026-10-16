@@ -16,4 +16,4 @@ Home Screen widgets support both providers together or a selected provider. Lock
 
 Mana is not affiliated with or endorsed by OpenAI or OpenCode.
 
-PRE-SUBMISSION ACTION: Verify supported live account access, provider authorization, and the distributed build before using these notes. Supply any required review access through App Store Connect's private review fields. Demo mode is not a substitute for review access to the app's full functionality. Do not submit this preparation note unchanged.
+PRE-SUBMISSION ACTION: Confirm public provider authorization and review the App Store distribution build. The owner has validated live app functionality through daily use. Supply any required review access through App Store Connect's private review fields. Demo mode is not a substitute for review access to the app's full functionality. Remove this preparation paragraph before submission.

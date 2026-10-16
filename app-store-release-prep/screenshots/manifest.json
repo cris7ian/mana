@@ -1,5 +1,65 @@
 [
   {
+    "file": "screenshots/iphone-dynamic-island-medium/01-save-your-mana.png",
+    "width": 1206,
+    "height": 2622,
+    "mode": "RGB",
+    "headline": "Save your mana.",
+    "source": "usage-dark",
+    "source-crops": [],
+    "sha256": "b7fd81e40c61a5e183727ac3fbd328b5a913d84a8104683c2119caadcd41cbde"
+  },
+  {
+    "file": "screenshots/iphone-dynamic-island-medium/02-two-spellbooks.png",
+    "width": 1206,
+    "height": 2622,
+    "mode": "RGB",
+    "headline": "Two spellbooks. One place.",
+    "source": "usage-light",
+    "source-crops": [
+      [
+        60,
+        564,
+        1260,
+        1356
+      ],
+      [
+        60,
+        1416,
+        1260,
+        2430
+      ]
+    ],
+    "sha256": "e5883fedef55ab0c0f814b7f2f0a9f53851929ba5b09d9aa2f87fec55147e69d"
+  },
+  {
+    "file": "screenshots/iphone-dynamic-island-medium/03-every-window.png",
+    "width": 1206,
+    "height": 2622,
+    "mode": "RGB",
+    "headline": "Every limit. One look.",
+    "source": "opencode-light",
+    "source-crops": [],
+    "sha256": "0d41431e77d2069bf4691192169d810fc81f0a9d7a6e5002c900ddc9ae472ca9"
+  },
+  {
+    "file": "screenshots/iphone-dynamic-island-medium/04-home-screen-widget.png",
+    "width": 1206,
+    "height": 2622,
+    "mode": "RGB",
+    "headline": "Your quotas. Close at hand.",
+    "source": "home-widget",
+    "source-crops": [
+      [
+        90,
+        280,
+        1230,
+        820
+      ]
+    ],
+    "sha256": "f255d4b10f6071639255704a1c087df188a4ff4ef0e87af54aa6f0727ed0c068"
+  },
+  {
     "file": "screenshots/iphone-6.9/01-save-your-mana.png",
     "width": 1320,
     "height": 2868,
@@ -7,7 +67,7 @@
     "headline": "Save your mana.",
     "source": "usage-dark",
     "source-crops": [],
-    "sha256": "61eea5e8b263eef45cb0da1076cde6ddefa36448194b1cfe0d0f84c634e1ee4c"
+    "sha256": "4d0024227d797c3a37c628db49ccfafcdfba0a9120abc5c2a62ef881be9e7873"
   },
   {
     "file": "screenshots/iphone-6.9/02-two-spellbooks.png",
@@ -30,34 +90,34 @@
         2430
       ]
     ],
-    "sha256": "5562ed2f64849772c7ff9941acee266e26d350da125cca4c27ee19b071222e35"
+    "sha256": "4c9521885265a919a05fef9f165ad7ad44114a55bf652b925414b3a4e758275f"
   },
   {
-    "file": "screenshots/iphone-6.9/03-reset-countdowns.png",
+    "file": "screenshots/iphone-6.9/03-every-window.png",
     "width": 1320,
     "height": 2868,
     "mode": "RGB",
-    "headline": "Know when you\u2019re back.",
-    "source": "codex-dark",
+    "headline": "Every limit. One look.",
+    "source": "opencode-light",
+    "source-crops": [],
+    "sha256": "30c20cf2e2a42cf09d42fc196a8f1712cf5516a3b6c0109bfb78251b540ba2a5"
+  },
+  {
+    "file": "screenshots/iphone-6.9/04-home-screen-widget.png",
+    "width": 1320,
+    "height": 2868,
+    "mode": "RGB",
+    "headline": "Your quotas. Close at hand.",
+    "source": "home-widget",
     "source-crops": [
       [
-        60,
-        648,
-        1260,
-        1410
+        90,
+        280,
+        1230,
+        820
       ]
     ],
-    "sha256": "7247e3ebc98b1975819e97f91965aece8981341644ed49126c59360e43ca1002"
-  },
-  {
-    "file": "screenshots/iphone-6.9/04-your-keys.png",
-    "width": 1320,
-    "height": 2868,
-    "mode": "RGB",
-    "headline": "Your keys. Your iPhone.",
-    "source": "privacy-light",
-    "source-crops": [],
-    "sha256": "8e43e060ae890eecad15617ed78fbf66575df8a97811263f09872092ff4932f5"
+    "sha256": "d682b781dde8056e9d7fdaa9a2ea534fde3f232da6b4c4717fc31c1ec90bc753"
   },
   {
     "file": "screenshots/iphone-6.5/01-save-your-mana.png",
@@ -67,7 +127,7 @@
     "headline": "Save your mana.",
     "source": "usage-dark",
     "source-crops": [],
-    "sha256": "3c303928e92deeb214c7dca2cbded8fae47227040bf894492118c20e9db4badc"
+    "sha256": "83a13ff4c47549164697b158e3e4a0a987b435749719a76e63d6bb31998b84a1"
   },
   {
     "file": "screenshots/iphone-6.5/02-two-spellbooks.png",
@@ -90,33 +150,33 @@
         2430
       ]
     ],
-    "sha256": "3eb9ec821f5014fcf2997f808cfb5e3d6b8d96a93fbe510b4e32707f15de2efd"
+    "sha256": "bb96eb15a4ae67977e20f710326e072db75f85d6ed773cb9f7e481958f095365"
   },
   {
-    "file": "screenshots/iphone-6.5/03-reset-countdowns.png",
+    "file": "screenshots/iphone-6.5/03-every-window.png",
     "width": 1284,
     "height": 2778,
     "mode": "RGB",
-    "headline": "Know when you\u2019re back.",
-    "source": "codex-dark",
+    "headline": "Every limit. One look.",
+    "source": "opencode-light",
+    "source-crops": [],
+    "sha256": "f9401e6fa4dc79a36f3fea3a9065a0a5de92f778309c466574788606596e4e90"
+  },
+  {
+    "file": "screenshots/iphone-6.5/04-home-screen-widget.png",
+    "width": 1284,
+    "height": 2778,
+    "mode": "RGB",
+    "headline": "Your quotas. Close at hand.",
+    "source": "home-widget",
     "source-crops": [
       [
-        60,
-        648,
-        1260,
-        1410
+        90,
+        280,
+        1230,
+        820
       ]
     ],
-    "sha256": "a38abf951a798dc248a7c6a8dbade5297eb264197e5ab0bf3f4cd160da7c18ab"
-  },
-  {
-    "file": "screenshots/iphone-6.5/04-your-keys.png",
-    "width": 1284,
-    "height": 2778,
-    "mode": "RGB",
-    "headline": "Your keys. Your iPhone.",
-    "source": "privacy-light",
-    "source-crops": [],
-    "sha256": "833736634b2ec5c86d4686cc1a048b2e87d7899322c9d8e7c359fb9956db4530"
+    "sha256": "42d3ba8ab6917628fe43adb4c7e722026842a667d1367c71a88c543b3070825a"
   }
 ]

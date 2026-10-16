@@ -1,6 +1,6 @@
 # Source screenshots
 
-These are unmodified XCTest captures from a dedicated iPhone simulator. The app runs with `--ui-testing --demo`; dark captures also use `--demo-dark`.
+These are unmodified XCTest captures from a dedicated iPhone simulator. App screens use `--ui-testing --demo`; dark captures also use `--demo-dark`. The installed Home Screen widget uses normal `--demo` to persist credential-free Demo state in the App Group. The capture test skips this path unless the simulator is named `Mana App Store Assets`.
 
 - No real account, provider response, or credential appears in the images.
 - The visible percentages and reset countdowns are synthetic demo values.
@@ -10,7 +10,7 @@ These are unmodified XCTest captures from a dedicated iPhone simulator. The app 
 
 From the repository root, reproduce with `zsh scripts/capture-app-store.sh`. Recompose with `python3 scripts/app-store-assets.py render`.
 
-The phone framing and marketing text sit outside the app captures. The renderer resizes and rounds display corners. Slides 2 and 3 enlarge complete provider-card crops, including their sample-data labels. It does not reconstruct the interface or replace its text.
+The phone framing and marketing text sit outside the app captures. The renderer resizes and rounds display corners. Slide 2 enlarges complete provider-card crops, including their sample-data labels. Slide 4 enlarges the complete installed Home Screen widget, including `DEMO · SAMPLE`. It does not reconstruct the interface or replace its text.
 
 Crop coordinates are recorded in `screenshots/manifest.json` as `[left, top, right, bottom]` on the original 1320 × 2868 source. Review these coordinates after any UI change.
 
