@@ -254,6 +254,8 @@ struct SettingsView: View {
                 NSWorkspace.shared.open(URL(string: "https://claude.ai/settings/usage")!)
             }
             .buttonStyle(.bordered).controlSize(.small)
+            Toggle("Show", isOn: $settings.claudeUsagePinned)
+                .labelsHidden()
         }
     }
 

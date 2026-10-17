@@ -78,6 +78,8 @@
 "Claude subscription" = "Abonnement Claude";
 "Claude doesn't expose subscription usage to third-party apps. Check your usage in the browser." = "Claude ne partage pas l’utilisation de l’abonnement avec les apps tierces. Consultez votre utilisation dans le navigateur.";
 "Check in browser" = "Voir dans le navigateur";
+"CLAUDE" = "CLAUDE";
+"Check usage" = "Voir l’utilisation";
 "Antigravity quota read succeeded." = "Quota Antigravity lu avec succès.";
 "Could not read agy usage." = "Impossible de lire l’utilisation d’agy.";
 "Could not launch agy." = "Impossible de lancer agy.";

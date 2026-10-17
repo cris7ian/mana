@@ -55,7 +55,20 @@ final class ManaTests: XCTestCase {
         XCTAssertEqual(try ManaCLIOptions.parse(["--provider", "antigravity", "--json"]).provider, .antigravity)
     }
 
-    func testOAuthListenerIgnoresInvalidCallbackBeforeValidOne() async throws {
+    @MainActor
+    func testClaudeUsagePinnedPersists() throws {
+        let suiteName = "mana-claude-pin-test-\(UUID().uuidString)"
+        let suite = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { suite.removePersistentDomain(forName: suiteName) }
+        let settings = UsageSettings(defaults: suite)
+        XCTAssertFalse(settings.claudeUsagePinned)
+        settings.claudeUsagePinned = true
+        XCTAssertTrue(UsageSettings(defaults: suite).claudeUsagePinned)
+        settings.claudeUsagePinned = false
+        XCTAssertFalse(UsageSettings(defaults: suite).claudeUsagePinned)
+    }
+
+func testOAuthListenerIgnoresInvalidCallbackBeforeValidOne() async throws {
         let listener = try LoopbackOAuthListener(ports: [0])
         defer { listener.close() }
         // Queue all requests before accepting so a slow runner cannot drop the valid callback.

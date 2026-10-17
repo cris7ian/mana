@@ -19,9 +19,13 @@ final class UsageSettings: ObservableObject {
             setProviderConfigured(.antigravity, isConfigured: antigravityEnabled)
         }
     }
+    @Published var claudeUsagePinned: Bool {
+        didSet { defaults.set(claudeUsagePinned, forKey: Self.claudeUsagePinnedKey) }
+    }
 
     nonisolated static let antigravityPathKey = "antigravityExecutablePath"
     nonisolated static let antigravityEnabledKey = "antigravityEnabled"
+    nonisolated static let claudeUsagePinnedKey = "claudeUsagePinned"
 
     nonisolated static func configuredAntigravityPath(defaults: UserDefaults = .standard) -> String {
         if let saved = defaults.string(forKey: antigravityPathKey), !saved.isEmpty { return saved }
@@ -42,6 +46,7 @@ final class UsageSettings: ObservableObject {
         self.configuredProviders = configuredProviders
         self.antigravityPath = Self.configuredAntigravityPath(defaults: defaults)
         self.antigravityEnabled = defaults.bool(forKey: Self.antigravityEnabledKey)
+        self.claudeUsagePinned = defaults.bool(forKey: Self.claudeUsagePinnedKey)
         let stored = defaults.double(forKey: Self.refreshIntervalKey)
         self.refreshInterval = stored > 0 ? stored : Self.defaultRefreshInterval
         if antigravityEnabled { self.configuredProviders.insert(.antigravity) }

@@ -74,6 +74,10 @@ struct UsagePopoverView: View {
                     }
                 }
             }
+            if settings.claudeUsagePinned {
+                Divider().padding(.vertical, 12)
+                claudeUsageSection
+            }
 
             Divider().padding(.top, 12).padding(.bottom, 8)
             HStack(spacing: 14) {
@@ -108,6 +112,31 @@ struct UsagePopoverView: View {
             if let modifierMonitor { NSEvent.removeMonitor(modifierMonitor) }
             modifierMonitor = nil
             optionPressed = false
+        }
+    }
+
+    private var claudeUsageSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                Image("Provider-claude")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 17, height: 17)
+                    .frame(width: 18)
+                Text("CLAUDE")
+                    .font(.caption.weight(.semibold))
+                    .tracking(0.5)
+                Spacer()
+                Button {
+                    dismiss()
+                    NSWorkspace.shared.open(URL(string: "https://claude.ai/settings/usage")!)
+                } label: {
+                    Label("Check usage", systemImage: "arrow.up.right.square")
+                        .font(.caption)
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.tint)
+            }
         }
     }
 
