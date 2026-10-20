@@ -2,6 +2,8 @@
   box-sizing: border-box;
 }
 html {
+  font-size: 100%;
+  --reading-size: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
   scroll-behavior: smooth;
 }
 body {
@@ -9,6 +11,8 @@ body {
   background: #0b111c;
   color: #ecf3fc;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: var(--reading-size);
+  overflow-wrap: anywhere;
   -webkit-font-smoothing: antialiased;
 }
 a {
@@ -101,7 +105,7 @@ img {
 .lede {
   max-width: 560px;
   color: #b3c3d5;
-  font-size: 18px;
+  font-size: var(--reading-size);
   line-height: 1.65;
   margin: 0;
 }
@@ -303,7 +307,7 @@ img {
 }
 .detail-panel p:not(.kicker) {
   color: #a9b9cc;
-  font-size: 14px;
+  font-size: var(--reading-size);
   line-height: 1.65;
   margin: 0;
 }
@@ -378,7 +382,7 @@ img {
 .closing p {
   max-width: 700px;
   color: #a9b9cc;
-  font-size: 18px;
+  font-size: var(--reading-size);
   line-height: 1.65;
   text-align: justify;
   margin: 0 auto 30px;
@@ -445,9 +449,6 @@ img {
   }
   .hero h1 {
     font-size: clamp(40px, 11vw, 58px);
-  }
-  .lede {
-    font-size: 16px;
   }
   .hero-actions {
     gap: 10px;

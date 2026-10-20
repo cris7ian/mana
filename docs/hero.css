@@ -40,7 +40,7 @@
   font-family: "Pixelify Sans", ui-monospace, monospace;
 }
 .hero .lede {
-  font-size: clamp(17px, 1.65vw, 21px);
+  font-size: var(--reading-size);
   line-height: 1.4;
 }
 .icon-float {
@@ -184,9 +184,6 @@
   }
   .hero h1 {
     font-size: clamp(62px, 15vw, 76px);
-  }
-  .hero .lede {
-    font-size: 17px;
   }
   .hero-art {
     height: 190px;

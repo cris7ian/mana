@@ -4,7 +4,7 @@
 .hero-actions { align-items: center; gap: 20px; }
 .iphone-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 28px; }
 .iphone-availability { color: #a9b9cc; font-size: 13px; }
-.iphone-copy p.iphone-note { max-width: 420px; font-size: 13px; }
+.iphone-copy p.iphone-note { max-width: 420px; font-size: var(--reading-size); }
 .closing > .button { vertical-align: middle; }
 .closing-app-store { margin: 12px 0 12px 20px; }
 .iphone-section { border-top: 1px solid #ffffff15; display: grid; grid-template-columns: 1fr 1.05fr; gap: 48px; align-items: center; }
