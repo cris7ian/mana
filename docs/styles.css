@@ -148,6 +148,7 @@ img {
   background: #ffffff0b;
 }
 .brew-install {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -499,4 +500,59 @@ img {
     background-color: #78bdff;
     color: #071725;
   }
+}
+
+/* Feedback sits outside the command so the install line never shifts. */
+.brew-copy-status {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  color: #a8dfff;
+  font-size: 12px;
+  text-shadow: 0 0 12px #78bdff88;
+}
+.brew-install.copy-success::after {
+  content: "✧";
+  position: absolute;
+  right: 21px;
+  top: 0;
+  color: #bfefff;
+  pointer-events: none;
+  animation: spell-spark 720ms ease-out both;
+}
+@keyframes spell-spark {
+  from { opacity: 1; transform: translateY(0) scale(.5) rotate(-25deg); }
+  to { opacity: 0; transform: translateY(-24px) scale(1.5) rotate(25deg); }
+}
+::selection {
+  background: #457bc780;
+  color: #edfbff;
+  text-shadow: 0 0 5px #79d7ff, 0 0 14px #56aaff;
+}
+.selection-dancing ::selection { color: transparent; text-shadow: none; }
+.selection-magic {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+}
+.selection-magic span {
+  position: absolute;
+  white-space: pre;
+  color: #edfbff;
+  text-shadow: 0 0 5px #79d7ff, 0 0 14px #56aaff;
+  animation: letter-giggle 580ms ease-in-out both;
+  animation-delay: var(--delay);
+}
+@keyframes letter-giggle {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-3px); }
+  50% { transform: translateY(2px); }
+  75% { transform: translateY(-1px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brew-install.copy-success::after { animation: none; }
+  .selection-magic { display: none; }
 }

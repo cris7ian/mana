@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/launch.css" />
     <script defer src="/mana-field.js"></script>
     <script defer src="/mana-effects.js"></script>
+    <script defer src="/selection-magic.js"></script>
     <script defer src="/homebrew-copy.js"></script>
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Mana — Save your mana" />
@@ -112,7 +113,7 @@
               </svg>
             </button>
             <span
-              class="visually-hidden"
+              class="brew-copy-status"
               id="brew-copy-status"
               role="status"
               aria-live="polite"
@@ -264,7 +265,7 @@
     </main>
     <footer class="site-footer">
       <div class="shell footer-inner">
-        <span>© 2026 Cristian Caroli · Mana is MIT licensed.</span
+        <span>© 2026 <a href="https://cristiancaroli.com">Cristian Caroli</a> · Mana is MIT licensed.</span
         ><span
           ><a href="https://github.com/cris7ian/mana">Source</a
           ><a href="https://github.com/cris7ian/mana/releases/latest"

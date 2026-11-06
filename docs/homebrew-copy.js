@@ -8,12 +8,12 @@
   button.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(button.dataset.copyCommand);
-      status.textContent = "Homebrew install command copied.";
+      status.textContent = "Spell copied.";
       command.classList.remove("copy-success");
       void command.offsetWidth;
       command.classList.add("copy-success");
       clearTimeout(flashTimer);
-      flashTimer = setTimeout(() => command.classList.remove("copy-success"), 720);
+      flashTimer = setTimeout(() => command.classList.remove("copy-success"), 1600);
     } catch {
       status.textContent = "Could not copy the command. Select the text to copy it.";
     }
