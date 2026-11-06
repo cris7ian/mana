@@ -21,6 +21,7 @@
   let torchTarget = 0;
   let frame = 0;
   let lastFrame = 0;
+  let visible = false;
 
   function draw(time) {
     if (!width || !height) return;
@@ -94,7 +95,7 @@
   }
 
   function animate(time) {
-    if (reducedMotion.matches || document.hidden) {
+    if (reducedMotion.matches || document.hidden || !visible) {
       frame = 0;
       draw(0);
       return;
@@ -108,7 +109,7 @@
   function setMotion() {
     cancelAnimationFrame(frame);
     frame = 0;
-    if (reducedMotion.matches || document.hidden) {
+    if (reducedMotion.matches || document.hidden || !visible) {
       draw(0);
     } else {
       frame = requestAnimationFrame(animate);
@@ -154,5 +155,9 @@
   reducedMotion.addEventListener("change", setMotion);
   document.addEventListener("visibilitychange", setMotion);
   new ResizeObserver(resize).observe(canvas);
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    setMotion();
+  }).observe(hero);
   setMotion();
 })();

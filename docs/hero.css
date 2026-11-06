@@ -51,83 +51,70 @@
   animation: icon-levitate 6s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate;
   will-change: transform;
 }
-.mana-bubble {
+/* A single energy burst replaces the repeating bubbles and hover bounce. */
+.icon-float .app-icon {
+  transition: transform 550ms cubic-bezier(.2, 1.4, .4, 1), filter 400ms ease;
+}
+.hero-art.is-charged .app-icon {
+  transform: translateY(-5px) rotate(-3deg) scale(1.025);
+  filter: drop-shadow(0 38px 48px #020815a0) drop-shadow(0 0 25px #4ca8ff66);
+}
+.hero-art::before {
+  content: "";
   position: absolute;
-  z-index: 2;
-  width: var(--size);
-  height: var(--size);
-  border: 1px solid #b3e7ffb3;
+  width: 95%;
+  aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 30% 25%,
-    #fff,
-    #82d2ff80 45%,
-    #4aabff26
-  );
-  box-shadow: 0 0 18px #4ca8ff80;
+  background: radial-gradient(ellipse, #58cfff35, #3268e51c 42%, transparent 70%);
+  animation: aura-breathe 7s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: -1;
+}
+.hero-art.is-charged::before { background: radial-gradient(ellipse, #58cfff55, #3268e526 42%, transparent 70%); }
+.energy-ring {
+  position: absolute;
+  width: min(87%, 410px);
+  height: auto;
+  overflow: visible;
+  pointer-events: none;
+  transform: rotate(-5deg);
+  fill: none;
+  stroke: #8cdeff;
+  stroke-width: 1;
   opacity: 0;
+  filter: drop-shadow(0 0 4px #48baff) drop-shadow(0 0 12px #479dff);
+}
+.energy-ring path { stroke-dasharray: 20 80; }
+.hero-art.is-bursting .energy-ring { animation: energy-flash 850ms ease-out both; }
+.hero-art.is-bursting .energy-ring path { animation: energy-travel 850ms ease-out both; }
+@keyframes energy-travel { to { stroke-dashoffset: -100; } }
+@keyframes energy-flash { 0%, 100% { opacity: 0; } 15%, 40% { opacity: .85; } 65% { opacity: .3; } }
+@keyframes aura-breathe { from { opacity: .55; transform: scale(.94); } to { opacity: .95; transform: scale(1.05); } }
+@keyframes icon-levitate { from { transform: translateY(5px); } to { transform: translateY(-7px); } }
+
+.button.primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 400ms cubic-bezier(.2, 1.4, .4, 1), background 200ms;
+}
+.button.primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 25%, #ffffff55 48%, transparent 70%);
+  transform: translateX(-130%);
   pointer-events: none;
 }
-.icon-float .app-icon {
-  transition:
-    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.icon-float:hover .app-icon {
-  animation: icon-boil-bounce 2s cubic-bezier(0.34, 0.85, 0.33, 1) infinite;
-  filter: drop-shadow(0 38px 48px #020815a0) drop-shadow(0 0 28px #4ca8ff55);
-}
-.icon-float:hover .mana-bubble {
-  animation: bubble-rise var(--duration) ease-out var(--delay) infinite;
-}
-@keyframes icon-levitate {
-  from {
-    transform: translateY(8px);
-  }
-  to {
-    transform: translateY(-12px);
-  }
-}
-@keyframes icon-boil-bounce {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-5deg);
-  }
-  12% {
-    transform: translateY(-3px) rotate(-5deg);
-  }
-  24% {
-    transform: translateY(0) rotate(-5deg);
-  }
-  38% {
-    transform: translateY(-8px) rotate(-7deg);
-  }
-  50% {
-    transform: translateY(1px) rotate(-4deg);
-  }
-  70% {
-    transform: translateY(-17px) rotate(-7deg);
-  }
-  84% {
-    transform: translateY(2px) rotate(-3deg);
-  }
-}
-@keyframes bubble-rise {
-  0% {
-    transform: translate(0, 0) scale(0.4);
-    opacity: 0;
-  }
-  18% {
-    opacity: 0.85;
-  }
-  78% {
-    opacity: 0.7;
-  }
-  100% {
-    transform: translate(var(--drift), calc(-1 * var(--rise))) scale(1.35);
-    opacity: 0;
-  }
-}
+.button.primary:is(:hover, :focus-visible)::after { animation: mana-shimmer 650ms ease-out both; }
+.button.primary:active { transform: translateY(0) scale(.98); }
+@keyframes mana-shimmer { to { transform: translateX(130%); } }
+
+/* The observer pauses decorative animation whenever its section is not visible. */
+.hero.effects-paused *, .hero.effects-paused::before,
+.hero.effects-paused *::before, .hero.effects-paused *::after,
+.closing.effects-paused img { animation-play-state: paused !important; }
+
 @keyframes closing-levitate {
   from {
     transform: translateY(3px);
@@ -150,11 +137,10 @@
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
-  background: radial-gradient(
-    ellipse 50% 55% at 70% 50%,
-    rgba(25, 71, 145, 0.12),
-    transparent
-  );
+  background:
+    radial-gradient(ellipse at 75% 40%, #225ab52b, transparent 55%),
+    radial-gradient(ellipse at 30% 65%, #624cba1c, transparent 50%),
+    radial-gradient(ellipse at 55% 85%, #258fa016, transparent 45%);
   mask-image: linear-gradient(
     to bottom,
     transparent,
@@ -162,6 +148,13 @@
     #000 88%,
     transparent
   );
+}
+.mana-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .035;
+  background-image: url("/assets/mana-grain.svg");
 }
 .mana-grid {
   display: block;
@@ -194,12 +187,17 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .icon-float,
-  .icon-float:hover .app-icon,
-  .icon-float:hover .mana-bubble,
+  .hero-art::before,
+  .hero-art.is-bursting .energy-ring,
+  .hero-art.is-bursting .energy-ring path,
+  .button.primary:is(:hover, :focus-visible)::after,
   .closing img {
     animation: none;
   }
-  .icon-float .app-icon {
-    transition: none;
-  }
+  .icon-float .app-icon, .button.primary { transition: none; }
+  .hero-art.is-charged .app-icon { transform: rotate(-5deg); }
+  .button.primary:active { transform: none; }
 }
+
+@media (max-width: 800px) { .energy-ring { width: 240px; } }
+@media (max-width: 560px) { .energy-ring { width: 190px; } }
