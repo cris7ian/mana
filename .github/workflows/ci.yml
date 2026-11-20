@@ -7,10 +7,15 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   test:
     name: Mana tests
     runs-on: macos-15
+    timeout-minutes: 5
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
@@ -28,6 +33,7 @@ jobs:
   ios:
     name: Shared core and iPhone tests
     runs-on: macos-15
+    timeout-minutes: 20
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.0.1.app/Contents/Developer
     steps:
