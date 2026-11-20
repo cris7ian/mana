@@ -14,6 +14,14 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
+      - name: Cache macOS build artifacts
+        uses: actions/cache@v6
+        with:
+          path: |
+            build/mac
+            !build/mac/Logs
+          key: mac-derived-v1-${{ runner.os }}-${{ hashFiles('Mana.xcodeproj/project.pbxproj') }}
+          restore-keys: mac-derived-v1-${{ runner.os }}-
       - name: Test verification tooling
         run: python3 -m unittest discover -s scripts/tests -v
       - name: Verify static website
@@ -23,7 +31,7 @@ jobs:
       - name: Run Mana test suite
         env:
           DEVELOPER_DIR: /Applications/Xcode_26.0.1.app/Contents/Developer
-        run: xcodebuild -project Mana.xcodeproj -scheme Mana -configuration Debug -destination 'platform=macOS,arch=arm64' test
+        run: xcodebuild -project Mana.xcodeproj -scheme Mana -configuration Debug -destination 'platform=macOS,arch=arm64' -derivedDataPath build/mac test
 
   ios:
     name: Shared core and iPhone tests
@@ -33,6 +41,20 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
+      - name: Cache ManaCore build artifacts
+        uses: actions/cache@v6
+        with:
+          path: Packages/ManaCore/.build
+          key: manacore-v1-${{ runner.os }}-${{ hashFiles('Packages/ManaCore/Package.swift') }}
+          restore-keys: manacore-v1-${{ runner.os }}-
+      - name: Cache iOS build artifacts
+        uses: actions/cache@v6
+        with:
+          path: |
+            build/ios
+            !build/ios/Logs
+          key: ios-derived-v1-${{ runner.os }}-${{ hashFiles('ios/ManaIOS.xcodeproj/project.pbxproj', 'scripts/verify-ios.sh') }}
+          restore-keys: ios-derived-v1-${{ runner.os }}-
       - name: Test shared provider core
         run: swift test --package-path Packages/ManaCore
       - name: Test iPhone app and build widgets
